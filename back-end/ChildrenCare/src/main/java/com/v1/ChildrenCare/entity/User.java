@@ -1,9 +1,11 @@
 package com.v1.ChildrenCare.entity;
 
+import com.v1.ChildrenCare.enumPack.enumActive;
 import com.v1.ChildrenCare.enumPack.enumGender;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,10 +26,27 @@ public class User {
     @OneToOne
     @JoinColumn(name = "email")
     private Account account;
+
+    // ------------------
+    @Enumerated(EnumType.STRING)
+    private enumActive isActive;
+    @org.springframework.data.annotation.CreatedDate
+    @Column(updatable = false)
+    private LocalDate CreatedDate;
+
+    @ManyToOne
+@JoinColumn(name = "created_by", updatable = false)
+private User createdBy;
+
+    @OneToMany
+    private List<User> ModifiedBy ;
+    @org.springframework.data.annotation.LastModifiedDate
+    private LocalDate LastModifiedDate;
+    //-------------------
     public User() {
     }
 
-    public User(Long id, String username, String firstName, String lastName, LocalDate dob, String phone, String address, String avartaLink, String avatarFileName, Account account) {
+    public User(Long id, String username, String firstName, String lastName, LocalDate dob, String phone, String address, String avartaLink, String avatarFileName, enumGender gender, Account account, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -37,7 +56,13 @@ public class User {
         this.address = address;
         this.avartaLink = avartaLink;
         this.avatarFileName = avatarFileName;
+        this.gender = gender;
         this.account = account;
+        this.isActive = isActive;
+        CreatedDate = createdDate;
+        this.createdBy = createdBy;
+        ModifiedBy = modifiedBy;
+        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -112,12 +137,60 @@ public class User {
         this.avatarFileName = avatarFileName;
     }
 
+    public enumGender getGender() {
+        return gender;
+    }
+
+    public void setGender(enumGender gender) {
+        this.gender = gender;
+    }
+
     public Account getAccount() {
         return account;
     }
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public enumActive getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(enumActive isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDate getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<User> getModifiedBy() {
+        return ModifiedBy;
+    }
+
+    public void setModifiedBy(List<User> modifiedBy) {
+        ModifiedBy = modifiedBy;
+    }
+
+    public LocalDate getLastModifiedDate() {
+        return LastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDate lastModifiedDate) {
+        LastModifiedDate = lastModifiedDate;
     }
 
     @Override
@@ -132,7 +205,13 @@ public class User {
         sb.append(", address='").append(address).append('\'');
         sb.append(", avartaLink='").append(avartaLink).append('\'');
         sb.append(", avatarFileName='").append(avatarFileName).append('\'');
+        sb.append(", gender=").append(gender);
         sb.append(", account=").append(account);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", CreatedDate=").append(CreatedDate);
+        sb.append(", createdBy=").append(createdBy);
+        sb.append(", ModifiedBy=").append(ModifiedBy);
+        sb.append(", LastModifiedDate=").append(LastModifiedDate);
         sb.append('}');
         return sb.toString();
     }

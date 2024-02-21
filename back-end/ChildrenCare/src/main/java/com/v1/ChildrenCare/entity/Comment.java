@@ -1,9 +1,12 @@
 package com.v1.ChildrenCare.entity;
 
 
+import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "comment")
@@ -17,10 +20,6 @@ public class Comment {
     @Column(length = 2000)
     private String commentText;
 
-    @Column(nullable = false)
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
@@ -28,16 +27,38 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+
+    // ------------------
+    @Enumerated(EnumType.STRING)
+    private enumActive isActive;
+    @org.springframework.data.annotation.CreatedDate
+    @Column(updatable = false)
+    private LocalDate CreatedDate;
+
+    @ManyToOne
+@JoinColumn(name = "created_by", updatable = false)
+private User createdBy;
+
+    @OneToMany
+    private List<User> ModifiedBy ;
+    @org.springframework.data.annotation.LastModifiedDate
+    private LocalDate LastModifiedDate;
+    //-------------------
+
+
     public Comment() {
     }
 
-    public Comment(Long id, String commentText, LocalDateTime createdDate, LocalDateTime updatedDate, Post post, User user) {
+    public Comment(Long id, String commentText, Post post, User user, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
         this.id = id;
         this.commentText = commentText;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
         this.post = post;
         this.user = user;
+        this.isActive = isActive;
+        CreatedDate = createdDate;
+        this.createdBy = createdBy;
+        ModifiedBy = modifiedBy;
+        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -56,22 +77,6 @@ public class Comment {
         this.commentText = commentText;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
     public Post getPost() {
         return post;
     }
@@ -88,15 +93,58 @@ public class Comment {
         this.user = user;
     }
 
+    public enumActive getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(enumActive isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDate getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<User> getModifiedBy() {
+        return ModifiedBy;
+    }
+
+    public void setModifiedBy(List<User> modifiedBy) {
+        ModifiedBy = modifiedBy;
+    }
+
+    public LocalDate getLastModifiedDate() {
+        return LastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDate lastModifiedDate) {
+        LastModifiedDate = lastModifiedDate;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Comment{");
         sb.append("id=").append(id);
         sb.append(", commentText='").append(commentText).append('\'');
-        sb.append(", createdDate=").append(createdDate);
-        sb.append(", updatedDate=").append(updatedDate);
         sb.append(", post=").append(post);
         sb.append(", user=").append(user);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", CreatedDate=").append(CreatedDate);
+        sb.append(", createdBy=").append(createdBy);
+        sb.append(", ModifiedBy=").append(ModifiedBy);
+        sb.append(", LastModifiedDate=").append(LastModifiedDate);
         sb.append('}');
         return sb.toString();
     }

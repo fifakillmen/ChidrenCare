@@ -1,10 +1,13 @@
 package com.v1.ChildrenCare.entity;
 
+import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
-@Table(name = "childinfo")
+@Table(name = "child_info")
 public class ChildInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +26,26 @@ public class ChildInformation {
     @Column(name = "child_information_id")
     private Long childInformationId;
 
+    // ------------------
+    @Enumerated(EnumType.STRING)
+    private enumActive isActive;
+    @org.springframework.data.annotation.CreatedDate
+    @Column(updatable = false)
+    private LocalDate CreatedDate;
 
-    boolean status = false;
+    @ManyToOne
+@JoinColumn(name = "created_by", updatable = false)
+private User createdBy;
 
+    @OneToMany
+    private List<User> ModifiedBy ;
+    @org.springframework.data.annotation.LastModifiedDate
+    private LocalDate LastModifiedDate;
+    //-------------------
     public ChildInformation() {
     }
 
-    public ChildInformation(Long id, String firstName, String lastName, LocalDate dob, boolean gender, String interest, String needs, String note, User user, Long childInformationId, boolean status) {
+    public ChildInformation(Long id, String firstName, String lastName, LocalDate dob, boolean gender, String interest, String needs, String note, User user, Long childInformationId, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -40,7 +56,11 @@ public class ChildInformation {
         this.note = note;
         this.user = user;
         this.childInformationId = childInformationId;
-        this.status = status;
+        this.isActive = isActive;
+        CreatedDate = createdDate;
+        this.createdBy = createdBy;
+        ModifiedBy = modifiedBy;
+        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -123,12 +143,44 @@ public class ChildInformation {
         this.childInformationId = childInformationId;
     }
 
-    public boolean isStatus() {
-        return status;
+    public enumActive getIsActive() {
+        return isActive;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setIsActive(enumActive isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDate getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<User> getModifiedBy() {
+        return ModifiedBy;
+    }
+
+    public void setModifiedBy(List<User> modifiedBy) {
+        ModifiedBy = modifiedBy;
+    }
+
+    public LocalDate getLastModifiedDate() {
+        return LastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDate lastModifiedDate) {
+        LastModifiedDate = lastModifiedDate;
     }
 
     @Override
@@ -144,7 +196,11 @@ public class ChildInformation {
         sb.append(", note='").append(note).append('\'');
         sb.append(", user=").append(user);
         sb.append(", childInformationId=").append(childInformationId);
-        sb.append(", status=").append(status);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", CreatedDate=").append(CreatedDate);
+        sb.append(", createdBy=").append(createdBy);
+        sb.append(", ModifiedBy=").append(ModifiedBy);
+        sb.append(", LastModifiedDate=").append(LastModifiedDate);
         sb.append('}');
         return sb.toString();
     }

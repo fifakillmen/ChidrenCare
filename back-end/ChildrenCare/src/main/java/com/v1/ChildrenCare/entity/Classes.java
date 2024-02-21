@@ -1,9 +1,11 @@
 package com.v1.ChildrenCare.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,7 +17,6 @@ public class Classes {
     private Long id;
     @Column(unique = true)
     String className;
-    LocalDate createdDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
     LocalDate startDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
@@ -32,13 +33,27 @@ public class Classes {
     @JoinColumn(name = "child_information_id")
     Set<ChildInformation> childInformation;
 
+    // ------------------
+    @Enumerated(EnumType.STRING)
+    private enumActive isActive;
+    @org.springframework.data.annotation.CreatedDate
+    @Column(updatable = false)
+    private LocalDate CreatedDate;
+    @ManyToOne
+@JoinColumn(name = "created_by", updatable = false)
+private User createdBy;
+
+    @OneToMany
+    private List<User> ModifiedBy ;
+    @org.springframework.data.annotation.LastModifiedDate
+    private LocalDate LastModifiedDate;
+    //-------------------
     public Classes() {
     }
 
-    public Classes(Long id, String className, LocalDate createdDate, LocalDate startDate, LocalDate endDate, String description, String ageRange, Service service, User createdPerson, Set<ChildInformation> childInformation) {
+    public Classes(Long id, String className, LocalDate startDate, LocalDate endDate, String description, String ageRange, Service service, User createdPerson, Set<ChildInformation> childInformation, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
         this.id = id;
         this.className = className;
-        this.createdDate = createdDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
@@ -46,6 +61,11 @@ public class Classes {
         this.service = service;
         this.createdPerson = createdPerson;
         this.childInformation = childInformation;
+        this.isActive = isActive;
+        CreatedDate = createdDate;
+        this.createdBy = createdBy;
+        ModifiedBy = modifiedBy;
+        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -62,14 +82,6 @@ public class Classes {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public LocalDate getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
     }
 
     public LocalDate getStartDate() {
@@ -128,12 +140,51 @@ public class Classes {
         this.childInformation = childInformation;
     }
 
+    public enumActive getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(enumActive isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDate getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<User> getModifiedBy() {
+        return ModifiedBy;
+    }
+
+    public void setModifiedBy(List<User> modifiedBy) {
+        ModifiedBy = modifiedBy;
+    }
+
+    public LocalDate getLastModifiedDate() {
+        return LastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDate lastModifiedDate) {
+        LastModifiedDate = lastModifiedDate;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Classes{");
         sb.append("id=").append(id);
         sb.append(", className='").append(className).append('\'');
-        sb.append(", createdDate=").append(createdDate);
         sb.append(", startDate=").append(startDate);
         sb.append(", endDate=").append(endDate);
         sb.append(", description='").append(description).append('\'');
@@ -141,6 +192,11 @@ public class Classes {
         sb.append(", service=").append(service);
         sb.append(", createdPerson=").append(createdPerson);
         sb.append(", childInformation=").append(childInformation);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", CreatedDate=").append(CreatedDate);
+        sb.append(", createdBy=").append(createdBy);
+        sb.append(", ModifiedBy=").append(ModifiedBy);
+        sb.append(", LastModifiedDate=").append(LastModifiedDate);
         sb.append('}');
         return sb.toString();
     }

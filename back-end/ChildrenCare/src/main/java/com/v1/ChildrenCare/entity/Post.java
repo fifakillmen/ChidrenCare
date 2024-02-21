@@ -1,6 +1,7 @@
 package com.v1.ChildrenCare.entity;
 
 
+import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,18 +21,13 @@ public class Post {
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-
-    private String imageLink; //s3 key
+    private String imageLink;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    private String status = ACTIVE;
-
-    public static final String ACTIVE = "Active";
-    public static final String DEACTIVATED = "DEACTIVATED";
+    @Enumerated(EnumType.STRING)
+    private enumActive ACTIVE;
 
     public Post() {
     }
@@ -100,14 +96,6 @@ public class Post {
         this.user = user;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Post{");
@@ -119,7 +107,7 @@ public class Post {
         sb.append(", imageLink='").append(imageLink).append('\'');
         sb.append(", comments=").append(comments);
         sb.append(", user=").append(user);
-        sb.append(", status='").append(status).append('\'');
+        sb.append(", ACTIVE=").append(ACTIVE);
         sb.append('}');
         return sb.toString();
     }
