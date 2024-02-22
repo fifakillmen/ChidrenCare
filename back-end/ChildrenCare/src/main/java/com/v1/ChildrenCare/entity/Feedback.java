@@ -1,6 +1,7 @@
 package com.v1.ChildrenCare.entity;
 
 import com.v1.ChildrenCare.enumPack.enumActive;
+import com.v1.ChildrenCare.enumPack.enumGender;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -16,48 +17,30 @@ public class Feedback {
     private Long id;
 
     @Column(nullable = false)
-    private String customerName;
-
+    private String fullname;
     @Column(nullable = false)
-    private LocalDateTime date;
-
+    private String email;
+    @Column(nullable = false)
+    private String mobile;
+    @Enumerated(EnumType.STRING)
+    private enumGender gender;
     @Column(nullable = false)
     private Integer rating;
 
     @Column(nullable = false)
     private String reviewText;
 
-    // ------------------
-    @Enumerated(EnumType.STRING)
-    private enumActive isActive;
-    @org.springframework.data.annotation.CreatedDate
-    @Column(updatable = false)
-    private LocalDate CreatedDate;
-
-    @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
-
-    @OneToMany
-    private List<User> ModifiedBy ;
-    @org.springframework.data.annotation.LastModifiedDate
-    private LocalDate LastModifiedDate;
-    //-------------------
-
     public Feedback() {
     }
 
-    public Feedback(Long id, String customerName, LocalDateTime date, Integer rating, String reviewText, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText) {
         this.id = id;
-        this.customerName = customerName;
-        this.date = date;
+        this.fullname = fullname;
+        this.email = email;
+        this.mobile = mobile;
+        this.gender = gender;
         this.rating = rating;
         this.reviewText = reviewText;
-        this.isActive = isActive;
-        CreatedDate = createdDate;
-        this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
-        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -68,20 +51,36 @@ private User createdBy;
         this.id = id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public enumGender getGender() {
+        return gender;
+    }
+
+    public void setGender(enumGender gender) {
+        this.gender = gender;
     }
 
     public Integer getRating() {
@@ -100,59 +99,16 @@ private User createdBy;
         this.reviewText = reviewText;
     }
 
-    public enumActive getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(enumActive isActive) {
-        this.isActive = isActive;
-    }
-
-    public LocalDate getCreatedDate() {
-        return CreatedDate;
-    }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        CreatedDate = createdDate;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
-    }
-
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
-    }
-
-    public LocalDate getLastModifiedDate() {
-        return LastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDate lastModifiedDate) {
-        LastModifiedDate = lastModifiedDate;
-    }
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Feedback{");
         sb.append("id=").append(id);
-        sb.append(", customerName='").append(customerName).append('\'');
-        sb.append(", date=").append(date);
+        sb.append(", fullname='").append(fullname).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", mobile='").append(mobile).append('\'');
+        sb.append(", gender=").append(gender);
         sb.append(", rating=").append(rating);
         sb.append(", reviewText='").append(reviewText).append('\'');
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
         sb.append('}');
         return sb.toString();
     }
