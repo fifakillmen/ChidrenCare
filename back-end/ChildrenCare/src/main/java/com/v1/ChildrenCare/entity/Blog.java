@@ -45,8 +45,8 @@ public class Blog {
     private LocalDate CreatedDate;
 
     @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
+    @JoinColumn(name = "created_by", updatable = false)
+    private User createdBy;
 
     @OneToMany
     private List<User> ModifiedBy ;
