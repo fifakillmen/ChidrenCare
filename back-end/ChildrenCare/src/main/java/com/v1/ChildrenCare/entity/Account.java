@@ -2,8 +2,7 @@ package com.v1.ChildrenCare.entity;
 
 import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,8 +17,7 @@ public class Account {
     private String email;
     private String password;
     private String accessToken;
-    @Column(nullable = false)
-    private boolean isAccessTokenActive;
+    private Boolean isAccessTokenActive;
     private String resetPasswordToken;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -33,8 +31,8 @@ public class Account {
     private LocalDate CreatedDate;
 
     @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
+    @JoinColumn(name = "created_by", updatable = false)
+    private User createdBy;
 
     @OneToMany
     private List<User> ModifiedBy ;

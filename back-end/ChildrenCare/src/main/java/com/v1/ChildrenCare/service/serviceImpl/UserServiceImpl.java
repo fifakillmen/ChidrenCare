@@ -117,6 +117,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> searchUser(Long UserId, String username, String firstName, String lastName, String email, LocalDate dob, Pageable pageable) {
+
+        if (UserId==null&&username==null&&firstName==null&&lastName==null&&email==null&&dob==null){
+            return userRepository.findAll(pageable).map(userListMapper::UserToUserDto);
+        }
         Page<User> users = userRepository.search(UserId, username, firstName, lastName,email,dob, pageable);
         return users.map(userListMapper::UserToUserDto);
     }
