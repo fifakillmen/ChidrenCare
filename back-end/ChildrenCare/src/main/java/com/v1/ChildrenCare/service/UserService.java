@@ -10,14 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 
 public interface UserService {
-    UserDto addUser(String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender);
+    UserDto addUser(Long Create_By_UserId,String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender);
 
 
-    UserDto updateUser(Long UserId,String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender);
+    UserDto updateUser(Long Modified_By_UserId,Long UserId,String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender);
 
     boolean deleteUser(Long UserId);
 
-    User findUserByEmail(String email);
+    UserDto findUserByEmail(String email);
 
     Page<UserDto> searchUser(Long UserId, String username,String firstName, String lastName, String email, LocalDate dob, Pageable pageable);
 }
