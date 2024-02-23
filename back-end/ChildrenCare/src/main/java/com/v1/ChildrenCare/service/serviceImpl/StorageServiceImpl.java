@@ -1,6 +1,7 @@
 package com.v1.ChildrenCare.service.serviceImpl;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -21,16 +22,19 @@ import static com.amazonaws.services.s3.model.CannedAccessControlList.PublicRead
 public class StorageServiceImpl implements StorageService {
     @Value("${application.bucket.name}")
     private String bucketName;
-    @Autowired
-    private AmazonS3 s3Client;
+    private final AmazonS3 s3Client;
 
+    public StorageServiceImpl(AmazonS3 s3Client) {
+        this.bucketName="childrencare";
+        this.s3Client = s3Client;
+    }
 
     @Override
     public String uploadFile(MultipartFile multipartFile) {
         File fileObject= convertMultipartFiletoFile(multipartFile);
-        String filename=System.currentTimeMillis()+"_"+multipartFile.getOriginalFilename();
-        s3Client.putObject(new PutObjectRequest(bucketName,filename,fileObject));
-        s3Client.setObjectAcl(bucketName,filename,PublicRead);
+       // String filename=System.currentTimeMillis()+"_"+multipartFile.getOriginalFilename();
+        String filename=multipartFile.getOriginalFilename();
+        s3Client.putObject(new PutObjectRequest(bucketName,filename,fileObject).withCannedAcl(CannedAccessControlList.PublicRead));
         fileObject.delete();
         return filename;
     }

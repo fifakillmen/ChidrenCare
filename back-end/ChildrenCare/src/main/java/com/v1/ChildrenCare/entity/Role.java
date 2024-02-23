@@ -3,31 +3,29 @@ package com.v1.ChildrenCare.entity;
 import com.v1.ChildrenCare.enumPack.enumRole;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
+
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GenericGenerator(name = "native",strategy = "native")
-    private Long id;
+    private long id;
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
     private enumRole name;
 
     public Role() {
     }
 
-    public Role(Long id, enumRole name) {
+    public Role(long id, enumRole name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
