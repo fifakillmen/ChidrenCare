@@ -79,11 +79,18 @@
 			<optional>true</optional>
 		</dependency>
 <!--Dev tool-->
+<!--Brcypt-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
-
+<!--Brcypt-->
+<!--Mail trap -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+<!--Mail trap -->
 	<!--TEST-->
 		<dependency>
 			<groupId>org.junit.vintage</groupId>
