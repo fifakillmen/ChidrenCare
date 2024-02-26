@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @RestController
+@RequestMapping("/user")
 public class UserRestController {
     private final UserService userService;
 

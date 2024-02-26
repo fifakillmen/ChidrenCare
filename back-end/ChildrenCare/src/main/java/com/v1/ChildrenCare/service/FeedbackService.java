@@ -4,6 +4,7 @@ import com.v1.ChildrenCare.constaint.Result;
 import com.v1.ChildrenCare.entity.Feedback;
 import com.v1.ChildrenCare.enumPack.enumActive;
 import com.v1.ChildrenCare.enumPack.enumGender;
+import com.v1.ChildrenCare.enumPack.enumResultStatus;
 import com.v1.ChildrenCare.request.CreateFeedbackRequest;
 import com.v1.ChildrenCare.repository.FeedbackRepository;
 import jakarta.annotation.Resource;
@@ -19,32 +20,32 @@ public class FeedbackService {
     private FeedbackRepository feedbackRepository;
 
     public ResponseEntity<Result> getAllFeedback() {
-        return ResponseEntity.ok(new Result("SUCCESS", "OK", feedbackRepository.findAll()));
+        return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK, feedbackRepository.findAll()));
     }
 
     public ResponseEntity<Result> createAndEdit(CreateFeedbackRequest request) {
         try {
             createAndEditFeedback(request);
-            return ResponseEntity.ok(new Result("SUCCESS", "OK", null));
+            return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK, null));
         } catch (NullPointerException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), "NOT_FOUND", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), enumResultStatus.NOT_FOUND, null));
         }
     }
 
     public ResponseEntity<Result> delete(Long id) {
         try {
             deleteFeedback(id);
-            return ResponseEntity.ok(new Result("SUCCESS", "OK", null));
+            return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK, null));
         } catch (NullPointerException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), "NOT_FOUND", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), enumResultStatus.NOT_FOUND, null));
         }
     }
 
     public ResponseEntity<Result> detail(Long id) {
         try {
-            return ResponseEntity.ok(new Result("SUCCESS", "OK", detailFeedback(id)));
+            return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK, detailFeedback(id)));
         } catch (NullPointerException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), "NOT_FOUND", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), enumResultStatus.NOT_FOUND, null));
         }
     }
 
