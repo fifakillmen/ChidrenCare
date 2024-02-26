@@ -1,16 +1,21 @@
 package com.v1.ChildrenCare.service.serviceImpl;
 
+import com.v1.ChildrenCare.constaint.Result;
 import com.v1.ChildrenCare.entity.Account;
 import com.v1.ChildrenCare.entity.Role;
 import com.v1.ChildrenCare.entity.User;
 import com.v1.ChildrenCare.enumPack.enumActive;
+import com.v1.ChildrenCare.enumPack.enumResultStatus;
 import com.v1.ChildrenCare.enumPack.enumRole;
 import com.v1.ChildrenCare.repository.AccountRepository;
 import com.v1.ChildrenCare.repository.RoleRepository;
 import com.v1.ChildrenCare.repository.UserRepository;
 import com.v1.ChildrenCare.service.AccountService;
-import org.springframework.data.domain.Page;
+import com.v1.ChildrenCare.service.EmailService;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +26,20 @@ import java.util.Random;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository,
-                              UserRepository userRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository, UserRepository userRepository, EmailService emailService) {
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
+
     private Account uRole(List<enumRole> roles, Account account) {
         List<Role> lRole = new ArrayList<>();
         for (enumRole r : roles) {
@@ -45,76 +53,141 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<String> searchEmailNoConnected(String email) {
-        return accountRepository.searchEmailNoConnected(email);
+    public ResponseEntity<Result> searchEmailNoConnected(String email) {
+        return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,accountRepository.searchEmailNoConnected(email)));
     }
 
     @Override
-    public Account createAccount(Long Created_By_UserId, String email, List<enumRole> roles) {
-        if (accountRepository.findByEmail(email) == null) {
-            Account account = new Account();
-            account.setEmail(email);
-            account.setPassword(passwordEncoder.encode(generateRandomPassword()));
-            account.setIsActive(enumActive.INACTIVE);
-            account.setAccessTokenActive(false);
-            account = uRole(roles, account);
-            if (Created_By_UserId!=0){
-               User crU= userRepository.findUserById(Created_By_UserId);
-               if(crU!=null) account.setCreatedBy(crU);
-            }
-            account.setCreatedDate(LocalDate.now());
-            return accountRepository.save(account);
-        }
-        return null;
-    }
-
-    @Override
-    public Account updateAccount(Long modify_By_UserId, String email, String password, List<enumRole> roles) {
-        Account account = accountRepository.findByEmail(email);
-        if (account != null) {
-            if (password != null) {
-                account.setPassword(passwordEncoder.encode(password));
-            }
-            if (! roles.isEmpty()) {
+    public ResponseEntity<Result> createAccount(Long Created_By_UserId, String email, List<enumRole> roles) {
+        try{
+            if (accountRepository.findByEmail(email) == null) {
+                Account account = new Account();
+                account.setEmail(email);
+                account.setPassword(passwordEncoder.encode(generateRandomPassword()));
+                account.setIsActive(enumActive.INACTIVE);
+                account.setAccessTokenActive(false);
                 account = uRole(roles, account);
-            }
-            if (modify_By_UserId!=0){
-                User mdU= userRepository.findUserById(modify_By_UserId);
-                if(mdU!=null){
-                 if(mdU.getModifiedBy()==null){
-                     account.setModifiedBy(new ArrayList<User>());
-                 }
-                    account.getModifiedBy().add(mdU);
+                if (Created_By_UserId!=0){
+                    User crU= userRepository.findUserById(Created_By_UserId);
+                    if(crU!=null) account.setCreatedBy(crU);
                 }
+                account.setCreatedDate(LocalDate.now());
+                return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,accountRepository.save(account)));
             }
-            return accountRepository.save(account);
+            return  ResponseEntity.ok(new Result("Email is used", enumResultStatus.OK,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in create Account", enumResultStatus.OK,null));
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return  ResponseEntity.ok(new Result("Data integrity constraint violation error in create Account", enumResultStatus.OK,null));
+            } else {
+                // Các lỗi khác
+                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
+            }
         }
-        return null;    }
 
-    @Override
-    public Boolean resetPassword(String oldEmail) {
-        Account account = accountRepository.findByEmail(oldEmail);
-        if (account != null) {
-            account.setPassword(passwordEncoder.encode(generateRandomPassword()));
-            accountRepository.save(account);
-            return true;
-        }
-        return false;
     }
 
     @Override
-    public boolean deleteAccount(String email) {
-        Account account = accountRepository.findByEmail(email);
-        if (account != null) {
-            accountRepository.delete(account);
-            return true;
+    public ResponseEntity<Result> updateAccount(Long modify_By_UserId, String email, String password, List<enumRole> roles) {
+        try{
+            Account account = accountRepository.findByEmail(email);
+            if (account != null) {
+                if (password != null) {
+                    account.setPassword(passwordEncoder.encode(password));
+                }
+                if (! roles.isEmpty()) {
+                    account = uRole(roles, account);
+                }
+                if (modify_By_UserId!=0){
+                    User mdU= userRepository.findUserById(modify_By_UserId);
+                    if(mdU!=null){
+                        if(mdU.getModifiedBy()==null){
+                            account.setModifiedBy(new ArrayList<User>());
+                        }
+                        account.getModifiedBy().add(mdU);
+                    }
+                }
+                return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,accountRepository.save(account)));
+            }
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in update Account", enumResultStatus.OK,null));
+
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in update Account", enumResultStatus.OK,null));
+
+            } else {
+                // Các lỗi khác
+                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
+            }
         }
-        return false;
     }
 
     @Override
-    public Page<Account> searchAccount(String email, Pageable pageable) {
-        return accountRepository.searchWithEmail(email, pageable);
+    public ResponseEntity<Result> resetPassword(String email) {
+        try{
+            Account account = accountRepository.findByEmail(email);
+            if (account != null) {
+                account.setPassword(passwordEncoder.encode(generateRandomPassword()));
+                accountRepository.save(account);
+                // gửi email về email đó link để change password
+                String link= "link của server font-end dẫn đến trang đổi mật khẩu";
+                emailService.sendResetPassword(account.getEmail(),link);
+                return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
+            }
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in reset password", enumResultStatus.OK,null));
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in reset password", enumResultStatus.OK,null));
+            } else {
+                // Các lỗi khác
+                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
+            }
+        }
+    }
+
+    @Override
+    public ResponseEntity<Result> deleteAccount(String email) {
+        try{
+            Account account = accountRepository.findByEmail(email);
+            if (account != null) {
+                accountRepository.delete(account);
+                return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
+            }
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in delete Account", enumResultStatus.OK,null));
+
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in delete Account", enumResultStatus.OK,null));
+
+            } else {
+                // Các lỗi khác
+                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
+            }
+        }
+
+
+
+
+    }
+
+    @Override
+    public ResponseEntity<Result> searchAccount(String email, Pageable pageable) {
+        return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,accountRepository.searchWithEmail(email, pageable)));
     }
 
     private String generateRandomPassword() {

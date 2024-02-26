@@ -29,11 +29,24 @@ public class Feedback {
 
     @Column(nullable = false)
     private String reviewText;
+    @Enumerated(EnumType.STRING)
+    private enumActive isActive;
+    @org.springframework.data.annotation.CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime CreatedDate;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by", updatable = false)
+    private User createdBy;
+
+    @OneToMany
+    private List<User> ModifiedBy ;
+    @org.springframework.data.annotation.LastModifiedDate
+    private LocalDateTime LastModifiedDate;
     public Feedback() {
     }
 
-    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText) {
+    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText, enumActive isActive, LocalDateTime createdDate, User createdBy, List<User> modifiedBy, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -41,6 +54,11 @@ public class Feedback {
         this.gender = gender;
         this.rating = rating;
         this.reviewText = reviewText;
+        this.isActive = isActive;
+        CreatedDate = createdDate;
+        this.createdBy = createdBy;
+        ModifiedBy = modifiedBy;
+        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -99,17 +117,44 @@ public class Feedback {
         this.reviewText = reviewText;
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Feedback{");
-        sb.append("id=").append(id);
-        sb.append(", fullname='").append(fullname).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", mobile='").append(mobile).append('\'');
-        sb.append(", gender=").append(gender);
-        sb.append(", rating=").append(rating);
-        sb.append(", reviewText='").append(reviewText).append('\'');
-        sb.append('}');
-        return sb.toString();
+    public enumActive getIsActive() {
+        return isActive;
     }
+
+    public void setIsActive(enumActive isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        CreatedDate = createdDate;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<User> getModifiedBy() {
+        return ModifiedBy;
+    }
+
+    public void setModifiedBy(List<User> modifiedBy) {
+        ModifiedBy = modifiedBy;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return LastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        LastModifiedDate = lastModifiedDate;
+    }
+
 }

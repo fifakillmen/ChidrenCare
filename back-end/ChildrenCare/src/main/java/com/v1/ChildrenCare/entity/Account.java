@@ -2,7 +2,6 @@ package com.v1.ChildrenCare.entity;
 
 import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.util.List;
