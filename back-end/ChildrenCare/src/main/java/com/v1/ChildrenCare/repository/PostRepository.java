@@ -14,9 +14,7 @@ import java.time.LocalDate;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("SELECT p FROM Post p WHERE " +
-            "(:title IS NULL OR LOWER(p.title) LIKE %:title%) " +
-            "AND (:authorId IS NULL OR p.user.id = :authorId)")
+    @Query("SELECT p FROM Post p ")
     Page<Post> searchPosts(@Param("title") String title,
                            @Param("categoryId") Long categoryId,
                            @Param("authorId") Long authorId,
