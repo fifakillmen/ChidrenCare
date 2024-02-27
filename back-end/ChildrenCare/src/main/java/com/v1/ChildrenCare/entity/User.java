@@ -38,15 +38,14 @@ public class User {
     @JoinColumn(name = "created_by", updatable = false)
     private User createdBy;
 
-    @OneToMany
-    private List<User> ModifiedBy ;
+    private Long ModifiedBy_UserId ;
     @org.springframework.data.annotation.LastModifiedDate
     private LocalDate LastModifiedDate;
     //-------------------
     public User() {
     }
 
-    public User(Long id, String username, String firstName, String lastName, LocalDate dob, String phone, String address, String avartaLink, String avatarFileName, enumGender gender, Account account, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public User(Long id, String username, String firstName, String lastName, LocalDate dob, String phone, String address, String avartaLink, String avatarFileName, enumGender gender, Account account, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -61,7 +60,7 @@ public class User {
         this.isActive = isActive;
         CreatedDate = createdDate;
         this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
+        ModifiedBy_UserId = modifiedBy_UserId;
         LastModifiedDate = lastModifiedDate;
     }
 
@@ -177,12 +176,12 @@ public class User {
         this.createdBy = createdBy;
     }
 
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
+    public Long getModifiedBy_UserId() {
+        return ModifiedBy_UserId;
     }
 
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
+    public void setModifiedBy_UserId(Long modifiedBy_UserId) {
+        ModifiedBy_UserId = modifiedBy_UserId;
     }
 
     public LocalDate getLastModifiedDate() {
@@ -195,24 +194,23 @@ public class User {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("User{");
-        sb.append("id=").append(id);
-        sb.append(", username='").append(username).append('\'');
-        sb.append(", firstName='").append(firstName).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", dob=").append(dob);
-        sb.append(", phone='").append(phone).append('\'');
-        sb.append(", address='").append(address).append('\'');
-        sb.append(", avartaLink='").append(avartaLink).append('\'');
-        sb.append(", avatarFileName='").append(avatarFileName).append('\'');
-        sb.append(", gender=").append(gender);
-        sb.append(", account=").append(account);
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dob=" + dob +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", avartaLink='" + avartaLink + '\'' +
+                ", avatarFileName='" + avatarFileName + '\'' +
+                ", gender=" + gender +
+                ", account=" + account +
+                ", isActive=" + isActive +
+                ", CreatedDate=" + CreatedDate +
+                ", createdBy=" + createdBy +
+                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
+                ", LastModifiedDate=" + LastModifiedDate +
+                '}';
     }
 }

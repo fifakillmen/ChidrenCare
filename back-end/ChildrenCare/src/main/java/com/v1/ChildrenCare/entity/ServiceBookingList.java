@@ -47,8 +47,7 @@ public class ServiceBookingList {
 @JoinColumn(name = "created_by", updatable = false)
 private User createdBy;
 
-    @OneToMany
-    private List<User> ModifiedBy ;
+    private Long ModifiedBy_UserId ;
     @org.springframework.data.annotation.LastModifiedDate
     private LocalDate LastModifiedDate;
     //-------------------
@@ -56,7 +55,7 @@ private User createdBy;
     public ServiceBookingList() {
     }
 
-    public ServiceBookingList(Long id, User customer, Service serviceId, Children childID, User mod, enumStatus status, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public ServiceBookingList(Long id, User customer, Service serviceId, Children childID, User mod, enumStatus status, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
         this.id = id;
         this.customer = customer;
         this.serviceId = serviceId;
@@ -66,7 +65,7 @@ private User createdBy;
         this.isActive = isActive;
         CreatedDate = createdDate;
         this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
+        ModifiedBy_UserId = modifiedBy_UserId;
         LastModifiedDate = lastModifiedDate;
     }
 
@@ -142,12 +141,12 @@ private User createdBy;
         this.createdBy = createdBy;
     }
 
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
+    public Long getModifiedBy_UserId() {
+        return ModifiedBy_UserId;
     }
 
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
+    public void setModifiedBy_UserId(Long modifiedBy_UserId) {
+        ModifiedBy_UserId = modifiedBy_UserId;
     }
 
     public LocalDate getLastModifiedDate() {
@@ -160,19 +159,18 @@ private User createdBy;
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("ServiceBookingList{");
-        sb.append("id=").append(id);
-        sb.append(", customer=").append(customer);
-        sb.append(", serviceId=").append(serviceId);
-        sb.append(", childID=").append(childID);
-        sb.append(", mod=").append(mod);
-        sb.append(", status=").append(status);
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
+        return "ServiceBookingList{" +
+                "id=" + id +
+                ", customer=" + customer +
+                ", serviceId=" + serviceId +
+                ", childID=" + childID +
+                ", mod=" + mod +
+                ", status=" + status +
+                ", isActive=" + isActive +
+                ", CreatedDate=" + CreatedDate +
+                ", createdBy=" + createdBy +
+                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
+                ", LastModifiedDate=" + LastModifiedDate +
+                '}';
     }
 }

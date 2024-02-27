@@ -40,14 +40,13 @@ public class Feedback {
     private User createdBy;
     @Column(nullable = false)
     private String Service;
-    @OneToMany
-    private List<User> ModifiedBy ;
+    private Long ModifiedBy_UserId ;
     @org.springframework.data.annotation.LastModifiedDate
     private LocalDateTime LastModifiedDate;
     public Feedback() {
     }
 
-    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText, enumActive isActive, LocalDateTime createdDate, User createdBy, String service, List<User> modifiedBy, LocalDateTime lastModifiedDate) {
+    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText, enumActive isActive, LocalDateTime createdDate, User createdBy, String service, Long modifiedBy_UserId, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -59,7 +58,7 @@ public class Feedback {
         CreatedDate = createdDate;
         this.createdBy = createdBy;
         Service = service;
-        ModifiedBy = modifiedBy;
+        ModifiedBy_UserId = modifiedBy_UserId;
         LastModifiedDate = lastModifiedDate;
     }
 
@@ -151,12 +150,12 @@ public class Feedback {
         Service = service;
     }
 
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
+    public Long getModifiedBy_UserId() {
+        return ModifiedBy_UserId;
     }
 
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
+    public void setModifiedBy_UserId(Long modifiedBy_UserId) {
+        ModifiedBy_UserId = modifiedBy_UserId;
     }
 
     public LocalDateTime getLastModifiedDate() {
@@ -165,5 +164,24 @@ public class Feedback {
 
     public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         LastModifiedDate = lastModifiedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "id=" + id +
+                ", fullname='" + fullname + '\'' +
+                ", email='" + email + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", gender=" + gender +
+                ", rating=" + rating +
+                ", reviewText='" + reviewText + '\'' +
+                ", isActive=" + isActive +
+                ", CreatedDate=" + CreatedDate +
+                ", createdBy=" + createdBy +
+                ", Service='" + Service + '\'' +
+                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
+                ", LastModifiedDate=" + LastModifiedDate +
+                '}';
     }
 }

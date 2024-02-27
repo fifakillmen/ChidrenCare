@@ -33,15 +33,14 @@ public class Account {
     @JoinColumn(name = "created_by", updatable = false)
     private User createdBy;
 
-    @OneToMany
-    private List<User> ModifiedBy ;
+    private Long ModifiedBy_UserId ;
     @org.springframework.data.annotation.LastModifiedDate
     private LocalDate LastModifiedDate;
     //-------------------
     public Account() {
     }
 
-    public Account(Long id, String email, String password, String accessToken, boolean isAccessTokenActive, String resetPasswordToken, List<Role> role, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public Account(Long id, String email, String password, String accessToken, Boolean isAccessTokenActive, String resetPasswordToken, List<Role> role, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -52,7 +51,7 @@ public class Account {
         this.isActive = isActive;
         CreatedDate = createdDate;
         this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
+        ModifiedBy_UserId = modifiedBy_UserId;
         LastModifiedDate = lastModifiedDate;
     }
 
@@ -88,11 +87,11 @@ public class Account {
         this.accessToken = accessToken;
     }
 
-    public boolean isAccessTokenActive() {
+    public Boolean getAccessTokenActive() {
         return isAccessTokenActive;
     }
 
-    public void setAccessTokenActive(boolean accessTokenActive) {
+    public void setAccessTokenActive(Boolean accessTokenActive) {
         isAccessTokenActive = accessTokenActive;
     }
 
@@ -136,12 +135,12 @@ public class Account {
         this.createdBy = createdBy;
     }
 
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
+    public Long getModifiedBy_UserId() {
+        return ModifiedBy_UserId;
     }
 
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
+    public void setModifiedBy_UserId(Long modifiedBy_UserId) {
+        ModifiedBy_UserId = modifiedBy_UserId;
     }
 
     public LocalDate getLastModifiedDate() {
@@ -154,20 +153,21 @@ public class Account {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Account{");
-        sb.append("id=").append(id);
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", accessToken='").append(accessToken).append('\'');
-        sb.append(", isAccessTokenActive=").append(isAccessTokenActive);
-        sb.append(", resetPasswordToken='").append(resetPasswordToken).append('\'');
-        sb.append(", role=").append(role);
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
+        return "Account{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", isAccessTokenActive=" + isAccessTokenActive +
+                ", resetPasswordToken='" + resetPasswordToken + '\'' +
+                ", role=" + role +
+                ", isActive=" + isActive +
+                ", CreatedDate=" + CreatedDate +
+                ", createdBy=" + createdBy +
+                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
+                ", LastModifiedDate=" + LastModifiedDate +
+                '}';
     }
 }
+//@OneToMany
+//    private List<User> ModifiedBy ;

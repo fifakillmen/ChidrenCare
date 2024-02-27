@@ -35,12 +35,12 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @Enumerated(EnumType.STRING)
-    private enumActive ACTIVE;
+    private enumActive isActive;
 
     public Post() {
     }
 
-    public Post(Long id, String title, String author, String content, Category category, LocalDate createdDate, LocalDate updatedDate, String imageLink, String avatarFileName, List<Comment> comments, User user, enumActive ACTIVE) {
+    public Post(Long id, String title, String author, String content, Category category, LocalDate createdDate, LocalDate updatedDate, String imageLink, String avatarFileName, List<Comment> comments, User user, enumActive isActive) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -52,7 +52,7 @@ public class Post {
         this.avatarFileName = avatarFileName;
         this.comments = comments;
         this.user = user;
-        this.ACTIVE = ACTIVE;
+        this.isActive = isActive;
     }
 
     public Long getId() {
@@ -143,11 +143,29 @@ public class Post {
         this.user = user;
     }
 
-    public enumActive getACTIVE() {
-        return ACTIVE;
+    public enumActive getIsActive() {
+        return isActive;
     }
 
-    public void setACTIVE(enumActive ACTIVE) {
-        this.ACTIVE = ACTIVE;
+    public void setIsActive(enumActive isActive) {
+        this.isActive = isActive;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", content='" + content + '\'' +
+                ", category=" + category +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                ", imageLink='" + imageLink + '\'' +
+                ", avatarFileName='" + avatarFileName + '\'' +
+                ", comments=" + comments +
+                ", user=" + user +
+                ", isActive=" + isActive +
+                '}';
     }
 }
