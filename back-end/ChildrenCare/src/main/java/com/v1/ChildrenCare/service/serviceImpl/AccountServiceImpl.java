@@ -104,10 +104,7 @@ public class AccountServiceImpl implements AccountService {
                 if (modify_By_UserId!=0){
                     User mdU= userRepository.findUserById(modify_By_UserId);
                     if(mdU!=null){
-                        if(mdU.getModifiedBy()==null){
-                            account.setModifiedBy(new ArrayList<User>());
-                        }
-                        account.getModifiedBy().add(mdU);
+                        account.setModifiedBy_UserId(mdU.getId());
                     }
                 }
                 return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,accountRepository.save(account)));

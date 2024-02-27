@@ -59,14 +59,10 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long Modified_By_UserId, Long UserId, String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
         User user = userRepository.findUserById(UserId);
         if (user != null) {
-            User ModifiedBy = userRepository.findUserById(Modified_By_UserId);
-            if (Modified_By_UserId != null) {
-                if (user.getModifiedBy() != null) {
-                    user.getModifiedBy().add(ModifiedBy);
-                } else {
-                    List<User> ModifiedBys = new ArrayList<>();
-                    ModifiedBys.add(ModifiedBy);
-                    user.setModifiedBy(ModifiedBys);
+            if (Modified_By_UserId != 0L) {
+                User ModifiedBy = userRepository.findUserById(Modified_By_UserId);
+                if (ModifiedBy.getId()!=0){
+                    user.setModifiedBy_UserId(Modified_By_UserId);
                 }
             }
             if (username != null) {
