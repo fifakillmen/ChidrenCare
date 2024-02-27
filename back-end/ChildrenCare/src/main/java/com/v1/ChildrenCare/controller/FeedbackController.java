@@ -23,13 +23,13 @@ public class FeedbackController {
         return feedbackService.createAndEdit(request);
     }
 
-    @GetMapping("/delete/{id}")
-    public ResponseEntity<Result> deleteFeedback(@PathVariable("id") Long id) {
+    @GetMapping("/delete")
+    public ResponseEntity<Result> deleteFeedback(@RequestParam("id") Long id) {
         return feedbackService.delete(id);
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<Result> detailFeedback(@PathVariable("id") Long id) {
+    @GetMapping("/detail")
+    public ResponseEntity<Result> detailFeedback(@RequestParam("id") Long id) {
         return feedbackService.detail(id);
     }
 }

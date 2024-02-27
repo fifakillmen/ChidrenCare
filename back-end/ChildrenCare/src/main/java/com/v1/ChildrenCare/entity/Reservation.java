@@ -24,32 +24,22 @@ public class Reservation {
     // ------------------
     @Enumerated(EnumType.STRING)
     private enumActive isActive;
-    @org.springframework.data.annotation.CreatedDate
-    @Column(updatable = false)
+
     private LocalDate CreatedDate;
+    private LocalDate UpdatedDate;
 
-    @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
-
-    @OneToMany
-    private List<User> ModifiedBy ;
-    @org.springframework.data.annotation.LastModifiedDate
-    private LocalDate LastModifiedDate;
     //-------------------
     public Reservation() {
     }
 
-    public Reservation(Long id, User user, Double totalPrice, String notes, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public Reservation(Long id, User user, Double totalPrice, String notes, enumActive isActive, LocalDate createdDate, LocalDate updatedDate) {
         this.id = id;
         this.user = user;
         this.totalPrice = totalPrice;
         this.notes = notes;
         this.isActive = isActive;
         CreatedDate = createdDate;
-        this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
-        LastModifiedDate = lastModifiedDate;
+        UpdatedDate = updatedDate;
     }
 
     public Long getId() {
@@ -100,43 +90,11 @@ private User createdBy;
         CreatedDate = createdDate;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public LocalDate getUpdatedDate() {
+        return UpdatedDate;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
-    }
-
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
-    }
-
-    public LocalDate getLastModifiedDate() {
-        return LastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDate lastModifiedDate) {
-        LastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Reservation{");
-        sb.append("id=").append(id);
-        sb.append(", user=").append(user);
-        sb.append(", totalPrice=").append(totalPrice);
-        sb.append(", notes='").append(notes).append('\'');
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
+    public void setUpdatedDate(LocalDate updatedDate) {
+        UpdatedDate = updatedDate;
     }
 }

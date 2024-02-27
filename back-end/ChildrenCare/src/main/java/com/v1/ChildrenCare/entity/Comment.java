@@ -18,7 +18,7 @@ public class Comment {
     private Long id;
 
     @Column(length = 2000)
-    private String commentText;
+    private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -31,34 +31,22 @@ public class Comment {
     // ------------------
     @Enumerated(EnumType.STRING)
     private enumActive isActive;
-    @org.springframework.data.annotation.CreatedDate
-    @Column(updatable = false)
+
     private LocalDate CreatedDate;
 
-    @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
-
-    @OneToMany
-    private List<User> ModifiedBy ;
-    @org.springframework.data.annotation.LastModifiedDate
-    private LocalDate LastModifiedDate;
     //-------------------
 
 
     public Comment() {
     }
 
-    public Comment(Long id, String commentText, Post post, User user, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public Comment(Long id, String text, Post post, User user, enumActive isActive, LocalDate createdDate) {
         this.id = id;
-        this.commentText = commentText;
+        this.text = text;
         this.post = post;
         this.user = user;
         this.isActive = isActive;
         CreatedDate = createdDate;
-        this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
-        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -69,12 +57,12 @@ private User createdBy;
         this.id = id;
     }
 
-    public String getCommentText() {
-        return commentText;
+    public String getText() {
+        return text;
     }
 
-    public void setCommentText(String commentText) {
-        this.commentText = commentText;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Post getPost() {
@@ -107,45 +95,5 @@ private User createdBy;
 
     public void setCreatedDate(LocalDate createdDate) {
         CreatedDate = createdDate;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
-    }
-
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
-    }
-
-    public LocalDate getLastModifiedDate() {
-        return LastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDate lastModifiedDate) {
-        LastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Comment{");
-        sb.append("id=").append(id);
-        sb.append(", commentText='").append(commentText).append('\'');
-        sb.append(", post=").append(post);
-        sb.append(", user=").append(user);
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
     }
 }

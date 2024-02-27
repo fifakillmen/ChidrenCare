@@ -18,31 +18,20 @@ public class Category {
     // ------------------
     @Enumerated(EnumType.STRING)
     private enumActive isActive;
-    @org.springframework.data.annotation.CreatedDate
-    @Column(updatable = false)
+
     private LocalDate CreatedDate;
-
-    @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
-
-    @OneToMany
-    private List<User> ModifiedBy ;
-    @org.springframework.data.annotation.LastModifiedDate
-    private LocalDate LastModifiedDate;
+    private LocalDate UpdatedDate;
     //-------------------
 
     public Category() {
     }
 
-    public Category(Long id, String name, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public Category(Long id, String name, enumActive isActive, LocalDate createdDate, LocalDate updatedDate) {
         this.id = id;
         this.name = name;
         this.isActive = isActive;
         CreatedDate = createdDate;
-        this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
-        LastModifiedDate = lastModifiedDate;
+        UpdatedDate = updatedDate;
     }
 
     public Long getId() {
@@ -77,41 +66,11 @@ private User createdBy;
         CreatedDate = createdDate;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public LocalDate getUpdatedDate() {
+        return UpdatedDate;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
-    }
-
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
-    }
-
-    public LocalDate getLastModifiedDate() {
-        return LastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDate lastModifiedDate) {
-        LastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Category{");
-        sb.append("id=").append(id);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
+    public void setUpdatedDate(LocalDate updatedDate) {
+        UpdatedDate = updatedDate;
     }
 }

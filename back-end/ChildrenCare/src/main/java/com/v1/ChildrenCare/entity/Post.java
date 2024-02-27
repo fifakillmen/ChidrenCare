@@ -4,6 +4,7 @@ package com.v1.ChildrenCare.entity;
 import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +16,20 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+    @Column(nullable = false)
     private String title;
-
+    @Column(nullable = false)
+    private String author;
     @Column(length = 2000)
     private String content;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    Category category;
+    private LocalDate createdDate;
+    private LocalDate updatedDate;
     private String imageLink;
+    private String avatarFileName;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,6 +38,21 @@ public class Post {
     private enumActive ACTIVE;
 
     public Post() {
+    }
+
+    public Post(Long id, String title, String author, String content, Category category, LocalDate createdDate, LocalDate updatedDate, String imageLink, String avatarFileName, List<Comment> comments, User user, enumActive ACTIVE) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.content = content;
+        this.category = category;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.imageLink = imageLink;
+        this.avatarFileName = avatarFileName;
+        this.comments = comments;
+        this.user = user;
+        this.ACTIVE = ACTIVE;
     }
 
     public Long getId() {
@@ -48,6 +71,14 @@ public class Post {
         this.title = title;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public String getContent() {
         return content;
     }
@@ -56,19 +87,27 @@ public class Post {
         this.content = content;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getUpdatedDate() {
+    public LocalDate getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setUpdatedDate(LocalDateTime updatedDate) {
+    public void setUpdatedDate(LocalDate updatedDate) {
         this.updatedDate = updatedDate;
     }
 
@@ -78,6 +117,14 @@ public class Post {
 
     public void setImageLink(String imageLink) {
         this.imageLink = imageLink;
+    }
+
+    public String getAvatarFileName() {
+        return avatarFileName;
+    }
+
+    public void setAvatarFileName(String avatarFileName) {
+        this.avatarFileName = avatarFileName;
     }
 
     public List<Comment> getComments() {
@@ -96,19 +143,11 @@ public class Post {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Post{");
-        sb.append("id=").append(id);
-        sb.append(", title='").append(title).append('\'');
-        sb.append(", content='").append(content).append('\'');
-        sb.append(", createdDate=").append(createdDate);
-        sb.append(", updatedDate=").append(updatedDate);
-        sb.append(", imageLink='").append(imageLink).append('\'');
-        sb.append(", comments=").append(comments);
-        sb.append(", user=").append(user);
-        sb.append(", ACTIVE=").append(ACTIVE);
-        sb.append('}');
-        return sb.toString();
+    public enumActive getACTIVE() {
+        return ACTIVE;
+    }
+
+    public void setACTIVE(enumActive ACTIVE) {
+        this.ACTIVE = ACTIVE;
     }
 }

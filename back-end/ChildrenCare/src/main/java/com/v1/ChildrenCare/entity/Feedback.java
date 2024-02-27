@@ -38,7 +38,8 @@ public class Feedback {
     @ManyToOne
     @JoinColumn(name = "created_by", updatable = false)
     private User createdBy;
-
+    @Column(nullable = false)
+    private String Service;
     @OneToMany
     private List<User> ModifiedBy ;
     @org.springframework.data.annotation.LastModifiedDate
@@ -46,7 +47,7 @@ public class Feedback {
     public Feedback() {
     }
 
-    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText, enumActive isActive, LocalDateTime createdDate, User createdBy, List<User> modifiedBy, LocalDateTime lastModifiedDate) {
+    public Feedback(Long id, String fullname, String email, String mobile, enumGender gender, Integer rating, String reviewText, enumActive isActive, LocalDateTime createdDate, User createdBy, String service, List<User> modifiedBy, LocalDateTime lastModifiedDate) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -57,6 +58,7 @@ public class Feedback {
         this.isActive = isActive;
         CreatedDate = createdDate;
         this.createdBy = createdBy;
+        Service = service;
         ModifiedBy = modifiedBy;
         LastModifiedDate = lastModifiedDate;
     }
@@ -141,6 +143,14 @@ public class Feedback {
         this.createdBy = createdBy;
     }
 
+    public String getService() {
+        return Service;
+    }
+
+    public void setService(String service) {
+        Service = service;
+    }
+
     public List<User> getModifiedBy() {
         return ModifiedBy;
     }
@@ -156,5 +166,4 @@ public class Feedback {
     public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         LastModifiedDate = lastModifiedDate;
     }
-
 }

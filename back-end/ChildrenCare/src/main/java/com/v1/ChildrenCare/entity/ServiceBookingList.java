@@ -25,7 +25,7 @@ public class ServiceBookingList {
 
     @ManyToOne
     @JoinColumn(name = "child_id_id")
-    private  ChildInformation childID;
+    private Children childID;
 
     @ManyToOne
     @JoinColumn(name = "mod_id")
@@ -56,7 +56,7 @@ private User createdBy;
     public ServiceBookingList() {
     }
 
-    public ServiceBookingList(Long id, User customer, Service serviceId, ChildInformation childID, User mod, enumStatus status, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public ServiceBookingList(Long id, User customer, Service serviceId, Children childID, User mod, enumStatus status, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
         this.id = id;
         this.customer = customer;
         this.serviceId = serviceId;
@@ -94,11 +94,11 @@ private User createdBy;
         this.serviceId = serviceId;
     }
 
-    public ChildInformation getChildID() {
+    public Children getChildID() {
         return childID;
     }
 
-    public void setChildID(ChildInformation childID) {
+    public void setChildID(Children childID) {
         this.childID = childID;
     }
 

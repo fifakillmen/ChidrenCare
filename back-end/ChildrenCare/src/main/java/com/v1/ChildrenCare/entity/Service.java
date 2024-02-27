@@ -3,6 +3,7 @@ package com.v1.ChildrenCare.entity;
 
 import com.v1.ChildrenCare.enumPack.enumActive;
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -17,6 +18,7 @@ public class Service {
 
     private String serviceTitle;
     private String servicePrice;
+    private String salePrice;
 
     @Column(length = 2000)
     private String serviceDetail;
@@ -28,33 +30,30 @@ public class Service {
     // ------------------
     @Enumerated(EnumType.STRING)
     private enumActive isActive;
-    @org.springframework.data.annotation.CreatedDate
-    @Column(updatable = false)
+
     private LocalDate CreatedDate;
+    private LocalDate UpdatedDate;
 
     @ManyToOne
 @JoinColumn(name = "created_by", updatable = false)
 private User createdBy;
 
-    @OneToMany
-    private List<User> ModifiedBy ;
-    @org.springframework.data.annotation.LastModifiedDate
-    private LocalDate LastModifiedDate;
+
     //-------------------
     public Service() {
     }
 
-    public Service(Long id, String serviceTitle, String servicePrice, String serviceDetail, Category category, enumActive isActive, LocalDate createdDate, User createdBy, List<User> modifiedBy, LocalDate lastModifiedDate) {
+    public Service(Long id, String serviceTitle, String servicePrice, String salePrice, String serviceDetail, Category category, enumActive isActive, LocalDate createdDate, LocalDate updatedDate, User createdBy) {
         this.id = id;
         this.serviceTitle = serviceTitle;
         this.servicePrice = servicePrice;
+        this.salePrice = salePrice;
         this.serviceDetail = serviceDetail;
         this.category = category;
         this.isActive = isActive;
         CreatedDate = createdDate;
+        UpdatedDate = updatedDate;
         this.createdBy = createdBy;
-        ModifiedBy = modifiedBy;
-        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -79,6 +78,14 @@ private User createdBy;
 
     public void setServicePrice(String servicePrice) {
         this.servicePrice = servicePrice;
+    }
+
+    public String getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(String salePrice) {
+        this.salePrice = salePrice;
     }
 
     public String getServiceDetail() {
@@ -113,44 +120,19 @@ private User createdBy;
         CreatedDate = createdDate;
     }
 
+    public LocalDate getUpdatedDate() {
+        return UpdatedDate;
+    }
+
+    public void setUpdatedDate(LocalDate updatedDate) {
+        UpdatedDate = updatedDate;
+    }
+
     public User getCreatedBy() {
         return createdBy;
     }
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public List<User> getModifiedBy() {
-        return ModifiedBy;
-    }
-
-    public void setModifiedBy(List<User> modifiedBy) {
-        ModifiedBy = modifiedBy;
-    }
-
-    public LocalDate getLastModifiedDate() {
-        return LastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDate lastModifiedDate) {
-        LastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Service{");
-        sb.append("id=").append(id);
-        sb.append(", serviceTitle='").append(serviceTitle).append('\'');
-        sb.append(", servicePrice='").append(servicePrice).append('\'');
-        sb.append(", serviceDetail='").append(serviceDetail).append('\'');
-        sb.append(", category=").append(category);
-        sb.append(", isActive=").append(isActive);
-        sb.append(", CreatedDate=").append(CreatedDate);
-        sb.append(", createdBy=").append(createdBy);
-        sb.append(", ModifiedBy=").append(ModifiedBy);
-        sb.append(", LastModifiedDate=").append(LastModifiedDate);
-        sb.append('}');
-        return sb.toString();
     }
 }
