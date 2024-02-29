@@ -58,12 +58,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity<Result> createAccount(Long Created_By_UserId, String email, List<enumRole> roles) {
+    public ResponseEntity<Result> createAccount(Long Created_By_UserId, String email,String password, List<enumRole> roles) {
         try{
             if (accountRepository.findByEmail(email) == null) {
                 Account account = new Account();
                 account.setEmail(email);
-                account.setPassword(passwordEncoder.encode(generateRandomPassword()));
+                account.setPassword(passwordEncoder.encode(password));
                 account.setIsActive(enumActive.INACTIVE);
                 account.setAccessTokenActive(false);
                 account = uRole(roles, account);

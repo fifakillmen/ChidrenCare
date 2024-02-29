@@ -102,12 +102,6 @@
 				<scope>provided</scope>
 			</dependency>
 		<!--Lombook-->
-<!--Brcypt-->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
-		</dependency>
-<!--Brcypt-->
 <!--Mail trap -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -150,6 +144,37 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!--Security-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+			<version>6.1.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+<!--JWT-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+<!--JWT-->
+<!--Security-->
+<!--Brcypt-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.12.3</version>
+		</dependency>
+		<!--Brcypt-->
 	</dependencies>
 
 	<build>

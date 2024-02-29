@@ -31,6 +31,7 @@ public class AccountRestController {
     @PostMapping("/addAccount")
     public ResponseEntity<Result> addAccount(@RequestBody Map<String, Object> requestBody) {
         String email = (String) requestBody.get("email");
+        String password = (String) requestBody.get("password");
         List<String> roles = (List<String>) requestBody.get("lsRole");
         // lấy user từ token login nếu chưa có user nào trong token thì set Modified_By_UserId =0
         Long Created_By_UserId= 0L;
@@ -38,7 +39,7 @@ public class AccountRestController {
         for (String r :roles){
             roleList.add(enumRole.valueOf(r));
         }
-        return accountService.createAccount(Created_By_UserId,email, roleList);
+        return accountService.createAccount(Created_By_UserId,email, password,roleList);
     }
     //Page<Account>
     @PostMapping("/searchAccount")

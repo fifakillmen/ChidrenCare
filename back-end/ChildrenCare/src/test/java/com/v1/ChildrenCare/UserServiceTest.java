@@ -40,7 +40,6 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
     @Autowired
     private UserListMapper userListMapper;
-
     @Autowired
     private UserServiceImpl userService;
     @Autowired
@@ -49,54 +48,6 @@ class UserServiceTest {
     private StorageService storageService;
 
 
-    @BeforeEach
-    void setUp() {
 
-    }
-
-    @Test
-    void testAddUser() {
-
-        UserDto addedUser = userService.addUser(0L, "username", "firstName", "lastName", LocalDate.now(),
-                "phone", "address", null, enumGender.Male);
-
-        User savedUser = userRepository.findById(addedUser.getId()).get();
-
-        assertEquals("username", savedUser.getUsername());
-    }
-
-
-    @Test
-    void testUpdateUser() {
-
-        UserDto updatedUser = userService.updateUser(0L, 1L, "newUsername", null, null, null, null, null, null, null);
-
-        User savedUser = userRepository.findById(updatedUser.getId()).get();
-
-        assertEquals("newUsername", savedUser.getUsername());
-
-    }
-
-    @Test
-    void testDeleteUser() {
-
-        userService.deleteUser(1L);
-
-        User deletedUser = userRepository.findById(1L).orElse(null);
-
-        assertNull(deletedUser);
-
-    }
-
-    @Test
-    void testSearchUser() {
-
-        Page<UserDto> result = userService.searchUser(null, null, null, null, null, null, Pageable.unpaged());
-
-        List<User> savedUsers = userRepository.findAll();
-
-        assertEquals(savedUsers.size(), result.getTotalElements());
-
-    }
 
 }

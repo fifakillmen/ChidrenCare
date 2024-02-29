@@ -29,7 +29,7 @@ public class Account {
     @Column(updatable = false)
     private LocalDate CreatedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", updatable = false)
     private User createdBy;
 
