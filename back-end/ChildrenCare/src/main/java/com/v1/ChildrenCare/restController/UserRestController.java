@@ -1,5 +1,6 @@
 package com.v1.ChildrenCare.restController;
 
+import com.v1.ChildrenCare.constaint.Result;
 import com.v1.ChildrenCare.dto.UserDto;
 import com.v1.ChildrenCare.enumPack.enumGender;
 import com.v1.ChildrenCare.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +28,8 @@ public class UserRestController {
     }
 
     @PostMapping("/addUser")
-    public synchronized UserDto addUser(
+    public synchronized ResponseEntity<Result> addUser(
+            @RequestParam(name = "email") String email,
             @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "lastName") String lastName,
@@ -38,11 +41,11 @@ public class UserRestController {
         // lấy user từ token login nếu chưa có user nào trong login thì set Create_By_UserId =0
         Long Create_By_UserId= 0L;
         LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        return userService.addUser(Create_By_UserId, username,firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
+        return userService.addUser(email,Create_By_UserId, username,firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
     }
 
     @PostMapping("/searchUser")
-    public Page<UserDto> searchUser(
+    public  ResponseEntity<Result> searchUser(
             @RequestParam(name = "UserId",required = false) Long UserId,
             @RequestParam(name = "username",required = false) String username,
             @RequestParam(name = "firstName",required = false) String firstName,
@@ -55,14 +58,20 @@ public class UserRestController {
         if (targetPageNumber < 0) {
             return null;
         }
-        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        LocalDate dob;
+        if(dobString != null){
+             dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        }else {
+            dob = null;
+        }
 
         Pageable pageable = PageRequest.of(targetPageNumber, 10);
         return userService.searchUser(UserId,username,firstName,lastName,email,dob,pageable);
     }
 
     @PutMapping("/updateUser")
-    public synchronized UserDto updateUser(
+    public synchronized  ResponseEntity<Result> updateUser(
             @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "UserId") Long UserId,
@@ -80,7 +89,8 @@ public class UserRestController {
     }
 
     @DeleteMapping("/deleteUser")
-    public synchronized boolean deleteUser(@RequestParam(name = "UserId") Long UserId) {
+    public synchronized  ResponseEntity<Result> deleteUser(@RequestParam(name = "UserId") Long UserId) {
         return userService.deleteUser(UserId);
     }
+
 }

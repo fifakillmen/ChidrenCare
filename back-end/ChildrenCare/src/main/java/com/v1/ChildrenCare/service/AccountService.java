@@ -13,7 +13,7 @@ import java.util.List;
 public interface AccountService {
     ResponseEntity<Result> searchEmailNoConnected(String email);
 
-    ResponseEntity<Result> createAccount(Long Created_By_UserId,String email, List<enumRole> roles);
+    ResponseEntity<Result> createAccount(Long Created_By_UserId,String email,String password, List<enumRole> roles);
 
     ResponseEntity<Result> updateAccount(Long modify_By_UserId,String email, String password, List<enumRole> roles);
 
