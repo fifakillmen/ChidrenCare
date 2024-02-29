@@ -23,10 +23,7 @@ public class Children {
     String note;
     @ManyToOne(fetch = FetchType.LAZY)
     User user;
-    @Column(name = "child_information_id")
-    private Long childInformationId;
 
-    // ------------------
     @Enumerated(EnumType.STRING)
     private enumActive isActive = enumActive.ACTIVE;
     private LocalDate CreatedDate;
@@ -36,7 +33,7 @@ public class Children {
     public Children() {
     }
 
-    public Children(Long id, String firstName, String lastName, LocalDate dob, int age, String gender, String note, User user, Long childInformationId, enumActive isActive, LocalDate createdDate, LocalDate updatedDate) {
+    public Children(Long id, String firstName, String lastName, LocalDate dob, int age, String gender, String note, User user, enumActive isActive, LocalDate createdDate, LocalDate updatedDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,7 +42,6 @@ public class Children {
         this.gender = gender;
         this.note = note;
         this.user = user;
-        this.childInformationId = childInformationId;
         this.isActive = isActive;
         CreatedDate = createdDate;
         UpdatedDate = updatedDate;
@@ -113,14 +109,6 @@ public class Children {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Long getChildInformationId() {
-        return childInformationId;
-    }
-
-    public void setChildInformationId(Long childInformationId) {
-        this.childInformationId = childInformationId;
     }
 
     public enumActive getIsActive() {

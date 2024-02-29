@@ -9,7 +9,8 @@ public class CreateFeedbackRequest {
     private String fullname;
     private String mobile;
     private String gender;
-    private String isactive;
+    private String isActive;
     private Integer rating;
     private String reviewText;
+    private String service;
 }

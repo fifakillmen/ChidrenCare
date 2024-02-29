@@ -56,8 +56,10 @@ public class FeedbackService {
             if (feedback == null) {
                 throw new NullPointerException("Not found feedback");
             }
+            feedback.setIsActive(enumActive.valueOf(request.getIsActive()));
         } else {
             feedback = new Feedback();
+            feedback.setIsActive(enumActive.valueOf(request.getIsActive()));
         }
         feedback.setCreatedDate(LocalDateTime.now());
         feedback.setRating(request.getRating());
@@ -66,7 +68,7 @@ public class FeedbackService {
         feedback.setMobile(request.getMobile());
         feedback.setReviewText(request.getReviewText());
         feedback.setGender(enumGender.valueOf(request.getGender()));
-        feedback.setIsActive(enumActive.ACTIVE);
+        feedback.setService(request.getService());
         feedbackRepository.save(feedback);
     }
 

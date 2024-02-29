@@ -101,7 +101,8 @@ public class SecurityConfig {
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/resetPassword").permitAll()
-
+                        .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
+//                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

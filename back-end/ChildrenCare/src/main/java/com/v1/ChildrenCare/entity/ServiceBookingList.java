@@ -16,15 +16,11 @@ public class ServiceBookingList {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private User customer;
-
-    @ManyToOne
-    @JoinColumn(name = "service_id_id")
+    @JoinColumn(name = "service_id")
     private Service serviceId;
 
     @ManyToOne
-    @JoinColumn(name = "child_id_id")
+    @JoinColumn(name = "child_id")
     private Children childID;
 
     @ManyToOne
@@ -32,8 +28,6 @@ public class ServiceBookingList {
     private User mod;
     @Enumerated(EnumType.STRING)
     private enumStatus status;
-
-
 
 
     // ------------------
@@ -44,10 +38,10 @@ public class ServiceBookingList {
     private LocalDate CreatedDate;
 
     @ManyToOne
-@JoinColumn(name = "created_by", updatable = false)
-private User createdBy;
+    @JoinColumn(name = "created_by", updatable = false)
+    private User createdBy;
 
-    private Long ModifiedBy_UserId ;
+    private Long ModifiedBy_UserId;
     @org.springframework.data.annotation.LastModifiedDate
     private LocalDate LastModifiedDate;
     //-------------------
@@ -57,7 +51,6 @@ private User createdBy;
 
     public ServiceBookingList(Long id, User customer, Service serviceId, Children childID, User mod, enumStatus status, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
         this.id = id;
-        this.customer = customer;
         this.serviceId = serviceId;
         this.childID = childID;
         this.mod = mod;
@@ -75,14 +68,6 @@ private User createdBy;
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public User getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(User customer) {
-        this.customer = customer;
     }
 
     public Service getServiceId() {
@@ -157,20 +142,4 @@ private User createdBy;
         LastModifiedDate = lastModifiedDate;
     }
 
-    @Override
-    public String toString() {
-        return "ServiceBookingList{" +
-                "id=" + id +
-                ", customer=" + customer +
-                ", serviceId=" + serviceId +
-                ", childID=" + childID +
-                ", mod=" + mod +
-                ", status=" + status +
-                ", isActive=" + isActive +
-                ", CreatedDate=" + CreatedDate +
-                ", createdBy=" + createdBy +
-                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
-                ", LastModifiedDate=" + LastModifiedDate +
-                '}';
-    }
 }

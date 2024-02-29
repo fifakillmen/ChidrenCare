@@ -16,6 +16,9 @@ const Grid = lazy(() => import("../views/ui/Grid"));
 const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
+const Feedback = lazy(() => import("../views/Feedback"));
+const Children = lazy(() => import("../views/Children"));
+
 
 /*****Routes******/
 
@@ -35,6 +38,8 @@ const ThemeRoutes = [
       { path: "/table", exact: true, element: <Tables /> },
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
+      { path: "/feedback", exact: true, element: <Feedback />},
+      { path: "/children", exact: true, element: <Children />}
     ],
   },
 ];
