@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface PostService {
     List<PostDto> getAllPost(int page, int size, Long categoryId, Long authorId, String status, String search);
 
+    Post getPostById(Long postId);
+
     PostDto addPost(String createByUserId, String title, String content, MultipartFile imageFile);
 
     PostDto updatePost(Long modifiedByUserId, Long postId, String title, String content, MultipartFile imageFile);

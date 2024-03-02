@@ -106,6 +106,8 @@ public class SecurityConfig {
                         .requestMatchers("/post/add").permitAll()
                         .requestMatchers("/post/*").permitAll()
 
+                        // blog
+                        .requestMatchers("/blog/*").permitAll()
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
