@@ -101,13 +101,14 @@ public class SecurityConfig {
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/resetPassword").permitAll()
-
                         // post
                         .requestMatchers("/post/add").permitAll()
                         .requestMatchers("/post/*").permitAll()
-
                         // blog
                         .requestMatchers("/blog/*").permitAll()
+                        // service
+                        .requestMatchers("/manager/service/*").permitAll()
+                        .requestMatchers("/user/service/*").permitAll()
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
