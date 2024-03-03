@@ -41,7 +41,7 @@ public class ServiceController {
         }
     }
 
-    @PostMapping("manager/service/add")// TODO: set category, price salePrice and serviceDetail and createdBy and createdDate
+    @PostMapping("manager/service/add")
     public ResponseEntity<GeneralResponse> addService(
             @RequestParam("file") MultipartFile file,
             @RequestParam("serviceTitle") String serviceTitle,
@@ -84,4 +84,30 @@ public class ServiceController {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }
     }
+
+    // user api
+
+    @GetMapping("user/service/getlist")
+    public ResponseEntity<GeneralResponse> userGetListService(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", defaultValue = "") String search,
+            @RequestParam(value = "categoryId", required = false) Long categoryId) {
+        try {
+            return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.findAllService(page, size, search, categoryId, "ACTIVE")));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(GeneralResponse.of(e));
+        }
+    }
+
+    @GetMapping("user/service/detail")
+    public ResponseEntity<GeneralResponse> userGetServiceDetail(@RequestParam("id") Long id) {
+        try {
+            return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.findServiceById(id)));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(GeneralResponse.of(e));
+        }
+    }
+
+
 }
