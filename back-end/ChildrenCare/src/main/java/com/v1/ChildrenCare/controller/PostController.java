@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/manager/post")
 public class PostController {
     @Autowired
     private PostService postService;
