@@ -19,7 +19,7 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("/getList")
-    public ResponseEntity<GeneralResponse<Object>> getListPost(
+    public ResponseEntity<GeneralResponse> getListPost(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
@@ -35,7 +35,7 @@ public class PostController {
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<GeneralResponse<Object>> getPostDetail(@RequestParam("id") Long id) {
+    public ResponseEntity<GeneralResponse> getPostDetail(@RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(GeneralResponse.of(postService.findPostById(id)));
         } catch (Exception e) {
@@ -44,21 +44,20 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse<Object>> createPost(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<GeneralResponse> createPost(
+            @RequestParam("createByUserId") String createByUserId,
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("imageFile") MultipartFile imageFile) {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(postService.addPost(
-                    (String) requestBody.get("createByUserId"),
-                    (String) requestBody.get("title"),
-                    (String) requestBody.get("content"),
-                    (MultipartFile) requestBody.get("imageFile")
-            )));
+            return ResponseEntity.ok(GeneralResponse.of(postService.addPost(createByUserId, title, content, imageFile)));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<GeneralResponse<Object>> updatePost(@RequestParam("modifiedByUserId") Long modifiedByUserId,
+    public ResponseEntity<GeneralResponse> updatePost(@RequestParam("modifiedByUserId") Long modifiedByUserId,
                                                               @RequestParam("postId") Long postId,
                                                               @RequestParam("title") String title,
                                                               @RequestParam("content") String content,
@@ -71,7 +70,7 @@ public class PostController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<GeneralResponse<Object>> deletePost(@RequestParam("id") Long id) {
+    public ResponseEntity<GeneralResponse> deletePost(@RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(GeneralResponse.of(postService.deletePost(id)));
         } catch (Exception e) {
