@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -31,15 +32,26 @@ public class PostServiceImpl implements PostService {
         this.storageService = storageService;
     }
 
+    @Override
+    public List<PostDto> getAllPost(int page, int size, Long categoryId, Long authorId, String status, String search) {
+        return postRepository.getPostByFilter(search, categoryId, authorId, status, Pageable.ofSize(size)).stream().map(postListMapper::postToPostDto).collect(Collectors.toList());
+    }
 
     @Override
-    public PostDto addPost(Long createByUserId, String title, String content, MultipartFile imageFile) {
+    public Post getPostById(Long postId) {
+        return postRepository.findById(postId).orElse(null);
+    }
+
+
+    @Override
+    public PostDto addPost(String createByUserId, String title, String content, MultipartFile imageFile) {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
         post.setCreatedDate(LocalDate.now());
         post.setUpdatedDate(LocalDate.now());
         post.setIsActive(enumActive.ACTIVE);
+        post.setAuthor(createByUserId);
 
         // Handle image file upload
         if (imageFile != null && !imageFile.isEmpty()) {

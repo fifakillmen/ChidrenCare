@@ -20,6 +20,8 @@ public class Service {
     private String servicePrice;
     private String salePrice;
 
+    private String thumbnail;
+
     @Column(length = 2000)
     private String serviceDetail;
 
@@ -43,17 +45,26 @@ private User createdBy;
     public Service() {
     }
 
-    public Service(Long id, String serviceTitle, String servicePrice, String salePrice, String serviceDetail, Category category, enumActive isActive, LocalDate createdDate, LocalDate updatedDate, User createdBy) {
+    public Service(Long id, String serviceTitle, String servicePrice, String salePrice, String thumbnail, String serviceDetail, Category category, enumActive isActive, LocalDate createdDate, LocalDate updatedDate, User createdBy) {
         this.id = id;
         this.serviceTitle = serviceTitle;
         this.servicePrice = servicePrice;
         this.salePrice = salePrice;
+        this.thumbnail = thumbnail;
         this.serviceDetail = serviceDetail;
         this.category = category;
         this.isActive = isActive;
         CreatedDate = createdDate;
         UpdatedDate = updatedDate;
         this.createdBy = createdBy;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public Long getId() {

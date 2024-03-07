@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/user")
@@ -30,7 +32,6 @@ public class UserRestController {
     @PostMapping("/addUser")
     public synchronized ResponseEntity<Result> addUser(
             @RequestParam(name = "email") String email,
-            @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "lastName") String lastName,
             @RequestParam(name = "dob") String dobString,
@@ -38,16 +39,15 @@ public class UserRestController {
             @RequestParam(name = "address") String address,
             @RequestParam(name = "gender") String gender,
             @RequestParam(name = "avatarFile", required = false) MultipartFile avatarFile) throws IOException, GeneralSecurityException {
-        // lấy user từ token login nếu chưa có user nào trong login thì set Create_By_UserId =0
         Long Create_By_UserId= 0L;
-        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        return userService.addUser(email,Create_By_UserId, username,firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate dob = LocalDate.parse(dobString, formatter);
+        return userService.addUser(email,Create_By_UserId, firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
     }
 
     @PostMapping("/searchUser")
     public  ResponseEntity<Result> searchUser(
             @RequestParam(name = "UserId",required = false) Long UserId,
-            @RequestParam(name = "username",required = false) String username,
             @RequestParam(name = "firstName",required = false) String firstName,
             @RequestParam(name = "lastName",required = false) String lastName,
             @RequestParam(name = "dob",required = false) String dobString,
@@ -67,12 +67,11 @@ public class UserRestController {
         }
 
         Pageable pageable = PageRequest.of(targetPageNumber, 10);
-        return userService.searchUser(UserId,username,firstName,lastName,email,dob,pageable);
+        return userService.searchUser(UserId,firstName,lastName,email,dob,pageable);
     }
 
     @PutMapping("/updateUser")
     public synchronized  ResponseEntity<Result> updateUser(
-            @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "UserId") Long UserId,
             @RequestParam(name = "lastName") String lastName,
@@ -85,7 +84,7 @@ public class UserRestController {
         Long Modified_By_UserId= 0L;
         LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-        return userService.updateUser(Modified_By_UserId, UserId,  username,  firstName,  lastName,  dob,  phone,  address,  avatarFile,  enumGender.valueOf(gender));
+        return userService.updateUser(Modified_By_UserId, UserId,  firstName,  lastName,  dob,  phone,  address,  avatarFile,  enumGender.valueOf(gender));
     }
 
     @DeleteMapping("/deleteUser")

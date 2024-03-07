@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -20,6 +21,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                            @Param("authorId") Long authorId,
                            @Param("status") String status,
                            Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.title LIKE %:title% AND (:categoryId is NULL OR p.category.id = :categoryId) AND (:authorId is NULL OR p.author = :authorId) AND (:status is NULL OR p.isActive = :status)")
+    List<Post>  getPostByFilter(@Param("title") String title,
+                                @Param("categoryId") Long categoryId,
+                                @Param("authorId") Long authorId,
+                                @Param("status") String status,
+                                Pageable pageable);
 
 
 }

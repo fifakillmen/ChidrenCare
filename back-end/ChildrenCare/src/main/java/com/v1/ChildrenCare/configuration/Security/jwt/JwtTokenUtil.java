@@ -2,6 +2,8 @@ package com.v1.ChildrenCare.configuration.Security.jwt;
 
 import com.v1.ChildrenCare.configuration.Security.CustomUserDetails;
 import com.v1.ChildrenCare.entity.Account;
+import com.v1.ChildrenCare.entity.Role;
+import com.v1.ChildrenCare.enumPack.enumRole;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -22,15 +24,17 @@ public class JwtTokenUtil {
     private String SECRET_KEY;
 
     public String generateAccessToken(CustomUserDetails account) {
-        String accessToken = Jwts.builder()
+        JwtBuilder jwts = Jwts.builder()
                 .setSubject(String.format("%s", account.getUsername()))
                 .claim("roles", account.getAuthorities().toString())
                 .setIssuer("ChildrenCare")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRED_DAY))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
-        return accessToken;
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY);
+        if (account.getAccount().getUser()!=null) {
+            jwts.claim("userId", account.getAccount().getUser().getId());
+        }
+        return jwts.compact();
     }
 
     public String generateAccessTokenUsingField(Account account) {
@@ -83,4 +87,25 @@ public class JwtTokenUtil {
 
         return header.split(" ")[1].trim();
     }
+    public Account getAccount(String token) {
+        Account account = new Account();
+
+        Claims claims = parseClaims(token);
+        String claimRoles = (String) claims.get("roles");
+        claimRoles = claimRoles.replace("[", "").replace("]", "");
+        String[] roleNames = claimRoles.split(", ");
+        List<Role> roles = new ArrayList<>();
+        for(String roleName : roleNames) {
+            Role role = new Role();
+            role.setName(enumRole.valueOf(roleName));
+            roles.add(role);
+        }
+        account.setRole(roles);
+        String subject = (String) claims.get(Claims.SUBJECT);
+        String email = subject;
+
+        account.setEmail(email);
+        return account;
+    }
+
 }
