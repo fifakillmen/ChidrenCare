@@ -19,7 +19,11 @@ const navigation = [
     href: "/admin/children",
     icon: "bi bi-columns",
   },
-
+  {
+    title: "Posts",
+    href: "/admin/post",
+    icon: "bi bi-hdd-stack",
+  },
 ];
 
 const Sidebar = () => {

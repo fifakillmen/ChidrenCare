@@ -13,6 +13,7 @@ import Admin from "./views/Admin/Admin";
 import Feedback from "./views/Feedback";
 import Children from "./views/Children";
 import Starter from "./views/Starter";
+import Post from "./views/Admin/Post";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -25,6 +26,7 @@ root.render(
                 <Route path="starter" element={<Starter/>}/>
                 <Route path="feedback" element={<Feedback/>}/>
                 <Route path="children" element={<Children/>}/>
+                <Route path="post" element={<Post/>}/>
             </Route>
             <Route path="/" element={<Home/>}/>
         </Routes>
