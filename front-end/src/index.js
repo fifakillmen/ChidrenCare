@@ -2,11 +2,12 @@ import React from "react";
 import "./assets/scss/style.scss";
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import {createBrowserHistory} from "history";
+import { createBrowserHistory } from "history";
 import {
     Route,
     Routes,
-    HashRouter
+    HashRouter,
+    BrowserRouter
 } from "react-router-dom";
 import Home from "./views/page/Home";
 import Admin from "./views/Admin/Admin";
@@ -14,6 +15,9 @@ import Feedback from "./views/Feedback";
 import Children from "./views/Children";
 import Starter from "./views/Starter";
 import Post from "./views/Admin/Post";
+import Login from "../src/components/Authorization/LoginComponent"
+import Signup from "../src/components/Authorization/SignUpComponent"
+
 
 
 
@@ -21,17 +25,19 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 var hist = createBrowserHistory();
 root.render(
-    <HashRouter history={hist}>
+    <BrowserRouter history={hist}>
         <Routes>
-            <Route path="/admin" element={<Admin/>}>
-                <Route path="starter" element={<Starter/>}/>
-                <Route path="feedback" element={<Feedback/>}/>
-                <Route path="children" element={<Children/>}/>
-                <Route path="post" element={<Post/>}/>
+            <Route path="/admin" element={<Admin />}>
+                <Route path="starter" element={<Starter />} />
+                <Route path="feedback" element={<Feedback />} />
+                <Route path="children" element={<Children />} />
+                <Route path="post" element={<Post />} />
             </Route>
-            <Route path="/" element={<Home/>}/>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/signup" element={<Signup />} />
         </Routes>
-    </HashRouter>
+    </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
