@@ -8,11 +8,10 @@ import java.time.LocalDate;
 public class ChildrenRequest {
     private Long id;
     private String firstName;
-    private boolean gender;
+    private String gender;
+    private int age;
     private String lastName;
     private LocalDate dob;
-    private String interest;
-    private String needs;
     private String note;
-    private boolean isActive;
+    private String isActive;
 }

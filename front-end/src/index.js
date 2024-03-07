@@ -1,25 +1,37 @@
-import React, { Suspense } from "react";
-// import ReactDOM from "react-dom";
-import {createRoot} from 'react-dom/client';
+import React from "react";
 import "./assets/scss/style.scss";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { HashRouter } from "react-router-dom";
-import Loader from "./layouts/loader/Loader";
-import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
+import {createBrowserHistory} from "history";
+import {
+    Route,
+    Routes,
+    HashRouter
+} from "react-router-dom";
+import Home from "./views/page/Home";
+import Admin from "./views/Admin/Admin";
+import Feedback from "./views/Feedback";
+import Children from "./views/Children";
+import Starter from "./views/Starter";
+import Post from "./views/Admin/Post";
 
-const rootElement = document.getElementById('root');
-const root = createRoot(rootElement);
 
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+var hist = createBrowserHistory();
 root.render(
-  <Suspense fallback={<Loader />}>
-    <HashRouter>
-      <App />
+    <HashRouter history={hist}>
+        <Routes>
+            <Route path="/admin" element={<Admin/>}>
+                <Route path="starter" element={<Starter/>}/>
+                <Route path="feedback" element={<Feedback/>}/>
+                <Route path="children" element={<Children/>}/>
+                <Route path="post" element={<Post/>}/>
+            </Route>
+            <Route path="/" element={<Home/>}/>
+        </Routes>
     </HashRouter>
-  </Suspense>
 );
 
 // If you want to start measuring performance in your app, pass a function
