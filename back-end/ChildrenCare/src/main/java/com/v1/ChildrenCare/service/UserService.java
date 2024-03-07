@@ -15,9 +15,11 @@ public interface UserService {
 
     ResponseEntity<Result> updateUser(Long Modified_By_UserId,Long UserId, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender);
 
+
     ResponseEntity<Result> deleteUser(Long UserId);
 
     UserDto findUserByEmail(String email);
 
     ResponseEntity<Result> searchUser(Long UserId, String firstName, String lastName, String email, LocalDate dob, Pageable pageable);
+
 }
