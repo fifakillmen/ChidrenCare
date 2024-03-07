@@ -5,7 +5,6 @@ import com.v1.ChildrenCare.enumPack.enumGender;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -13,7 +12,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
     private String firstName;
     private String lastName;
     private LocalDate dob;
@@ -23,9 +21,7 @@ public class User {
     private String avatarFileName;
     @Enumerated(EnumType.STRING)
     private enumGender gender;
-    @OneToOne
-    @JoinColumn(name = "email")
-    private Account account;
+
 
     // ------------------
     @Enumerated(EnumType.STRING)
@@ -45,9 +41,8 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String firstName, String lastName, LocalDate dob, String phone, String address, String avartaLink, String avatarFileName, enumGender gender, Account account, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
+    public User(Long id, String firstName, String lastName, LocalDate dob, String phone, String address, String avartaLink, String avatarFileName, enumGender gender, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
         this.id = id;
-        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
@@ -56,7 +51,6 @@ public class User {
         this.avartaLink = avartaLink;
         this.avatarFileName = avatarFileName;
         this.gender = gender;
-        this.account = account;
         this.isActive = isActive;
         CreatedDate = createdDate;
         this.createdBy = createdBy;
@@ -72,13 +66,7 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -144,14 +132,6 @@ public class User {
         this.gender = gender;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
     public enumActive getIsActive() {
         return isActive;
     }
@@ -194,23 +174,22 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", dob=" + dob +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", avartaLink='" + avartaLink + '\'' +
-                ", avatarFileName='" + avatarFileName + '\'' +
-                ", gender=" + gender +
-                ", account=" + account +
-                ", isActive=" + isActive +
-                ", CreatedDate=" + CreatedDate +
-                ", createdBy=" + createdBy +
-                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
-                ", LastModifiedDate=" + LastModifiedDate +
-                '}';
+        final StringBuffer sb = new StringBuffer("User{");
+        sb.append("id=").append(id);
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", dob=").append(dob);
+        sb.append(", phone='").append(phone).append('\'');
+        sb.append(", address='").append(address).append('\'');
+        sb.append(", avartaLink='").append(avartaLink).append('\'');
+        sb.append(", avatarFileName='").append(avatarFileName).append('\'');
+        sb.append(", gender=").append(gender);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", CreatedDate=").append(CreatedDate);
+        sb.append(", createdBy=").append(createdBy);
+        sb.append(", ModifiedBy_UserId=").append(ModifiedBy_UserId);
+        sb.append(", LastModifiedDate=").append(LastModifiedDate);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -44,10 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Result> addUser(String email, Long Create_By_UserId, String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
+    public ResponseEntity<Result> addUser(String email, Long Create_By_UserId,  String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
         try{
             User user = new User();
-            user.setUsername(username);
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setDob(dob);
@@ -56,11 +55,6 @@ public class UserServiceImpl implements UserService {
             user.setGender(gender);
             user.setIsActive(enumActive.ACTIVE);
             Account account= accountRepository.findByEmail(email);
-            if (account != null){
-                user.setAccount(account);
-            }else {
-                return ResponseEntity.ok(new Result("Cannot find your account in create User", enumResultStatus.OK,null));
-            }
             user = userRepository.save(user);
             if (Create_By_UserId != 0L) {
                 User created_user = userRepository.findUserById(Create_By_UserId);
@@ -70,6 +64,8 @@ public class UserServiceImpl implements UserService {
             if (avatarFile != null) {
                 user = updateAvatar(user.getId(), avatarFile);
             }
+            account.setUser(user);
+            accountRepository.save(account);
             return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,userListMapper.UserToUserDto(user)));
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {
@@ -88,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  ResponseEntity<Result> updateUser(Long Modified_By_UserId, Long UserId, String username, String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
+    public  ResponseEntity<Result> updateUser(Long Modified_By_UserId, Long UserId,  String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
         try{
             User user = userRepository.findUserById(UserId);
             if (user != null) {
@@ -97,9 +93,6 @@ public class UserServiceImpl implements UserService {
                     if (ModifiedBy.getId()!=0){
                         user.setModifiedBy_UserId(Modified_By_UserId);
                     }
-                }
-                if (username != null) {
-                    user.setUsername(username);
                 }
                 if (firstName != null) {
                     user.setFirstName(firstName);
@@ -172,17 +165,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public  UserDto findUserByEmail(String email) {
-        User user = userRepository.findUserByAccount_Email(email);
+        User user = userRepository.getUserWithEmail(email);
         return userListMapper.UserToUserDto(user);
     }
 
     @Override
-    public  ResponseEntity<Result> searchUser(Long UserId, String username, String firstName, String lastName, String email, LocalDate dob, Pageable pageable) {
+    public  ResponseEntity<Result> searchUser(Long UserId, String firstName, String lastName, String email, LocalDate dob, Pageable pageable) {
         try{
-            if (UserId == null && username == null && firstName == null && lastName == null && email == null && dob == null) {
+            if (UserId == null  && firstName == null && lastName == null && email == null && dob == null) {
                 return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,userRepository.findAll(pageable).map(userListMapper::UserToUserDto)));
             }
-            Page<User> users = userRepository.search(UserId, username, firstName, lastName, email, dob, pageable);
+            Page<User> users = userRepository.search(UserId,firstName, lastName, dob, pageable);
             return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,users.map(userListMapper::UserToUserDto)));
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {

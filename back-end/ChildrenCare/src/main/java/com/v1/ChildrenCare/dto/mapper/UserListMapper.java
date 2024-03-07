@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 @DecoratedWith(UserListMapperDecorator.class)
 public interface UserListMapper {
-    @Mapping(source = "username", target = "username")
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "dob", target = "dob")
@@ -19,6 +18,5 @@ public interface UserListMapper {
     @Mapping(source = "avartaLink", target = "avartaLink")
     @Mapping(source = "avatarFileName", target = "avatarFileName")
     @Mapping(source = "gender", target = "gender")
-    @Mapping(source = "account.email", target = "email")
     UserDto UserToUserDto(User user);
 }

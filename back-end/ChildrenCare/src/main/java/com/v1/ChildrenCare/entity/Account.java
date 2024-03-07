@@ -15,13 +15,21 @@ public class Account {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
     private String password;
+    @Column(length = 1000)
     private String accessToken;
     private Boolean isAccessTokenActive;
     private String resetPasswordToken;
 
+    private String verifiEmailCode;
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "email"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "account_role",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> role;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     // ------------------
     @Enumerated(EnumType.STRING)
     private enumActive isActive;
@@ -31,28 +39,13 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by", updatable = false)
-    private User createdBy;
+    private Account createdBy;
 
     private Long ModifiedBy_UserId ;
     @org.springframework.data.annotation.LastModifiedDate
     private LocalDate LastModifiedDate;
     //-------------------
     public Account() {
-    }
-
-    public Account(Long id, String email, String password, String accessToken, Boolean isAccessTokenActive, String resetPasswordToken, List<Role> role, enumActive isActive, LocalDate createdDate, User createdBy, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.accessToken = accessToken;
-        this.isAccessTokenActive = isAccessTokenActive;
-        this.resetPasswordToken = resetPasswordToken;
-        this.role = role;
-        this.isActive = isActive;
-        CreatedDate = createdDate;
-        this.createdBy = createdBy;
-        ModifiedBy_UserId = modifiedBy_UserId;
-        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -103,12 +96,28 @@ public class Account {
         this.resetPasswordToken = resetPasswordToken;
     }
 
+    public String getVerifiEmailCode() {
+        return verifiEmailCode;
+    }
+
+    public void setVerifiEmailCode(String verifiEmailCode) {
+        this.verifiEmailCode = verifiEmailCode;
+    }
+
     public List<Role> getRole() {
         return role;
     }
 
     public void setRole(List<Role> role) {
         this.role = role;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public enumActive getIsActive() {
@@ -127,11 +136,11 @@ public class Account {
         CreatedDate = createdDate;
     }
 
-    public User getCreatedBy() {
+    public Account getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(Account createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -153,20 +162,23 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", accessToken='" + accessToken + '\'' +
-                ", isAccessTokenActive=" + isAccessTokenActive +
-                ", resetPasswordToken='" + resetPasswordToken + '\'' +
-                ", role=" + role +
-                ", isActive=" + isActive +
-                ", CreatedDate=" + CreatedDate +
-                ", createdBy=" + createdBy +
-                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
-                ", LastModifiedDate=" + LastModifiedDate +
-                '}';
+        final StringBuffer sb = new StringBuffer("Account{");
+        sb.append("id=").append(id);
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", accessToken='").append(accessToken).append('\'');
+        sb.append(", isAccessTokenActive=").append(isAccessTokenActive);
+        sb.append(", resetPasswordToken='").append(resetPasswordToken).append('\'');
+        sb.append(", verifiEmailCode='").append(verifiEmailCode).append('\'');
+        sb.append(", role=").append(role);
+        sb.append(", user=").append(user);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", CreatedDate=").append(CreatedDate);
+        sb.append(", createdBy=").append(createdBy);
+        sb.append(", ModifiedBy_UserId=").append(ModifiedBy_UserId);
+        sb.append(", LastModifiedDate=").append(LastModifiedDate);
+        sb.append('}');
+        return sb.toString();
     }
 }
 //@OneToMany
