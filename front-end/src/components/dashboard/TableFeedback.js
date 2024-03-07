@@ -4,7 +4,6 @@ import {
     CheckCircleOutlined,
     CloseCircleOutlined,
     DeleteOutlined,
-    EditOutlined,
     InfoCircleOutlined
 } from '@ant-design/icons';
 import axios from "axios";

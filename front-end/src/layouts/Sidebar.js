@@ -6,17 +6,17 @@ import probg from "../assets/images/bg/download.jpg";
 const navigation = [
   {
     title: "Dashboard",
-    href: "/starter",
+    href: "/admin/starter",
     icon: "bi bi-speedometer2",
   },
   {
     title: "Feedback",
-    href: "/feedback",
+    href: "/admin/feedback",
     icon: "bi bi-card-text",
   },
   {
     title: "Children",
-    href: "/children",
+    href: "/admin/children",
     icon: "bi bi-columns",
   },
 
