@@ -1,6 +1,12 @@
-import {message, Modal, notification, Table} from "antd";
+import {Rate, Modal, notification, Table} from "antd";
 import React, {useState, useEffect} from "react";
-import {CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    InfoCircleOutlined
+} from '@ant-design/icons';
 import axios from "axios";
 import {Button} from "antd";
 
@@ -17,7 +23,7 @@ const TableFeedback = () => {
                     return {
                         index: index + 1,
                         id: record.id,
-                        fullname: record.fullname,
+                        rating: record.rating,
                         email: record.email,
                         reviewText: record.reviewText,
                         isActive: record.isActive,
@@ -92,9 +98,16 @@ const TableFeedback = () => {
             align: "center",
         },
         {
-            title: "Fullname",
-            dataIndex: "fullname",
-            key: "fullname",
+            title: "Rate",
+            dataIndex: "rating",
+            key: "rating",
+            render: (rating) =>{
+                return (
+                    <div>
+                        <Rate disabled defaultValue={rating}/>
+                    </div>
+                )
+            }
         },
         {
             title: "Email",
@@ -127,7 +140,7 @@ const TableFeedback = () => {
             render: (record) => {
                 return (
                     <div style={{alignItems: "center", textAlign: "center", display: "flex"}}>
-                        <Button style={{marginRight: 5}} onClick={() => showModal(record)}><EditOutlined
+                        <Button style={{marginRight: 5}} onClick={() => showModal(record)}><InfoCircleOutlined
                             style={{justifyContent: "center", display: "flex"}}/></Button>
                         <Button onClick={() => showDeleteModal(record)}><DeleteOutlined
                             style={{justifyContent: "center", display: "flex"}}/></Button>
@@ -139,6 +152,7 @@ const TableFeedback = () => {
     return (
         <>
             <div>
+                <h1>Feedback List</h1>
                 {/*<Button type="primary">Create</Button>*/}
                 <Table
                     columns={columns}
@@ -158,6 +172,9 @@ const TableFeedback = () => {
                             {feedbackSelected?.id ? `ID: ${feedbackSelected?.id}` : 'No ID'}
                         </div>
                     </div>
+                    <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
+                        style={{fontWeight: 'bold', marginRight: '10px'}}>Rating:</span><span
+                        style={{flex: 1}}>{feedbackSelected?.rating}</span></div>
                     <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
                         style={{fontWeight: 'bold', marginRight: '10px'}}>Full Name:</span><span
                         style={{flex: 1}}>{feedbackSelected?.fullname}</span></div>
