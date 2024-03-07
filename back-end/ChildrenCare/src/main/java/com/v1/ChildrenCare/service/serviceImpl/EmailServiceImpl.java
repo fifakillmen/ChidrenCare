@@ -116,7 +116,7 @@ public class EmailServiceImpl implements EmailService {
             model.put("maXacThuc", code);
             String content = FreeMarkerTemplateUtils
                     .processTemplateIntoString(template, model);
-            sendHTMLEmail(toEmail,"Verifycation Account",content);
+            sendHTMLEmail(toEmail,"Verification Account",content);
         }catch (Exception e){
             System.out.println("loi gui verify email");
         }
@@ -125,7 +125,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendResetPassword(String toEmail, String link) throws IOException {
+    public void sendResetPassword(String toEmail, String link)  {
         try {
             Template template =freeMarkerConfiguration
                     .freeMarkerConfig()

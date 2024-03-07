@@ -1,6 +1,7 @@
 package com.v1.ChildrenCare.repository;
 
 import com.v1.ChildrenCare.entity.Account;
+import com.v1.ChildrenCare.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,9 +23,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 			""")
     Page<Account> searchWithEmail(@Param("email") String email, Pageable pageable);
 
-@Query("""
-			         select a.email from Account a where a.email not in (select account.email from User where account.email is not null )
-			         and :email IS NULL OR a.email LIKE CONCAT('%', :email, '%')
-			""")
-List<String> searchEmailNoConnected(@Param("email") String email);
 }

@@ -11,9 +11,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AccountService {
-    ResponseEntity<Result> searchEmailNoConnected(String email);
 
-    ResponseEntity<Result> createAccount(Long Created_By_UserId,String email,String password, List<enumRole> roles);
+    ResponseEntity<Result> createAccount(Long Created_By_AccountId,String email,String password, List<enumRole> roles);
 
     ResponseEntity<Result> updateAccount(Long modify_By_UserId,String email, String password, List<enumRole> roles);
 
@@ -23,4 +22,7 @@ public interface AccountService {
 
     ResponseEntity<Result> searchAccount(String email, Pageable pageable);
 
+    ResponseEntity<Result> verifyEmail(String email, String code);
+
+    ResponseEntity<Result> resendVerifyEmail(String email);
 }

@@ -6,6 +6,10 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { HashRouter } from "react-router-dom";
 import Loader from "./layouts/loader/Loader";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);

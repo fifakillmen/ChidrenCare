@@ -1,6 +1,5 @@
 package com.v1.ChildrenCare.configuration.Security;
 
-
 import com.v1.ChildrenCare.configuration.Security.jwt.JwtTokenFilter;
 import com.v1.ChildrenCare.repository.AccountRepository;
 import org.slf4j.Logger;
@@ -83,33 +82,28 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors(customizer -> {
         });
-
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/checkAccessToken").permitAll()
                         // User
-                        .requestMatchers("/user/addUser").permitAll()
+//                        hasAnyAuthority("USER","ADMIN")
+                        .requestMatchers("/user/addUser").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/user/searchUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/deleteUser").hasAnyAuthority( "ADMIN")
-                        .requestMatchers("/user/updateUser").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","ADMIN")
                         // account
                         .requestMatchers("/account/searchEmailNoConnected").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/searchAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/addAccount").permitAll()
-                        .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/resetPassword").permitAll()
-                        // post
-//                        .requestMatchers("/manager/post/*").hasAnyAuthority("STAFF", "ADMIN")
-                        .requestMatchers("/manager/post/*").permitAll()
-                        // blog
-                        .requestMatchers("/blog/*").permitAll()
-                        // service
-//                        .requestMatchers("/manager/service/*").hasAnyAuthority("STAFF", "ADMIN")
-                        .requestMatchers("/manager/service/*").permitAll()
-                        .requestMatchers("/user/service/*").permitAll()
+                        .requestMatchers("/account/verifyEmail").permitAll()
+                        .requestMatchers("/account/resendVerifyEmail").permitAll()
+                        // feedback
+
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
