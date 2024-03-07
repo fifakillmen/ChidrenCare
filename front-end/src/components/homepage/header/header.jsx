@@ -36,7 +36,7 @@ const Header = () => {
                                 <Nav navbar className="ms-auto mt-2 mt-lg-0">
                                     <NavItem className="active"><NavLink href="#">Home</NavLink></NavItem>
                                     <NavItem><NavLink href="#">About Me</NavLink></NavItem>
-                                    <NavItem><NavLink href="/#/admin">Admin</NavLink></NavItem>
+                                    <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav>
                                             Services <i className="fa fa-angle-down m-l-5"></i>

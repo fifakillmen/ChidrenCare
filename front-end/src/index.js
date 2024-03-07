@@ -6,7 +6,6 @@ import { createBrowserHistory } from "history";
 import {
     Route,
     Routes,
-    HashRouter,
     BrowserRouter
 } from "react-router-dom";
 import Home from "./views/page/Home";
