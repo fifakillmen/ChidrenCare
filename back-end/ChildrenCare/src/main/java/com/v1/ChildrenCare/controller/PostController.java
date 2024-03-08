@@ -50,7 +50,13 @@ public class PostController {
             @RequestParam("content") String content,
             @RequestParam("imageFile") MultipartFile imageFile) {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(postService.addPost(createByUserId, title, content, imageFile)));
+            return ResponseEntity.ok(GeneralResponse.of(postService.addPost(
+                    (String) requestBody.get("createByUserId"),
+                    (String) requestBody.get("title"),
+                    (String) requestBody.get("content"),
+                    (MultipartFile) requestBody.get("imageFile")
+//                    (MultipartFile) requestBody.get("avatarFile")
+            )));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }
