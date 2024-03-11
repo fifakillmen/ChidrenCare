@@ -37,12 +37,13 @@ const Header = () => {
                                     <NavItem className="active"><NavLink href="#">Home</NavLink></NavItem>
                                     <NavItem><NavLink href="#">About Me</NavLink></NavItem>
                                     <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
-                                    <UncontrolledDropdown nav inNavbar>
+                                    <NavItem><NavLink href="/service">Service</NavLink></NavItem>
+                                    {/* <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav>
                                             Services <i className="fa fa-angle-down m-l-5"></i>
                                         </DropdownToggle>
                                         <DropdownMenu className="b-none animated fadeInUp">
-                                            <DropdownItem>Action</DropdownItem>
+                                            <DropdownItem></DropdownItem>
                                             <DropdownItem>Another action</DropdownItem>
                                             <DropdownItem>Something else here</DropdownItem>
                                             <DropdownItem divider/>
@@ -51,7 +52,7 @@ const Header = () => {
                                             <DropdownItem divider/>
                                             <DropdownItem>One more separated link</DropdownItem>
                                         </DropdownMenu>
-                                    </UncontrolledDropdown>
+                                    </UncontrolledDropdown> */}
                                     <NavItem><NavLink href="#">Feedback</NavLink></NavItem>
                                     <NavItem><a className="btn btn-outline-success" href="#">Login</a></NavItem>
                                 </Nav>
