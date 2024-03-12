@@ -66,9 +66,9 @@ public class PostServiceImpl implements PostService {
         }
 
         post = postRepository.save(post);
-        if (imageFile != null) {
-            post = updateImage(post.getId(), imageFile);
-        }
+//        if (imageFile != null) {
+//            post = updateImage(post.getId(), imageFile);
+//        }
         return postListMapper.postToPostDto(post);
     }
 

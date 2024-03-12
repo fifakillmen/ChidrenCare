@@ -44,23 +44,19 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<GeneralResponse> createPost(
-            @RequestParam("createByUserId") String createByUserId,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("imageFile") MultipartFile imageFile) {
+    public ResponseEntity<GeneralResponse> createPost(@RequestParam("createByUserId") String createByUserId,
+                                                      @RequestParam("title") String title,
+                                                      @RequestParam("content") String content,
+                                                      @RequestParam(name = "imageFile", required = false) MultipartFile imageFile)
+    {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(postService.addPost(
-                    (String) requestBody.get("createByUserId"),
-                    (String) requestBody.get("title"),
-                    (String) requestBody.get("content"),
-                    (MultipartFile) requestBody.get("imageFile")
-//                    (MultipartFile) requestBody.get("avatarFile")
-            )));
+            // Xử lý logic thêm bài viết ở đây
+            return ResponseEntity.ok(GeneralResponse.of(postService.addPost(createByUserId, title, content, imageFile)));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }
     }
+
 
     @PutMapping("/update")
     public ResponseEntity<GeneralResponse> updatePost(@RequestParam("modifiedByUserId") Long modifiedByUserId,

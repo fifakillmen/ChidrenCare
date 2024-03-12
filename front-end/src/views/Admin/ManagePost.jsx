@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Pagination } from "react-bootstrap";
 import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 // import "./warehouse.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+
+
+
 const fakeData = [
   {
     id: 1,
@@ -72,7 +76,19 @@ const fakeData = [
 ];
 
 function PostManage() {
+  const [posts, setPosts] = useState([]);
   const itemsPerPage = 6;
+
+  const fetchPosts = () => {
+    axios
+      .get("http://localhost:9999/manager/post/getList")
+      .then((response) => {
+        setPosts(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching posts:", error);
+      });
+  };
 
   // Hook for pagination
   const usePagination = (items, itemsPerPage) => {
@@ -94,10 +110,15 @@ function PostManage() {
     return [getPaginatedItems(), activePage, totalPages, handlePageChange];
   };
 
+  
+
   const [getPaginatedItems, activePage, totalPages, handlePageChange] =
-    usePagination(fakeData, itemsPerPage);
+    usePagination(posts, itemsPerPage);
 
   useEffect(() => {
+    // fetch posts from the backend
+    fetchPosts();
+
     const checkboxes = document.querySelectorAll('.filter-section input[type="checkbox"]');
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("click", function () {
@@ -108,6 +129,7 @@ function PostManage() {
         }
       });
     });
+
   }, []);
 
   // Function to handle delete confirmation
@@ -155,12 +177,12 @@ function PostManage() {
                       <tr key={item.id}>
                         <td>{item.id}</td>
                         <td style={{ color: "#BB2649", fontWeight: "bold" }}>
-                          {item.name}
+                          {item.imageLink}
                         </td>
-                        <td>{item["Content"]}</td>
-                        <td>{item["Author"]}</td>
-                        <td>{item["Image Link"]}</td>
-                        <td>{item["Ngày nhập"]}</td>
+                        <td>{item.title}</td>
+                        <td>{item.content}</td>
+                        <td>{item.isActive}</td>
+                        <td>{item.imageLink}</td>
                         <td>
                           <button
                             type="button"

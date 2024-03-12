@@ -39,7 +39,7 @@ root.render(
                 
                 {/* <Route path="newpost" element={<NewPost />} /> */}
                 <Route path="managePost" element={<ManagePost />} />
-                <Route path="addPost" element={<ManagePost />} />
+                <Route path="addPost" element={<NewPost />} />
                 <Route path="servicemanage" element={<Servicemanage />} />
                 <Route path="postdetail" element={<PostDetail />} />            
                             

@@ -14,22 +14,64 @@ const NewPost = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [sizeError, setSizeError] = useState('')
 
+    // const handleSave = () => {
+    //     const data = {
+    //         "createByUserId": 1,
+    //         "title": "aaa",
+    //         "content": "1a",
+    //         "imageLink": null,
+    //     };
+
+    //     axios.post('http://localhost:9999/manager/post/add', data)
+    //     .then(response => {
+    //         console.log('Posts added successfully:', response.data.data);
+    //     })
+    //     .catch(error => {
+    //         console.error('Error adding product:', error);
+    //     });
+    //   };
+
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('title', data.title);
         formData.append('content', data.content);
+        formData.append('createByUserId', 1);
         if (data.images) {
             for (const image of data.images) {
                 formData.append('images', image);
             }
         }
         try {
-            // const response = await axios.post('http://localhost:8080/api/post/create', formData, { headers: authHeader() });
-            const response = await axios.post('http://localhost:8080/api/post/create', formData);
+
+            const test =  {
+                "createByUserId": 1,
+                "title": "ducnm",
+                "content": "ducnm",
+                "imageLink": null
+            }
+            
+            // const formData = new FormData();
+            // formData.append('title', test.title);
+            // formData.append('content', test.content);
+            // formData.append('imageLink', null);
+            
+            const response = await axios.post('http://localhost:9999/manager/post/add', formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(response => {
+                return response.data.data
+            })
+            .catch(error => {
+                return error
+            });
+            console.log(response.data);
+            // const response = await axios.post('http://localhost:8080/api/post/create', formData);
             setSuccessMessage('Post submitted successfully!');
             setErrorMessage(null);
             setTimeout(() => {
-                navigate('/posts');
+                navigate('/admin/managePost');
             }, 2000);
 
         } catch (error) {
@@ -95,7 +137,7 @@ const NewPost = () => {
                         ))}
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-primary" >Submit</button>
             </form>
         </div>
     );
