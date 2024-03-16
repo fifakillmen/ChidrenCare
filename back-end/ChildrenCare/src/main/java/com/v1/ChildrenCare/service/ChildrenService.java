@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -73,9 +74,12 @@ public class ChildrenService {
         child.setLastName(request.getLastName());
         child.setDob(request.getDob());
         child.setNote(request.getNote());
-        child.setAge(request.getAge());
+//        child.setAge(request.getAge());
         child.setGender(request.getGender());
         child.setIsActive(enumActive.valueOf(request.getIsActive()));
+        // Tính toán tuổi dựa trên dob
+        int age = Period.between(request.getDob(), LocalDate.now()).getYears();
+        child.setAge(age);
         childRepository.save(child);
     }
 
