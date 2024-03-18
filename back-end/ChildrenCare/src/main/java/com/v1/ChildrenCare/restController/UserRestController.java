@@ -3,6 +3,7 @@ package com.v1.ChildrenCare.restController;
 import com.v1.ChildrenCare.constaint.Result;
 import com.v1.ChildrenCare.dto.UserDto;
 import com.v1.ChildrenCare.enumPack.enumGender;
+import com.v1.ChildrenCare.enumPack.enumResultStatus;
 import com.v1.ChildrenCare.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,44 +46,36 @@ public class UserRestController {
         return userService.addUser(email,Create_By_UserId, firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
     }
 
+
     @PostMapping("/searchUser")
-    public  ResponseEntity<Result> searchUser(
-            @RequestParam(name = "UserId",required = false) Long UserId,
-            @RequestParam(name = "firstName",required = false) String firstName,
-            @RequestParam(name = "lastName",required = false) String lastName,
-            @RequestParam(name = "dob",required = false) String dobString,
-            @RequestParam(name = "email",required = false) String email,
+    public ResponseEntity<Result> searchUser(
+            @RequestParam(name = "firstName", required = false) String firstName,
+            @RequestParam(name = "lastName", required = false) String lastName,
+            @RequestParam(name = "dob", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob,
+            @RequestParam(name = "email", required = false) String email,
             @RequestParam(name = "targetPageNumber") Integer targetPageNumber
     ) {
-
         if (targetPageNumber < 0) {
-            return null;
-        }
-        LocalDate dob;
-        if(dobString != null){
-             dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-        }else {
-            dob = null;
+            return ResponseEntity.badRequest().body(new Result("Invalid page number", enumResultStatus.OK,null));
         }
 
         Pageable pageable = PageRequest.of(targetPageNumber, 10);
-        return userService.searchUser(UserId,firstName,lastName,email,dob,pageable);
+        return userService.searchUser(firstName, lastName, email, dob, pageable);
     }
+
 
     @PutMapping("/updateUser")
     public synchronized  ResponseEntity<Result> updateUser(
-            @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "UserId") Long UserId,
+            @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "lastName") String lastName,
-            @RequestParam(name = "dob") String dobString,
+            @RequestParam(name = "dob") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob,
             @RequestParam(name = "phone") String phone,
             @RequestParam(name = "address") String address,
             @RequestParam(name = "gender") String gender,
             @RequestParam(name = "avatarFile", required = false) MultipartFile avatarFile) throws Exception {
         // lấy user từ token login nếu chưa có user nào trong token thì set Modified_By_UserId =0
         Long Modified_By_UserId= 0L;
-        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
         return userService.updateUser(Modified_By_UserId, UserId,  firstName,  lastName,  dob,  phone,  address,  avatarFile,  enumGender.valueOf(gender));
     }

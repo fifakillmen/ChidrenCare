@@ -14,10 +14,13 @@ import com.v1.ChildrenCare.service.AuthService;
 import com.v1.ChildrenCare.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 
@@ -38,40 +41,50 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> login(AccountRequest accountRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(accountRequest.getEmail(), accountRequest.getPassword())
-        );
-        CustomUserDetails accountDetail = (CustomUserDetails) authentication.getPrincipal();
-        Account myAccount = accountDetail.getAccount();
-        LoginRespone loginResponse = new LoginRespone();
-        loginResponse.setEmail(myAccount.getEmail());
-        loginResponse.setCreated_date(myAccount.getCreatedDate());
-        if (myAccount.getCreatedBy()!=null){
-            loginResponse.setCreatedBy_UserId(myAccount.getCreatedBy().getId());
-        }else{
-            loginResponse.setCreatedBy_UserId(null);
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(accountRequest.getEmail(), accountRequest.getPassword())
+            );
+            CustomUserDetails accountDetail = (CustomUserDetails) authentication.getPrincipal();
+            Account myAccount = accountDetail.getAccount();
+            LoginRespone loginResponse = new LoginRespone();
+            loginResponse.setEmail(myAccount.getEmail());
+            loginResponse.setCreated_date(myAccount.getCreatedDate());
+            if (myAccount.getCreatedBy()!=null){
+                loginResponse.setCreatedBy_UserId(myAccount.getCreatedBy().getId());
+            }else{
+                loginResponse.setCreatedBy_UserId(null);
+            }
+            loginResponse.setIs_account_active(myAccount.getIsActive());
+            loginResponse.setModifiedBy_UserId(myAccount.getModifiedBy_UserId());
+
+            String accessToken = jwtTokenUtil.generateAccessToken(accountDetail);
+            loginResponse.setAccessToken(accessToken);
+            loginResponse.setIs_access_token_active(true);
+            loginResponse.setRoles(myAccount.getRole());
+            // luu vao db thong tin access token
+            Account account= accountRepository.findByEmail(myAccount.getEmail());
+            account.setAccessToken(accessToken);
+            account.setAccessTokenActive(true);
+            accountRepository.save(account);
+            //
+
+            UserDto userDto= userService.findUserByEmail(myAccount.getEmail());
+            if (userDto != null){
+                loginResponse.setFname(userDto.getFirstName());
+                loginResponse.setLname(userDto.getLastName());
+                loginResponse.setAvatar(userDto.getAvartaLink());
+            }
+
+            return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,loginResponse));
         }
-        loginResponse.setIs_account_active(myAccount.getIsActive());
-        loginResponse.setModifiedBy_UserId(myAccount.getModifiedBy_UserId());
-
-        String accessToken = jwtTokenUtil.generateAccessToken(accountDetail);
-        loginResponse.setAccessToken(accessToken);
-        loginResponse.setIs_access_token_active(true);
-        // luu vao db thong tin access token
-        Account account= accountRepository.findByEmail(myAccount.getEmail());
-        account.setAccessToken(accessToken);
-        account.setAccessTokenActive(true);
-        accountRepository.save(account);
-        //
-
-        UserDto userDto= userService.findUserByEmail(myAccount.getEmail());
-        if (userDto != null){
-            loginResponse.setFname(userDto.getFirstName());
-            loginResponse.setLname(userDto.getLastName());
-            loginResponse.setAvatar(userDto.getAvartaLink());
+        catch (BadCredentialsException e) {
+            // Sai tên đăng nhập hoặc mật khẩu, trả về mã trạng thái 401
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Result("Invalid email or password", enumResultStatus.UNAUTHORIZED,null ));
+        } catch (AuthenticationException e) {
+            // Quyền truy cập bị từ chối, trả về mã trạng thái 403
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Result("Access Denied", enumResultStatus.FORBIDDEN,null ));
         }
-
-        return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,loginResponse));
     }
 
     @Override

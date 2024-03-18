@@ -1,5 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
+import { login } from '../../services/authService'
+import { getAccessToken,getDataFromCookies, saveToCookies, deleteCookies, setUserInfoToCookie, getUserInfoFromCookie } from '../../services/cookeiService'
+
 import {
     MDBBtn,
     MDBContainer,
@@ -7,17 +10,40 @@ import {
     MDBCol,
     MDBCard,
     MDBCardBody,
-    MDBInput,
-    MDBCheckbox,
     MDBIcon
 }
     from 'mdb-react-ui-kit';
-const Card = styled(MDBCard)`
-  width: 75%;
-  margin: 0 auto;
-`;
+import { Button, Checkbox, Form, Input, message } from 'antd';
+import { redirect } from 'react-router';
 
-const SignUpComponent = () => {
+const Card = styled(MDBCard)`
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 100px;
+    `;
+
+const LoginComponent = () => {
+    // state account
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const handleLogin = async () => {
+        await login(email, password); 
+      const accessToken=  getDataFromCookies('accessToken');
+        if (accessToken!=null) {
+            const userInfo = getUserInfoFromCookie();
+            if (userInfo && userInfo.roles) { 
+                const isAdmin = userInfo.roles.some(role => role.name === "ADMIN");
+                if (isAdmin) {
+                    window.location.href = "/admin";
+                } else {
+                    window.location.href = "/";
+                }
+            }
+        } else {
+            message.error('Login failed');
+        }
+    };
+    
     return (
         <Card>
             <MDBContainer fluid className='p-4'>
@@ -28,7 +54,7 @@ const SignUpComponent = () => {
 
                         <h1 className="my-5 display-3 fw-bold ls-tight px-3">
                             The best offer <br />
-                            <span className="text-primary">for your business</span>
+                            <span className="text-primary">for your Children healthy</span>
                         </h1>
 
                         <p className='px-3' style={{ color: 'hsl(217, 10%, 50.8%)' }}>
@@ -44,12 +70,76 @@ const SignUpComponent = () => {
 
                         <MDBCard className='my-5'>
                             <MDBCardBody className='p-5'>
+                                <h4>
+                                    <p>Login</p>
+                                </h4>
+                                <Form
+                                    name="basic"
+                                    labelCol={{
+                                        span: 8,
+                                    }}
+                                    wrapperCol={{
+                                        span: 16,
+                                    }}
+                                    style={{
+                                        maxWidth: 600,
+                                    }}
+                                    initialValues={{
+                                        remember: true,
+                                    }}
+                                    onFinish={() => {
+                                        handleLogin();
+                                    }}
+                                    onFinishFailed={(errorInfo) => {
+                                        message.error('Login failed. Please check your email and password.');
+                                    }}
+                                    autoComplete="off"
+                                >
+                                    <Form.Item
+                                        name="email"
+                                        label="Email"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: "Please enter your email",
+                                            },
+                                            { type: "email", message: "Please enter a valid email" },
+                                        ]}
+                                        hasFeedback
+                                    >
+                                        <Input onChange={(e) => setEmail(e.target.value)}
+                                            placeholder="Type your email" />
+                                    </Form.Item>
 
-                                <MDBInput wrapperClass='mb-4' label='Email' id='form1' type='email' />
-                                <MDBInput wrapperClass='mb-4' label='Password' id='form1' type='password' />
+                                    <Form.Item
+                                        name="password"
+                                        label="Password"
+                                        rules={[
+                                            {
+                                                required: true,
+                                            },
+                                            {
+                                                pattern: new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,20})$/),
+                                                message: "Please enter a valid password"
+                                            },
+                                        ]}
+                                        hasFeedback
+                                    >
+                                        <Input.Password onChange={(e) => setPassword(e.target.value)} placeholder="Type your password" />
+                                    </Form.Item>
 
-
-                                <MDBBtn className='w-100 mb-4' size='md'>Login</MDBBtn>
+                                    <Form.Item wrapperCol={{ span: 24 }}>
+                                        <Button block type="primary" htmlType="submit" >
+                                            Login
+                                        </Button>
+                                    </Form.Item>
+                                    <Form.Item >
+                                        <a href='/auth/forgotpassword'>Forgot password?</a>
+                                    </Form.Item>
+                                    <Form.Item >
+                                        <a href='/auth/verifyemail'>Verify email?</a>
+                                    </Form.Item>
+                                </Form>
 
                                 <div className="text-center">
 
@@ -81,9 +171,9 @@ const SignUpComponent = () => {
                 </MDBRow>
 
             </MDBContainer>
-        </Card>
+        </Card >
 
     )
 }
 
-export default SignUpComponent
+export default LoginComponent
