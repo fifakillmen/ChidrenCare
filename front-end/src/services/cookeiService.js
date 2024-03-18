@@ -11,8 +11,8 @@ export const getDataFromCookies = (name) => {
     }
     return data;
 };
-export const deleteCookies = () => {
-    return Cookies.remove('accessToken');
+export const deleteCookies = (name) => {
+    return Cookies.remove(name);
 };
 export function setUserInfoToCookie(userInfo) {
     const userInfoJSON = JSON.stringify(userInfo);
