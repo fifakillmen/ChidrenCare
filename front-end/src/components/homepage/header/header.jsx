@@ -25,16 +25,16 @@ const Header = () => {
     /*--------------------------------------------------------------------------------*/
 
     return (
-        <div className="topbar" id="top">
-            <div id="section">
-                <div className="header1 po-relative">
-                    <Container>
+        <div >
+            <div className="topbar" id="top">
+                <div className="header6">
+                    <Container className="po-relative">
                         <Navbar className="navbar-expand-lg h1-nav h4">
-                            <NavbarBrand href="#"><img src={logo} alt="wrapkit"/></NavbarBrand>
+                            <NavbarBrand href="/"><img src={logo} alt="wrapkit"/></NavbarBrand>
                             <NavbarToggler onClick={toggle}><span className="ti-menu"></span></NavbarToggler>
                             <Collapse isOpen={isOpen} navbar id="header1">
                                 <Nav navbar className="ms-auto mt-2 mt-lg-0">
-                                    <NavItem className="active"><NavLink href="#">Home</NavLink></NavItem>
+                                    <NavItem className="active"><NavLink href="/">Home</NavLink></NavItem>
                                     <NavItem><NavLink href="#">About Me</NavLink></NavItem>
                                     <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
                                     <UncontrolledDropdown nav inNavbar>
@@ -52,7 +52,7 @@ const Header = () => {
                                             <DropdownItem>One more separated link</DropdownItem>
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
-                                    <NavItem><NavLink href="#">Feedback</NavLink></NavItem>
+                                    <NavItem><NavLink href="/feedback">Feedback</NavLink></NavItem>
                                     <NavItem><a className="btn btn-outline-success" href="#">Login</a></NavItem>
                                 </Nav>
                             </Collapse>

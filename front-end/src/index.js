@@ -16,7 +16,7 @@ import Starter from "./views/Starter";
 import Post from "./views/Admin/Post";
 import Login from "../src/components/Authorization/LoginComponent"
 import Signup from "../src/components/Authorization/SignUpComponent"
-
+import CreateFeedback from "./views/page/CreateFeedback";
 
 
 
@@ -35,6 +35,7 @@ root.render(
             <Route path="/" element={<Home />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
+            <Route path={"/feedback"} element={<CreateFeedback />} />
         </Routes>
     </BrowserRouter>
 );
