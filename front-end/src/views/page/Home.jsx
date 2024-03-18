@@ -10,6 +10,7 @@ import ContactComponent from "./sections/contactcomponent";
 import CallToAction from "../../components/homepage/call-to-action/CallToAction";
 import PropTypes from "prop-types";
 
+
 const Home = () => {
 
     return (

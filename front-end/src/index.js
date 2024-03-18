@@ -6,7 +6,6 @@ import { createBrowserHistory } from "history";
 import {
     Route,
     Routes,
-    HashRouter,
     BrowserRouter
 } from "react-router-dom";
 import Home from "./views/page/Home";
@@ -14,15 +13,21 @@ import Admin from "./views/Admin/Admin";
 import Feedback from "./views/Feedback";
 import Children from "./views/Children";
 import Starter from "./views/Starter";
-import Post from "./views/Admin/Post";
+import Post from "./views/Admin/Post/Post.jsx";
 import Login from "../src/components/Authorization/LoginComponent"
 import Signup from "../src/components/Authorization/SignUpComponent"
 import ForgotPassword from "../src/components/Authorization/ForgotPasswordComponent"
 import VerifyEmail from "../src/components/Authorization/VerifyEmailComponent"
 import UserList from "../src/components/User/UserListComponent"
 
-
-
+// import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
+import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
+import Service from './components/Services/Service/Service';
+import ServiceDetail from './components/Services/Service/servicedetail.jsx';
+import NewPost from './views/Admin/Post/newPost.jsx'
+import PostDetail from './views/Admin/Post/PostDetail.jsx'
+import Blog from './components/Blog/Blog.jsx'
+import ManagePost from './views/Admin/ManagePost.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -34,14 +39,28 @@ root.render(
                 <Route path="starter" element={<Starter />} />
                 <Route path="feedback" element={<Feedback />} />
                 <Route path="children" element={<Children />} />
-                <Route path="post" element={<Post />} />
-            </Route>
+                
+                {/* <Route path="newpost" element={<NewPost />} /> */}
+                <Route path="managePost" element={<ManagePost />} />
+                <Route path="addPost" element={<NewPost />} />
+                <Route path="servicemanage" element={<Servicemanage />} />
+                <Route path="postdetail" element={<PostDetail />} />            
+                            
+                </Route>
+                <Route path="/newpost" element={<NewPost />} />
             <Route path="/" element={<Home />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
+
             <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
             <Route path="/auth/verifyemail" element={<VerifyEmail />} />
             <Route path="/listUser" element={<UserList />} />
+
+
+            <Route path="/post" element={<Post />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/service" element={<Service />} />
+            <Route path="/servicedetail/:id" element={<ServiceDetail />} />
 
         </Routes>
     </BrowserRouter>
