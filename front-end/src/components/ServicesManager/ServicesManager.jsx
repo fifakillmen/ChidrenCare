@@ -45,8 +45,9 @@ const ServicesManager = () => {
 
   const handleDeleteClick = (service) => {
     setSelectedService(service);
-    setShowDeleteModal(true); // Step 2
+    setShowDeleteModal(true);
   };
+  
 
   const handleDeleteConfirm = () => {
     axios
@@ -98,10 +99,9 @@ const ServicesManager = () => {
                 <tbody>
                   {services.map((service) => (
                     <tr key={service.id}>
-                      <td>{`${service.createdBy?.firstName || ""} ${
-                        service.createdBy?.lastName || ""
-                      }`}</td>
-                      <td>{service.category}</td>
+                      <td>{`${service.createdBy?.firstName || ""} ${service.createdBy?.lastName || ""}`}</td>
+
+                      <td>{service.category.id}</td>
                       <td>{service.serviceTitle}</td>
                       <td>{service.serviceDetail}</td>
                       <td>{service.servicePrice}</td>
