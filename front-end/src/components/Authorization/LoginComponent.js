@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { login } from '../../services/authService'
-import { getAccessToken,getDataFromCookies, saveToCookies, deleteCookies, setUserInfoToCookie, getUserInfoFromCookie } from '../../services/cookeiService'
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies, setUserInfoToCookie, getUserInfoFromCookie } from '../../services/cookeiService'
 
 import {
     MDBBtn,
@@ -26,12 +26,28 @@ const LoginComponent = () => {
     // state account
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const handleLogin = async () => {
-        await login(email, password); 
-      const accessToken=  getDataFromCookies('accessToken');
-        if (accessToken!=null) {
+
+    useEffect(() => {
+        const accessToken = getAccessToken();
+        if (accessToken) {
             const userInfo = getUserInfoFromCookie();
-            if (userInfo && userInfo.roles) { 
+            if (userInfo && userInfo.roles) {
+                const isAdmin = userInfo.roles.some(role => role.name === "ADMIN");
+                if (isAdmin) {
+                    window.location.href = "/admin";
+                } else {
+                    window.location.href = "/";
+                }
+            }
+        }
+    }, []);
+
+    const handleLogin = async () => {
+        await login(email, password);
+        const accessToken = getDataFromCookies('accessToken');
+        if (accessToken != null) {
+            const userInfo = getUserInfoFromCookie();
+            if (userInfo && userInfo.roles) {
                 const isAdmin = userInfo.roles.some(role => role.name === "ADMIN");
                 if (isAdmin) {
                     window.location.href = "/admin";
@@ -43,7 +59,7 @@ const LoginComponent = () => {
             message.error('Login failed');
         }
     };
-    
+
     return (
         <Card>
             <MDBContainer fluid className='p-4'>
