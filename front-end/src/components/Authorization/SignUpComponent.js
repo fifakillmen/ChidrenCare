@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { createAccount, verifyEmail, resendVerifyEmail } from '../../services/accountService'
 import { createUser } from '../../services/userService'
 import { login } from '../../services/authService'
-import { getDataFromCookies, saveToCookies, deleteCookies } from '../../services/cookeiService'
+import { getAccessToken,getDataFromCookies, saveToCookies, deleteCookies } from '../../services/cookeiService'
 import { MDBBtn, MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon, } from 'mdb-react-ui-kit';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -76,7 +76,7 @@ const SignUpComponent = () => {
                 }
             })
             .catch(error => {
-                message.error(error)
+                message.error('An error occurred 1');
             })
 
     }
@@ -87,7 +87,7 @@ const SignUpComponent = () => {
                 if (data.data === true) {
                     // sau khi verify thanh cong thi login luon 
                     login(email, password);
-                    if (getDataFromCookies("accessToken") !== null) {
+                    if (getAccessToken()) {
                         setAfterLogin(true);
                     } else {
                         message.error('login fail')
@@ -95,24 +95,25 @@ const SignUpComponent = () => {
                 }
             })
             .catch(error => {
-                message.error(error)
+                message.error('An error occurred 2');
             })
     }
     const handleUpdateInformation = () => {
         createUser(fName, lName, dob, phone, email, address, gender, avatarFile)
             .then(response => {
-                const data = response.data;
-                console.log(data)
-                if (data.data.id !== null) {
-                    setIsCreated(true)
-                    // chuyển đến trang dashbroad hoac home 
-                    
+                if (response && response.data && response.data.status === 'OK') {
+                    setIsCreated(true);
+                    // chuyển đến trang home
+                    window.location.href = "/";
+                } else {
+                    message.error('An error occurred 3. No valid user ID found in the response.');
                 }
             })
             .catch(error => {
-                message.error(error)
-            })
-    }
+                message.error('An error occurred 4: ' + error.message);
+            });
+    };  
+    
 
     return (
         <div>
@@ -155,7 +156,6 @@ const SignUpComponent = () => {
                                                     handleUpdateInformation();
                                                 }}
                                                 onFinishFailed={(error) => {
-                                                    console.log({ error });
                                                 }}
                                             >
                                                 <Form.Item
@@ -251,7 +251,6 @@ const SignUpComponent = () => {
                                                                 const minimumAge = 18;
                                                                 var diff = moment().diff(moment(dob), 'milliseconds');
                                                                 var duration = moment.duration(diff);
-                                                                console.log(duration)
                                                                 if (duration.years() > minimumAge) {
                                                                     return Promise.resolve();
                                                                 } else {
@@ -342,7 +341,6 @@ const SignUpComponent = () => {
                                                     }
                                                 }}
                                                 onFinishFailed={(error) => {
-                                                    console.log({ error });
                                                 }}
                                             >
                                                 <Form.Item

@@ -16,6 +16,10 @@ import Starter from "./views/Starter";
 import Post from "./views/Admin/Post/Post.jsx";
 import Login from "../src/components/Authorization/LoginComponent"
 import Signup from "../src/components/Authorization/SignUpComponent"
+import CreateFeedback from "./views/page/CreateFeedback";
+import ForgotPassword from "../src/components/Authorization/ForgotPasswordComponent"
+import VerifyEmail from "../src/components/Authorization/VerifyEmailComponent"
+import UserList from "../src/components/User/UserListComponent"
 
 // import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
 import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
@@ -54,6 +58,10 @@ root.render(
             <Route path="/" element={<Home />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
+            <Route path={"/feedback"} element={<CreateFeedback />} />
+            <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/auth/verifyemail" element={<VerifyEmail />} />
+            <Route path="/listUser" element={<UserList />} />
             <Route path="/post" element={<Post />} />
             <Route path="postdetail/:id" element={<PostDetail />} /> 
             <Route path="/blog" element={<Blog />} />

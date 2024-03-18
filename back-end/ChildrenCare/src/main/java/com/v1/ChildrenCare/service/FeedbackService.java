@@ -1,5 +1,6 @@
 package com.v1.ChildrenCare.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.v1.ChildrenCare.constaint.Result;
 import com.v1.ChildrenCare.entity.Feedback;
 import com.v1.ChildrenCare.enumPack.enumActive;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -52,16 +54,12 @@ public class FeedbackService {
     private void createAndEditFeedback(CreateFeedbackRequest request) {
         Feedback feedback = null;
         if (request.getId() != null) {
-            feedback = feedbackRepository.findById(request.getId()).orElse(null);
-            if (feedback == null) {
-                throw new NullPointerException("Not found feedback");
-            }
-            feedback.setIsActive(enumActive.valueOf(request.getIsActive()));
+            feedback = feedbackRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Not found feedback"));
         } else {
             feedback = new Feedback();
             feedback.setIsActive(enumActive.valueOf(request.getIsActive()));
+            feedback.setCreatedDate(LocalDateTime.from(LocalDateTime.now()));
         }
-        feedback.setCreatedDate(LocalDateTime.now());
         feedback.setRating(request.getRating());
         feedback.setEmail(request.getEmails());
         feedback.setFullname(request.getFullname());

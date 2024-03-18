@@ -59,15 +59,15 @@ public class AccountRestController {
 
     //Page<Account>
     @PostMapping("/searchAccount")
-    public ResponseEntity<Result> searchAccount(@RequestParam(value = "email", required = false) String email,
-                                       @RequestParam(name = "targetPageNumber") Integer targetPageNumber) {
-        if (targetPageNumber < 0) {
-            return null;
+    public ResponseEntity<Result> searchAccount(@RequestParam(name = "UserId" ,required = false) Long UserId,
+                                                @RequestParam(value = "email", required = false) String email,
+                                                @RequestParam(name = "targetPageNumber", required = false) Integer targetPageNumber) {
+        if (targetPageNumber ==null) {
+            targetPageNumber=0;
         }
         Pageable pageable = PageRequest.of(targetPageNumber, 20);
-        return accountService.searchAccount(email, pageable);
+        return accountService.searchAccount(UserId,email, pageable);
     }
-    //Account
     @PutMapping("/updateAccount")
     public ResponseEntity<Result> updateAccount(@RequestBody Map<String, Object> requestBody) {
         String email = (String) requestBody.get("email");

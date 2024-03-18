@@ -20,12 +20,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("""
 			select us
 			FROM User us
-			WHERE ( :UserId like '' or :userId IS NULL OR us.id = :userId)
-			  AND ( :firstName like '' or :firstName IS NULL OR us.firstName = :firstName)
+			WHERE 
+			  ( :firstName like '' or :firstName IS NULL OR us.firstName = :firstName)
 			  AND ( :lastName like '' or :lastName IS NULL OR us.lastName = :lastName)
 			  AND ( :dob IS NULL OR us.dob = :dob)
 			""")
-    Page<User> search(@Param("UserId") Long UserId,
+    Page<User> search(
                       @Param("firstName") String firstName,
                       @Param("lastName") String lastName,
                       @Param("dob") LocalDate dob,

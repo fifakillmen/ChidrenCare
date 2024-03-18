@@ -100,18 +100,21 @@ public class SecurityConfig {
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/resetPassword").permitAll()
-
                         .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
 //                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
+
 
                         // post
                         .requestMatchers("/manager/post/**").permitAll()
                          // service
                                 .requestMatchers("/manager/service/**").permitAll()
+
                         .requestMatchers("/account/verifyEmail").permitAll()
                         .requestMatchers("/account/resendVerifyEmail").permitAll()
                         // feedback
-                       .anyRequest().authenticated()
+
+                        .anyRequest().authenticated()
+
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
