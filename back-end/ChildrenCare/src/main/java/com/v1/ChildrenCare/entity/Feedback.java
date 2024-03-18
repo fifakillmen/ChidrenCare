@@ -35,14 +35,6 @@ public class Feedback {
     @Column(updatable = false)
     private LocalDateTime CreatedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", updatable = false)
-    private User createdBy;
-    @Column(nullable = false)
-    private String Service;
-    private Long ModifiedBy_UserId ;
-    @org.springframework.data.annotation.LastModifiedDate
-    private LocalDateTime LastModifiedDate;
     public Feedback() {
     }
 
@@ -56,10 +48,6 @@ public class Feedback {
         this.reviewText = reviewText;
         this.isActive = isActive;
         CreatedDate = createdDate;
-        this.createdBy = createdBy;
-        Service = service;
-        ModifiedBy_UserId = modifiedBy_UserId;
-        LastModifiedDate = lastModifiedDate;
     }
 
     public Long getId() {
@@ -132,56 +120,5 @@ public class Feedback {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         CreatedDate = createdDate;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getService() {
-        return Service;
-    }
-
-    public void setService(String service) {
-        Service = service;
-    }
-
-    public Long getModifiedBy_UserId() {
-        return ModifiedBy_UserId;
-    }
-
-    public void setModifiedBy_UserId(Long modifiedBy_UserId) {
-        ModifiedBy_UserId = modifiedBy_UserId;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return LastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        LastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Feedback{" +
-                "id=" + id +
-                ", fullname='" + fullname + '\'' +
-                ", email='" + email + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", gender=" + gender +
-                ", rating=" + rating +
-                ", reviewText='" + reviewText + '\'' +
-                ", isActive=" + isActive +
-                ", CreatedDate=" + CreatedDate +
-                ", createdBy=" + createdBy +
-                ", Service='" + Service + '\'' +
-                ", ModifiedBy_UserId=" + ModifiedBy_UserId +
-                ", LastModifiedDate=" + LastModifiedDate +
-                '}';
     }
 }

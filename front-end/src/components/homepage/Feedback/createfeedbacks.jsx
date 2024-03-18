@@ -1,64 +1,95 @@
-import {Button, Col, Container, Form, FormGroup, Input, Row} from "reactstrap";
+import { Button, notification, Form, Input, Radio, Row,Rate } from "antd";
+import axios from "axios";
 import React from "react";
+import { Container, Col} from "reactstrap";
 
 const Createfeedbacks = () => {
+    const [form] = Form.useForm();
+
+    const handleCreateSubmit = (values) => {
+        const payload = {
+            fullname: values.fullname,
+            emails: values.emails,
+            mobile: values.mobile,
+            gender: values.gender,
+            rating: values.rating,
+            reviewText: values.reviewText,
+            isActive: "ACTIVE", // Always set to ACTIVE
+        };
+
+        axios.post('http://localhost:9999/api/feedback/create', payload)
+            .then(res => {
+                notification.success({
+                    message: "Message",
+                    description: "Review has been sent!!!"
+                });
+                form.resetFields();
+            })
+            .catch(error => {
+                console.log(error);
+                notification.error({
+                    message: "Error",
+                    description: "An error occurred while submitting feedback."
+                });
+            });
+    };
+
     return (
         <div>
             <div className="spacer bg-light">
                 <Container>
                     <Row className="justify-content-center">
                         <Col md="7" className="text-center">
+                            <br/><br/><br/>
                             <h1 className="title font-bold">Feedback Form</h1>
                         </Col>
                     </Row>
                 </Container>
             </div>
-            <div className="contact1">
+            <div className="contact1 container">
                 <Container>
                     <Row>
                         <div className="spacer">
                             <Row className="m-0">
-                                <Col lg="8">
-                                    <div className="contact-box p-r-40">
-                                        <h4 className="title">Quick Contact</h4>
-                                        <Form>
-                                            <Row>
-                                                <Col lg="6">
-                                                    <FormGroup className="m-t-15">
-                                                        <Input type="text" placeholder="name"/>
-                                                    </FormGroup>
-                                                </Col>
-                                                <Col lg="6">
-                                                    <FormGroup className="m-t-15">
-                                                        <Input type="text" placeholder="email"/>
-                                                    </FormGroup>
-                                                </Col>
-                                                <Col lg="12">
-                                                    <FormGroup className="m-t-15">
-                                                        <Input
-                                                            type="textarea"
-                                                            name="text"
-                                                            placeholder="message"
-                                                        />
-                                                    </FormGroup>
-                                                </Col>
-                                                <Col lg="12">
-                                                    <Button
-                                                        type="submit"
-                                                        className="btn btn-danger-gradiant m-t-20 btn-arrow"
-                                                    >
-                            <span>
-                              {" "}
-                                SUBMIT <i className="ti-arrow-right"></i>
-                            </span>
-                                                    </Button>
-                                                </Col>
-                                            </Row>
-                                        </Form>
-                                    </div>
+                                <Col lg="7">
+                                    <Form form={form} onFinish={handleCreateSubmit}>
+                                        <Form.Item name="fullname" label="Full Name" rules={[{ required: true, message: 'Please enter your full name!' }]}>
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item name="emails" label="Email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email address!' }]}>
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item name="mobile" label="Mobile" rules={[{ required: true, message: 'Please enter your mobile number!' }]}>
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item name="gender" label="Gender" rules={[{ required: true, message: 'Please select your gender!' }]}>
+                                            <Radio.Group>
+                                                <Radio value="Male">Male</Radio>
+                                                <Radio value="Female">Female</Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                        <Form.Item name="rating" label="Rating" rules={[{ required: true, message: 'Please select a rating!' }]}>
+                                            <Rate count={5} />
+                                        </Form.Item>
+                                        <Form.Item name="reviewText" label="Review Text">
+                                            <Input.TextArea />
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Button type="primary" htmlType="submit">Submit Feedback</Button>
+                                        </Form.Item>
+                                    </Form>
                                 </Col>
-                                <Col lg="4">
-                                    Nhúng bản đồ tại đây
+                                <Col lg="2"></Col>
+                                <Col lg="3">
+                                    <iframe
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.747903357892!2d105.83667257510446!3d21.002740180640107!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ac79f99f92fb%3A0x3f36b1fb75b203d8!2zQuG7h25oIHZp4buHbiBC4bqhY2ggTWFpLCBQaMawxqFuZyBNYWksIMSQ4buRbmcgxJBhLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1710792565416!5m2!1svi!2s"
+                                        width="600"
+                                        height="450"
+                                        style={{border: 0}}
+                                        allowFullScreen=""
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                    ></iframe>
                                 </Col>
                             </Row>
                         </div>
@@ -67,5 +98,6 @@ const Createfeedbacks = () => {
             </div>
         </div>
     );
-}
+};
+
 export default Createfeedbacks;

@@ -2,15 +2,25 @@ package com.v1.ChildrenCare.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.v1.ChildrenCare.constaint.Result;
+import com.v1.ChildrenCare.entity.Account;
 import com.v1.ChildrenCare.entity.Children;
+import com.v1.ChildrenCare.entity.User;
 import com.v1.ChildrenCare.enumPack.enumActive;
 import com.v1.ChildrenCare.enumPack.enumResultStatus;
 import com.v1.ChildrenCare.repository.ChildRepository;
+import com.v1.ChildrenCare.repository.UserRepository;
 import com.v1.ChildrenCare.request.ChildrenRequest;
 import com.v1.ChildrenCare.request.SearchChildrenRequest;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +34,8 @@ import java.util.List;
 public class ChildrenService {
     @Resource
     private ChildRepository childRepository;
+    @Resource
+    private UserRepository userRepository;
 
     public ResponseEntity<Result> createAndEdit(ChildrenRequest request) {
         try {
@@ -33,9 +45,11 @@ public class ChildrenService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result(e.getMessage(), enumResultStatus.NOT_FOUND, null));
         }
     }
+
     public ResponseEntity<Result> getAllChildren() {
         return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK, childRepository.findAll()));
     }
+
     public ResponseEntity<Result> delete(Long id) {
         try {
             deleteChildren(id);
@@ -62,7 +76,7 @@ public class ChildrenService {
         }
     }
 
-    private void createAndEditChildren(ChildrenRequest request) {
+    private void createAndEditChildren(ChildrenRequest request) throws ParseException {
         Children child = null;
         if (request.getId() != null) {
             child = childRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException("Not found children"));
@@ -80,6 +94,7 @@ public class ChildrenService {
         // Tính toán tuổi dựa trên dob
         int age = Period.between(request.getDob(), LocalDate.now()).getYears();
         child.setAge(age);
+        child.setCreatedBy(request.getCreatedBy());
         childRepository.save(child);
     }
 

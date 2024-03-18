@@ -66,7 +66,6 @@ public class FeedbackService {
         feedback.setMobile(request.getMobile());
         feedback.setReviewText(request.getReviewText());
         feedback.setGender(enumGender.valueOf(request.getGender()));
-        feedback.setService(request.getService());
         feedbackRepository.save(feedback);
     }
 

@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
-
+import {getUserInfoFromCookie} from '../../services/cookeiService';
 
 const TableChildren = () => {
     const [children, setChildren] = useState([]);
@@ -83,7 +83,8 @@ const TableChildren = () => {
             lastName: values.lastName,
             dob: values.dob,
             gender: values.gender,
-            isActive: "ACTIVE" // Always set to ACTIVE
+            isActive: "ACTIVE", // Always set to ACTIVE
+            createdBy: getUserInfoFromCookie().lname,
         };
         axios.post('http://localhost:9999/api/children/create', payload)
             .then(res => {
@@ -451,7 +452,7 @@ const TableChildren = () => {
                                 style={{flex: 1}}>{childrenSelected?.note}</span></div>
                             <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
                                 style={{fontWeight: 'bold', marginRight: '10px'}}>Create by:</span><span
-                                style={{flex: 1}}>###</span></div>
+                                style={{flex: 1}}>{childrenSelected?.createdBy}</span></div>
                             <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
                                 style={{fontWeight: 'bold', marginRight: '10px'}}>Create Date:</span><span
                                 style={{flex: 1}}>{childrenSelected?.createdDate}</span></div>

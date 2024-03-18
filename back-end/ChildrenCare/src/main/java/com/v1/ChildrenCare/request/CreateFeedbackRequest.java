@@ -12,5 +12,4 @@ public class CreateFeedbackRequest {
     private String isActive;
     private Integer rating;
     private String reviewText;
-    private String service;
 }
