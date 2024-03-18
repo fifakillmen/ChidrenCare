@@ -5,7 +5,7 @@ import { saveToCookies, setUserInfoToCookie } from './cookeiService';
 const REST_API_BASE_URL = 'http://localhost:9999/auth/';
 // http://localhost:9999/auth/checkAccessToken
 
-export const login = (email, password) => {
+export const login = async (email, password) => {
     const headers = {
         "Content-Type": "application/json"
     };
@@ -14,7 +14,7 @@ export const login = (email, password) => {
         password: password
     };
 
-    axios.post(REST_API_BASE_URL + 'login', body, {
+   await axios.post(REST_API_BASE_URL + 'login', body, {
         headers: headers
     }).then(response => {
         if (response.data.data.accessToken !== null) {
