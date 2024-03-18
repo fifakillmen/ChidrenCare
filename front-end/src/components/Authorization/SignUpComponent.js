@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { createAccount, verifyEmail, resendVerifyEmail } from '../../services/accountService'
 import { createUser } from '../../services/userService'
 import { login } from '../../services/authService'
-import { getAccessToken,getDataFromCookies, saveToCookies, deleteCookies } from '../../services/cookeiService'
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies } from '../../services/cookeiService'
 import { MDBBtn, MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBIcon, } from 'mdb-react-ui-kit';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -87,7 +87,7 @@ const SignUpComponent = () => {
                 if (data.data === true) {
                     // sau khi verify thanh cong thi login luon 
                     login(email, password);
-                    if (getAccessToken()) {
+                    if (getDataFromCookies('accessToken')) {
                         setAfterLogin(true);
                     } else {
                         message.error('login fail')
@@ -112,8 +112,8 @@ const SignUpComponent = () => {
             .catch(error => {
                 message.error('An error occurred 4: ' + error.message);
             });
-    };  
-    
+    };
+
 
     return (
         <div>
