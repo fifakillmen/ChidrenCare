@@ -25,6 +25,9 @@ import UserList from "../src/components/User/UserListComponent"
 import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
 import Service from './components/Services/Service/Service';
 import ServiceDetail from './components/Services/Service/servicedetail.jsx';
+import NewsService from './components/ServicesManager/addService.jsx';
+import UpdateService from './components/ServicesManager/updateService.jsx';
+
 import NewPost from './views/Admin/Post/newPost.jsx'
 import PostDetail from './views/Admin/Post/PostDetail.jsx'
 import Blog from './components/Blog/Blog.jsx'
@@ -45,7 +48,10 @@ root.render(
                 <Route path="managePost" element={<ManagePost />} />
                 <Route path="addPost" element={<NewPost />} />
                 <Route path="servicemanage" element={<Servicemanage />} />
-                <Route path="postdetail" element={<PostDetail />} />            
+                <Route path="addservice" element={<NewsService />} />
+                <Route path="upadteservice" element={<UpdateService />} />
+
+                           
                             
                 </Route>
                 <Route path="/newpost" element={<NewPost />} />
@@ -57,6 +63,7 @@ root.render(
             <Route path="/auth/verifyemail" element={<VerifyEmail />} />
             <Route path="/listUser" element={<UserList />} />
             <Route path="/post" element={<Post />} />
+            <Route path="postdetail/:id" element={<PostDetail />} /> 
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Service />} />
             <Route path="/servicedetail/:id" element={<ServiceDetail />} />

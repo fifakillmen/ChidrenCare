@@ -102,6 +102,13 @@ public class SecurityConfig {
                         .requestMatchers("/account/resetPassword").permitAll()
                         .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
 //                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
+
+
+                        // post
+                        .requestMatchers("/manager/post/**").permitAll()
+                         // service
+                                .requestMatchers("/manager/service/**").permitAll()
+
                         .requestMatchers("/account/verifyEmail").permitAll()
                         .requestMatchers("/account/resendVerifyEmail").permitAll()
                         // feedback
