@@ -42,7 +42,7 @@ const Header = () => {
                                     <NavItem className="active"><NavLink href="#">Home</NavLink></NavItem>
                                     <NavItem><NavLink href="#">About Me</NavLink></NavItem>
                                     {userInfo && userInfo.roles && userInfo.roles.some(role => role.name === "ADMIN") && // Kiểm tra nếu có vai trò là ADMIN thì hiển thị link Admin
-                                        <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
+                                        <NavItem><NavLink href="/#/admin">Admin</NavLink></NavItem>
                                     }
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav>

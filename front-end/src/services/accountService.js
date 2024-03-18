@@ -17,7 +17,7 @@ export const createAccount = (email, password) => {
         headers: headers
     });
 };
-export const verifyEmail = (email, code) => {
+export const verifyEmail = async  (email, code) => {
     const headers = {
         "Content-Type": "application/json"
     };
@@ -27,7 +27,7 @@ export const verifyEmail = (email, code) => {
         code: code
     };
 
-    return axios.post(REST_API_BASE_URL + 'verifyEmail', body, {
+    return await axios.post(REST_API_BASE_URL + 'verifyEmail', body, {
         headers: headers
     });
 };
