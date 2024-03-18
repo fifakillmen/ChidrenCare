@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class LoginRespone {
+    private Long UserId;
     private String email;
     private List<Role> roles;
     private String fname;
@@ -22,7 +23,8 @@ public class LoginRespone {
     public LoginRespone() {
     }
 
-    public LoginRespone(String email, List<Role> roles, String fname, String lname, String avatar, String accessToken, LocalDate created_date, boolean is_access_token_active, Long createdBy_UserId, enumActive is_account_active, Long modifiedBy_UserId) {
+    public LoginRespone(Long userId, String email, List<Role> roles, String fname, String lname, String avatar, String accessToken, LocalDate created_date, boolean is_access_token_active, Long createdBy_UserId, enumActive is_account_active, Long modifiedBy_UserId) {
+        UserId = userId;
         this.email = email;
         this.roles = roles;
         this.fname = fname;
@@ -34,6 +36,14 @@ public class LoginRespone {
         this.createdBy_UserId = createdBy_UserId;
         this.is_account_active = is_account_active;
         this.modifiedBy_UserId = modifiedBy_UserId;
+    }
+
+    public Long getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(Long userId) {
+        UserId = userId;
     }
 
     public String getEmail() {
@@ -127,7 +137,8 @@ public class LoginRespone {
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("LoginRespone{");
-        sb.append("email='").append(email).append('\'');
+        sb.append("UserId=").append(UserId);
+        sb.append(", email='").append(email).append('\'');
         sb.append(", roles=").append(roles);
         sb.append(", fname='").append(fname).append('\'');
         sb.append(", lname='").append(lname).append('\'');
