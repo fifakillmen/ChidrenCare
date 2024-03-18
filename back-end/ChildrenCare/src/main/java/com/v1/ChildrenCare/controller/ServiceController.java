@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/manager/service")
 public class ServiceController {
     @Autowired
     private ServiceChildrenService serviceChildrenService;
 
-    @GetMapping("manager/service/getlist")
+    @GetMapping("/getlist")
     public ResponseEntity<GeneralResponse> getListService(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -32,7 +32,7 @@ public class ServiceController {
         }
     }
 
-    @GetMapping("manager/service/detail")
+    @GetMapping("/detail")
     public ResponseEntity<GeneralResponse> getServiceDetail(@RequestParam("id") Long id) {
         try {
             return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.findServiceById(id)));
@@ -41,23 +41,23 @@ public class ServiceController {
         }
     }
 
-    @PostMapping("manager/service/add")
+    @PostMapping("/add")
     public ResponseEntity<GeneralResponse> addService(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("serviceTitle") String serviceTitle,
-            @RequestParam("serviceDetail") String serviceDetail,
-            @RequestParam("categoryId") Long categoryId,
-            @RequestParam("createdBy") Long createdBy,
-            @RequestParam("price") String price,
-            @RequestParam("salePrice") String salePrice) {
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value ="serviceTitle", required = true) String serviceTitle,
+            @RequestParam(value ="serviceDetail", required = false) String serviceDetail,
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam(value = "createdBy", required = false) Long createdBy,
+            @RequestParam(value =  "price", required = false) String price,
+            @RequestParam(value =  "salePrice", required = false) String salePrice) {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.saveService(null, serviceTitle, serviceDetail, price, salePrice, categoryId, "ACTIVE", createdBy, file)));
+            return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.saveService(null, serviceTitle, serviceDetail, price, salePrice, categoryId, "ACTIVE", createdBy, null)));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }
     }
 
-    @PutMapping("manager/service/update")
+    @PutMapping("/update")
     public ResponseEntity<GeneralResponse> updateService(
             @RequestParam(value = "serviceId", required = true) Long serviceId,
             @RequestParam(value = "file", required = false) MultipartFile file,
@@ -75,7 +75,7 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping("manager/service/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<GeneralResponse> deleteService(@RequestParam("id") Long id) {
         try {
             serviceChildrenService.deleteService(id);

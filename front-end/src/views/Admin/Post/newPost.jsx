@@ -14,27 +14,12 @@ const NewPost = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [sizeError, setSizeError] = useState('')
 
-    // const handleSave = () => {
-    //     const data = {
-    //         "createByUserId": 1,
-    //         "title": "aaa",
-    //         "content": "1a",
-    //         "imageLink": null,
-    //     };
-
-    //     axios.post('http://localhost:9999/manager/post/add', data)
-    //     .then(response => {
-    //         console.log('Posts added successfully:', response.data.data);
-    //     })
-    //     .catch(error => {
-    //         console.error('Error adding product:', error);
-    //     });
-    //   };
 
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('title', data.title);
         formData.append('content', data.content);
+        formData.append('content', data.imageLink);
         formData.append('createByUserId', 1);
         if (data.images) {
             for (const image of data.images) {
@@ -47,14 +32,8 @@ const NewPost = () => {
                 "createByUserId": 1,
                 "title": "ducnm",
                 "content": "ducnm",
-                "imageLink": null
+                "imageLink": "aaaaaa"
             }
-            
-            // const formData = new FormData();
-            // formData.append('title', test.title);
-            // formData.append('content', test.content);
-            // formData.append('imageLink', null);
-            
             const response = await axios.post('http://localhost:9999/manager/post/add', formData, {
                 headers: {
                 'Content-Type': 'multipart/form-data',

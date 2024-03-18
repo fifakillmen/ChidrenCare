@@ -1,12 +1,11 @@
+// Import thêm useState để lưu trữ ID bài viết đang được chọn
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Table, Pagination } from "react-bootstrap";
-import { Link, useParams } from 'react-router-dom';
+import { Container, Row, Col, Table, Pagination, Modal, Button } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-// import "./warehouse.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-
+import UpdatePost from './Post/updatePost.jsx'; 
 
 const fakeData = [
   {
@@ -17,67 +16,16 @@ const fakeData = [
     "Image Link": "Null",
     "Ngày nhập": "2024-01-29",
   },
-  {
-    id: 2,
-    name: "Sản phẩm 2",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
-  {
-    id: 3,
-    name: "Sản phẩm 3",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
-  {
-    id: 4,
-    name: "Sản phẩm 4",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
-  {
-    id: 5,
-    name: "Sản phẩm 5",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
-  {
-    id: 6,
-    name: "Sản phẩm 6",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
-  {
-    id: 7,
-    name: "Sản phẩm 7",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
-  {
-    id: 8,
-    name: "Sản phẩm 8",
-    Content: "content1",
-    Author: "Tuanna",
-    "Image Link": "Null",
-    "Ngày nhập": "2024-01-29",
-  },
+  // Các dòng khác...
 ];
 
 function PostManage() {
   const [posts, setPosts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [postId, setPostId] = useState(null); // Lưu trữ ID của bài viết đang được chọn
   const itemsPerPage = 6;
+
+  const handleCloseModal = () => setShowModal(false);
 
   const fetchPosts = () => {
     axios
@@ -90,7 +38,6 @@ function PostManage() {
       });
   };
 
-  // Hook for pagination
   const usePagination = (items, itemsPerPage) => {
     const [activePage, setActivePage] = useState(1);
     const totalPages = items ? Math.ceil(items.length / itemsPerPage) : 0;
@@ -110,13 +57,10 @@ function PostManage() {
     return [getPaginatedItems(), activePage, totalPages, handlePageChange];
   };
 
-  
-
   const [getPaginatedItems, activePage, totalPages, handlePageChange] =
     usePagination(posts, itemsPerPage);
 
   useEffect(() => {
-    // fetch posts from the backend
     fetchPosts();
 
     const checkboxes = document.querySelectorAll('.filter-section input[type="checkbox"]');
@@ -132,16 +76,37 @@ function PostManage() {
 
   }, []);
 
-  // Function to handle delete confirmation
-  const handleDelete = () => {
+  const handleDelete = (postId) => {
     if (window.confirm("Bạn có chắc chắn muốn xoá không?")) {
-      // Xử lý logic xoá ở đây
-      console.log("Xoá sản phẩm");
+      axios
+        .delete(`http://localhost:9999/manager/post/delete?id=${postId}`)
+        .then((response) => {
+          console.log("Xoá sản phẩm thành công");
+          fetchPosts();
+        })
+        .catch((error) => {
+          console.error("Error deleting post:", error);
+        });
     }
+  };
+
+  // Hàm xử lý khi click vào nút Edit
+  const handleEdit = (postId) => {
+    setPostId(postId); // Thiết lập ID của bài viết đang được chọn
+    setShowModal(true); // Hiển thị modal
   };
 
   return (
     <>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Post</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <UpdatePost postId={postId} handleCloseModal={handleCloseModal} />
+        </Modal.Body>
+      </Modal>
+
       <Row md={5} className="title align-center">
         <Col md={4}>
           <h2>Mange Post</h2>
@@ -150,7 +115,7 @@ function PostManage() {
         <Col md={4} className="button-container">
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Link to="/admin/addPost" className="btn btn-primary add-btn">
-              Thêm sản phẩm
+              Thêm Post
             </Link>
           </div>
         </Col>
@@ -168,7 +133,7 @@ function PostManage() {
                       <th>Content</th>
                       <th>Author</th>
                       <th>Image Link</th>
-                      <th>Ngày Tạo</th>
+                      <th>Trạng thái</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -176,24 +141,23 @@ function PostManage() {
                     {getPaginatedItems.map((item) => (
                       <tr key={item.id}>
                         <td>{item.id}</td>
-                        <td style={{ color: "#BB2649", fontWeight: "bold" }}>
-                          {item.imageLink}
-                        </td>
                         <td>{item.title}</td>
                         <td>{item.content}</td>
-                        <td>{item.isActive}</td>
+                        <td>{item.author}</td>
                         <td>{item.imageLink}</td>
+                        <td>{item.isActive}</td>
                         <td>
                           <button
                             type="button"
                             className="btn btn-primary edit-btn"
+                            onClick={() => handleEdit(item.id)} // Truyền ID của bài viết vào hàm handleEdit
                           >
                             <EditOutlined />
                           </button>
                           <button
                             type="button"
                             className="btn btn-danger"
-                            onClick={handleDelete} // Gọi hàm handleDelete khi nút "Xoá" được nhấp
+                            onClick={() => handleDelete(item.id)}
                           >
                             <DeleteOutlined />
                           </button>
