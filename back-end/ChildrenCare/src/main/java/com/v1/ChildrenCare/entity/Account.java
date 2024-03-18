@@ -27,7 +27,7 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> role;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private User user;
     // ------------------

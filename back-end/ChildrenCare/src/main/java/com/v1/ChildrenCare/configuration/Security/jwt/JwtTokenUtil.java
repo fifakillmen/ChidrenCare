@@ -4,6 +4,7 @@ import com.v1.ChildrenCare.configuration.Security.CustomUserDetails;
 import com.v1.ChildrenCare.entity.Account;
 import com.v1.ChildrenCare.entity.Role;
 import com.v1.ChildrenCare.enumPack.enumRole;
+import com.v1.ChildrenCare.repository.AccountRepository;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -22,6 +23,11 @@ public class JwtTokenUtil {
     private long TOKEN_EXPIRED_DAY;
     @Value("${jwt.secret}")
     private String SECRET_KEY;
+    private final AccountRepository accountRepository;
+
+    public JwtTokenUtil(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     public String generateAccessToken(CustomUserDetails account) {
         JwtBuilder jwts = Jwts.builder()
@@ -56,7 +62,10 @@ public class JwtTokenUtil {
     public boolean validateAccessToken(String token) {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
-            return true;
+           Account account= accountRepository.findAccountWithAccessToken(token);
+           if (account!=null) {
+               return true;
+           }
         } catch (ExpiredJwtException ex) {
             LOGGER.error("JWT expired", ex.getMessage());
         } catch (IllegalArgumentException ex) {

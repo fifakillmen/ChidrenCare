@@ -20,6 +20,6 @@ public interface UserService {
 
     UserDto findUserByEmail(String email);
 
-    ResponseEntity<Result> searchUser(Long UserId, String firstName, String lastName, String email, LocalDate dob, Pageable pageable);
+    ResponseEntity<Result> searchUser(String firstName, String lastName, String email, LocalDate dob, Pageable pageable);
 
 }

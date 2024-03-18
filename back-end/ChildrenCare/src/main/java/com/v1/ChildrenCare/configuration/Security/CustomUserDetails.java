@@ -55,8 +55,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if (account.getIsActive().equals(enumActive.ACTIVE)){
-            return true;
-        }else {return false;}
+        return true;
     }
 }

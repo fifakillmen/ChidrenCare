@@ -107,6 +107,7 @@ public class SecurityConfig {
                         // feedback
 
                         .anyRequest().authenticated()
+
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

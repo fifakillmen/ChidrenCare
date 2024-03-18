@@ -21,8 +21,13 @@ const navigation = [
   },
   {
     title: "Posts",
-    href: "/admin/post",
-    icon: "bi bi-hdd-stack",
+    href: "/admin/managePost",
+    icon: "bi bi-mailbox-flag",
+  },
+  {
+    title: "Services",
+    href: "/admin/servicemanage",
+    icon: "bi bi-box2-heart",
   },
 ];
 
