@@ -1,4 +1,6 @@
 import axios from "axios"
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies } from './cookeiService'
+
 const REST_API_BASE_URL = 'http://localhost:9999/account/'
 
 export const createAccount = (email, password) => {
@@ -39,6 +41,21 @@ export const resendVerifyEmail = (email) => {
     };
 
     return axios.post(REST_API_BASE_URL + 'resendVerifyEmail', body, {
+        headers: headers
+    });
+};
+export const searchAccount = (userId) => {
+    const accessToken = getAccessToken();
+    const headers = {
+        "Authorization": `Bearer ${accessToken}`
+    };
+
+    const params = new URLSearchParams();
+    if (userId) {
+        params.append('UserId', userId);
+    }
+
+    return axios.post(REST_API_BASE_URL + 'searchAccount', params.toString(), {
         headers: headers
     });
 };

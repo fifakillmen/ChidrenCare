@@ -1,6 +1,7 @@
 package com.v1.ChildrenCare.service.serviceImpl;
 
 import com.v1.ChildrenCare.constaint.Result;
+import com.v1.ChildrenCare.dto.mapper.AccountListMapper;
 import com.v1.ChildrenCare.entity.Account;
 import com.v1.ChildrenCare.entity.Role;
 import com.v1.ChildrenCare.entity.User;
@@ -38,12 +39,14 @@ public class AccountServiceImpl implements AccountService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final AccountListMapper accountListMapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository, UserRepository userRepository, EmailService emailService) {
+    public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository, UserRepository userRepository, EmailService emailService, AccountListMapper accountListMapper) {
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.emailService = emailService;
+        this.accountListMapper = accountListMapper;
     }
 
     private Account uRole(List<enumRole> roles, Account account) {
@@ -187,7 +190,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity<Result> searchAccount(String email, Pageable pageable) {
+    public ResponseEntity<Result> searchAccount(Long UserId,String email, Pageable pageable) {
+        if (UserId!=null&&email==null){
+            return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,accountListMapper.AccountToAccountDto(accountRepository.searchAccountWithUserId(UserId))));
+        }
         return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,accountRepository.searchWithEmail(email, pageable)));
     }
 

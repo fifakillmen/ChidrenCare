@@ -20,7 +20,7 @@ public interface AccountService {
 
     ResponseEntity<Result> deleteAccount(String email);
 
-    ResponseEntity<Result> searchAccount(String email, Pageable pageable);
+    ResponseEntity<Result> searchAccount(Long UserId,String email, Pageable pageable);
 
     ResponseEntity<Result> verifyEmail(String email, String code);
 

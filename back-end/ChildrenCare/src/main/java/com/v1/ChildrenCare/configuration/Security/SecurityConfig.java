@@ -100,15 +100,12 @@ public class SecurityConfig {
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/resetPassword").permitAll()
-<<<<<<< HEAD
                         .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
 //                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
-=======
                         .requestMatchers("/account/verifyEmail").permitAll()
                         .requestMatchers("/account/resendVerifyEmail").permitAll()
                         // feedback
 
->>>>>>> 759fd3ede80da7e426d6c77edcfd32dcd2948d46
                         .anyRequest().authenticated()
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

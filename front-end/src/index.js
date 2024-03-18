@@ -17,6 +17,9 @@ import Starter from "./views/Starter";
 import Post from "./views/Admin/Post";
 import Login from "../src/components/Authorization/LoginComponent"
 import Signup from "../src/components/Authorization/SignUpComponent"
+import ForgotPassword from "../src/components/Authorization/ForgotPasswordComponent"
+import VerifyEmail from "../src/components/Authorization/VerifyEmailComponent"
+import UserList from "../src/components/User/UserListComponent"
 
 
 
@@ -36,6 +39,10 @@ root.render(
             <Route path="/" element={<Home />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
+            <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
+            <Route path="/auth/verifyemail" element={<VerifyEmail />} />
+            <Route path="/listUser" element={<UserList />} />
+
         </Routes>
     </BrowserRouter>
 );

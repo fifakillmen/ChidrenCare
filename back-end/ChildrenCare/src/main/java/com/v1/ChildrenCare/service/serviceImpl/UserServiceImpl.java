@@ -170,12 +170,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  ResponseEntity<Result> searchUser(Long UserId, String firstName, String lastName, String email, LocalDate dob, Pageable pageable) {
+    public  ResponseEntity<Result> searchUser( String firstName, String lastName, String email, LocalDate dob, Pageable pageable) {
         try{
-            if (UserId == null  && firstName == null && lastName == null && email == null && dob == null) {
+            if (firstName == null && lastName == null && email == null && dob == null) {
                 return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,userRepository.findAll(pageable).map(userListMapper::UserToUserDto)));
             }
-            Page<User> users = userRepository.search(UserId,firstName, lastName, dob, pageable);
+            Page<User> users = userRepository.search(firstName, lastName, dob, pageable);
             return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,users.map(userListMapper::UserToUserDto)));
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {

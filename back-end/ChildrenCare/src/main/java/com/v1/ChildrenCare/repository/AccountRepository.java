@@ -23,4 +23,12 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 			""")
     Page<Account> searchWithEmail(@Param("email") String email, Pageable pageable);
 
+	@Query("""
+            SELECT a from Account a where (a.accessToken like :accessToken)
+            """)
+	Account findAccountWithAccessToken(@Param("accessToken") String accessToken);
+	@Query("""
+           select a from Account a join User u on a.user.id= u.id where u.id = :userId
+            """)
+	Account searchAccountWithUserId(@Param("userId") Long userId);
 }
