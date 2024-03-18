@@ -28,7 +28,7 @@ const LoginComponent = () => {
     const [password, setPassword] = useState('')
 
     useEffect(() => {
-        const accessToken = getAccessToken();
+        const accessToken = getDataFromCookies('accessToken');
         if (accessToken) {
             const userInfo = getUserInfoFromCookie();
             if (userInfo && userInfo.roles) {
