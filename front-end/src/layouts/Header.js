@@ -20,6 +20,7 @@ import { getUserInfoFromCookie,deleteCookies,getAccessToken } from '../services/
 
 const Header = () => {
   const accessToken= getAccessToken();
+  const userInfor=getUserInfoFromCookie();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
@@ -79,7 +80,7 @@ const Header = () => {
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle color="transparent">
             <img
-              src={user1}
+              src={userInfor.avatar}
               alt="profile"
               className="rounded-circle"
               width="30"
