@@ -86,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
                 account.setCreatedDate(LocalDate.now());
                 account=accountRepository.save(account);
 
-              //  emailService.sendVerifyAccount(account.getEmail(),account.getVerifiEmailCode());
+                emailService.sendVerifyAccount(account.getEmail(),account.getVerifiEmailCode());
                 return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,account));
             }
             return  ResponseEntity.ok(new Result("Email is used", enumResultStatus.ERROR,null));
