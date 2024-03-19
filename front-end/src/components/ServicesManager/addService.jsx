@@ -1,56 +1,55 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Form, Button, notification, Input } from "antd";
 import axios from "axios";
+import { getUserInfoFromCookie } from "../../services/cookeiService";
 
 const AddService = () => {
   const [form] = Form.useForm();
-  const [userId, setUserId] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const createdByValue = getUserInfoFromCookie.mail;
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        // Gửi yêu cầu lấy userId từ server
-        const response = await axios.get("http://localhost:9999/userid");
-        // Lưu userId vào state
-        setUserId(response.data.userId);
-      } catch (error) {
-        console.error("Error fetching userId:", error);
-        // Xử lý lỗi nếu cần thiết
-      }
-    };
 
-    // Gọi hàm fetchUserId khi component được tải lần đầu
-    fetchUserId();
-  }, []);
 
   const handleAddService = async (values) => {
     try {
-      const payload = {
-        serviceTitle: values.serviceTitle,
-        serviceDetail: values.serviceDetail,
-        price: values.price,
-        salePrice: values.salePrice,
-        categoryId: 1,
-        createdBy: userId, // Sử dụng userId lấy được từ server
-      };
+      const formData = new FormData();
+      formData.append('file', imageFile); // imageFile là biến chứa hình ảnh được chọn
+      formData.append('serviceTitle', values.serviceTitle);
+      formData.append('serviceDetail', values.serviceDetail);
+      formData.append('price', values.price);
+      formData.append('salePrice', values.salePrice);
+      formData.append('categoryId', 1);
+      formData.append('createdBy', createdByValue);
 
-      // Gửi yêu cầu thêm dịch vụ đến backend
-      const response = await axios.post("http://localhost:9999/manager/service/add", payload);
-
+  
+      console.log('FormData:', formData);
+  
+      const response = await axios.post("http://localhost:9999/manager/service/add", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+  
       notification.success({
         message: "Success",
         description: "Service has been added successfully!",
       });
-      
+  
       form.resetFields();
     } catch (error) {
       console.error("Error adding service:", error);
-
+  
       notification.error({
         message: "Error",
         description: "An error occurred while adding service.",
       });
     }
+  };
+  
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
   };
 
   return (
@@ -93,6 +92,9 @@ const AddService = () => {
                 rules={[{ required: true, message: "Please enter sale price!" }]}
               >
                 <Input />
+              </Form.Item>
+              <Form.Item label="Upload Image">
+                <input type="file" onChange={handleFileChange} />
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit">
