@@ -313,9 +313,8 @@ const UserTable = () => {
     const [avatarByAdmin, setAvatarByAdmin] = useState(null);
 
     const handleChangeImageByAdmin = (info) => {
-        if (info.file.status === 'done') {
-            setAvatarByAdmin(info.file.response.url);
-        }
+        const file = info.file.originFileObj;
+        setAvatarByAdmin(file);
     };
     const handleCreateUser = async () => {
         await createUserByAdmin(CreateUserData.fName
