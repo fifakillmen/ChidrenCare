@@ -1,5 +1,5 @@
 import axios from "axios"
-import { getAccessToken,getDataFromCookies, saveToCookies, deleteCookies } from './cookeiService'
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies, getUserInfoFromCookie } from './cookeiService'
 
 const REST_API_BASE_URL = 'http://localhost:9999/user/'
 // http://localhost:9999/user/deleteUser
@@ -46,7 +46,7 @@ export const searchUser = (firstName, lastName, dob, targetPageNumber) => {
         headers: headers
     });
 };
-export const updateUser = (UserId,firstName, lastName, dob, phone, address, gender, avatarFile) => {
+export const updateUser = (UserId, firstName, lastName, dob, phone, address, gender, avatarFile) => {
     const accessToken = getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
@@ -76,6 +76,28 @@ export const deleteUser = (UserId) => {
 
     return axios.delete(REST_API_BASE_URL + 'deleteUser', {
         headers: headers,
-        data: formData 
+        data: formData
+    });
+};
+export const createUserByAdmin = async (firstName, lastName, dob, phone, email, address, gender, avatarFile) => {
+    const accessToken = getAccessToken();
+    const UserAdmin = getUserInfoFromCookie();
+    const headers = {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": 'multipart/form-data'
+    };
+    const formData = new FormData();
+    formData.append('AdminId', UserAdmin.userId);
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('dob', dob);
+    formData.append('phone', phone);
+    formData.append('email', email);
+    formData.append('address', address);
+    formData.append('gender', gender);
+    formData.append('avatarFile', avatarFile);
+
+    return await axios.post(REST_API_BASE_URL + 'addUserByAdmin', formData, {
+        headers: headers
     });
 };

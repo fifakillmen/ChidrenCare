@@ -30,4 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
                       @Param("lastName") String lastName,
                       @Param("dob") LocalDate dob,
                       Pageable pageable);
+	@Query("""
+		select u from User u where u.id=:userID
+	""")
+	User findUserWithUserID(@Param("userID") Long userID);
 }

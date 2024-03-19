@@ -1,6 +1,6 @@
 import axios from "axios";
 import { message } from 'antd';
-import { saveToCookies, setUserInfoToCookie } from './cookeiService';
+import { saveToCookies, setUserInfoToCookie, getDataFromCookies, deleteCookies } from './cookeiService';
 
 const REST_API_BASE_URL = 'http://localhost:9999/auth/';
 // http://localhost:9999/auth/checkAccessToken
@@ -14,7 +14,7 @@ export const login = async (email, password) => {
         password: password
     };
 
-   await axios.post(REST_API_BASE_URL + 'login', body, {
+    await axios.post(REST_API_BASE_URL + 'login', body, {
         headers: headers
     }).then(response => {
         if (response.data.data.accessToken !== null) {
@@ -36,6 +36,11 @@ export const login = async (email, password) => {
         }
     });
 };
+export const logout = async () => {
+    deleteCookies('accessToken');
+    deleteCookies('userInfo');
+    window.location.href = "/auth/login";
+};
 export const checkAccessToken = (accessToken) => {
     const headers = {
         "Authorization": `Bearer ${accessToken}`
@@ -50,9 +55,9 @@ export const checkAccessToken = (accessToken) => {
                 }
             })
             .catch(error => {
-                reject(error);
+                resolve(false);
             });
     });
 };
 
-    
+

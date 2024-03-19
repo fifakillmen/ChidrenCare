@@ -92,10 +92,12 @@ public class SecurityConfig {
                         .requestMatchers("/user/addUser").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/user/searchUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/deleteUser").hasAnyAuthority( "ADMIN")
+                        .requestMatchers("/user/addUserByAdmin").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/updateUser").hasAnyAuthority("USER","ADMIN")
                         // account
                         .requestMatchers("/account/searchEmailNoConnected").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/searchAccount").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/account/addAccountByAdmin").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/addAccount").permitAll()
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")

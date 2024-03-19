@@ -30,7 +30,7 @@ public class User {
     @Column(updatable = false)
     private LocalDate CreatedDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "created_by", updatable = false)
     private User createdBy;
 
