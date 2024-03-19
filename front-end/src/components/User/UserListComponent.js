@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, notification, Input, Form, Pagination, DatePicker, Select, Upload, message } from 'antd';
 import axios from 'axios';
-import { searchUser, deleteUser } from '../../services/userService';
-import { searchAccount } from '../../services/accountService';
+import { searchUser, deleteUser, createUserByAdmin } from '../../services/userService';
+import { searchAccount, updateAccount, createAccountByAdmin } from '../../services/accountService';
 
 import moment from 'moment';
 import { PlusOutlined } from '@ant-design/icons';
 import { updateUser } from '../../services/userService'
+import { async } from 'q';
+import { roles } from 'aria-query';
 
 const { Option } = Select;
 
@@ -14,7 +16,10 @@ const { Option } = Select;
 const UserTable = () => {
     const [userData, setUserData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalCreateUserVisible, setIsModalCreateUserVisible] = useState(false);
+
     const [isViewAccountModalVisible, setIsViewAccountModalVisible] = useState(false);
+    const [isViewCreateAccountModalVisible, setIsViewCreateAccountModalVisible] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchValues, setSearchValues] = useState({
         firstName: null,
@@ -42,6 +47,13 @@ const UserTable = () => {
     const [phone, setPhone] = useState('');
     const [avatarFile, setAvatarFile] = useState(null);
     //
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    //
+    const [selectedRoles, setSelectedRoles] = useState([]);
+    const handleRoleChange = (value) => {
+        setSelectedRoles(value);
+    };
     const handleUpdateInformation = () => {
         updateUser(selectedUser.id, fName, lName, dob, phone, address, gender, avatarFile)
             .then(response => {
@@ -71,8 +83,8 @@ const UserTable = () => {
         fetchUserData();
     }, [searchValues.targetPageNumber]);
 
-    const fetchUserData = () => {
-        searchUser(
+    const fetchUserData = async () => {
+        await searchUser(
             searchValues.firstName,
             searchValues.lastName,
             searchValues.dob,
@@ -132,31 +144,9 @@ const UserTable = () => {
     };
 
 
-    const handleDeleteUser = (userId) => {
-        deleteUser(userId)
-            .then(response => {
-                if (response && response.data && response.data.status === 'OK') {
-                    notification.success(
-                        {
-                            message: "Message",
-                            description: "Delete user Success!!!"
-                        }
-                    )
-                } else {
-                    notification.error(
-                        {
-                            message: "Message",
-                            description: "Delete user fail!!!"
-                        }
-                    )
-                }
-            })
-            .catch(error => {
-                message.error('An error occurred 4: ' + error.message);
-            });
-    };
-    const handleViewAccount = (userId) => {
-        searchAccount(userId)
+    
+    const handleViewAccount = async (userId) => {
+        await searchAccount(userId)
             .then(response => {
                 const responseData = response.data.data;
                 setAccountData({
@@ -166,7 +156,8 @@ const UserTable = () => {
                     role: responseData.role,
                     isActive: responseData.isActive,
                     accessToken: responseData.accessToken,
-                    createdDate: responseData.createdDate
+                    createdDate: responseData.createdDate,
+                    accessTokenActive: responseData.accessTokenActive
                 });
             })
             .catch(error => {
@@ -174,12 +165,72 @@ const UserTable = () => {
             });
         setIsViewAccountModalVisible(true);
     };
-    const handleUpdateAccount=()=>{
+    const [loading, setLoading] = useState(false);
+
+    const handleUpdateAccount = async () => {
+        setLoading(true);
+        try {
+            const requestData = {
+                email: accountData.email,
+                lsRole: accountData.role,
+                isActive: accountData.isActive,
+                accessTokenActive: accountData.accessTokenActive,
+            };
+            console.log(requestData);
+            const response = await updateAccount(requestData);
+            if (response && response.status === 'OK') {
+                notification.success({
+                    message: "Success",
+                    description: "Account updated successfully!"
+                });
+            } else {
+                notification.error({
+                    message: "Error",
+                    description: "Failed to update account"
+                });
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+            message.error('An error occurred: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const handleResetPassword = () => {
 
     }
-    const handleResetPassword=()=>{
-        
+    const handleAddUser = () => {
+        setIsViewCreateAccountModalVisible(true);
     }
+    const handleCreateAccount = async () => {
+        try {
+            const emailValue = email;
+            const passwordValue = password;
+            const rolesValue = selectedRoles;
+
+            const response = await createAccountByAdmin(emailValue, passwordValue, rolesValue);
+
+            if (response && response.data && response.data.status === 'OK') {
+                notification.success({
+                    message: "Message",
+                    description: "add account success full"
+                });
+                setIsViewCreateAccountModalVisible(false);
+                setIsModalCreateUserVisible(true);
+
+            } else {
+                notification.error({
+                    message: "Message",
+                    description: response.data.message
+                });
+            }
+        } catch (error) {
+            notification.error({
+                message: "Message",
+                description: error.message
+            });
+        }
+    };
 
     const columns = [
         {
@@ -226,7 +277,6 @@ const UserTable = () => {
                 <div>
                     <Button onClick={() => handleViewAccount(record.id)}>View Account</Button>
                     <Button type="primary" onClick={() => handleEditUser(record)}>Edit</Button>
-                    <Button danger onClick={() => handleDeleteUser(record.id)}>Delete</Button>
                 </div>
             ),
         },
@@ -244,6 +294,70 @@ const UserTable = () => {
     const onCancel = () => {
         setIsViewAccountModalVisible(false);
     };
+    const onCancelModal = () => {
+        setIsModalCreateUserVisible(false);
+    };
+    const onCancelModalCreateAccount = () => {
+        setIsViewCreateAccountModalVisible(false);
+    };
+
+    const [CreateUserData, setCreateUserData] = useState({
+        fName: '',
+        lName: '',
+        address: '',
+        gender: '',
+        dob: null,
+        phone: '',
+        avatarFile: null
+    });
+    const [avatarByAdmin, setAvatarByAdmin] = useState(null);
+
+    const handleChangeImageByAdmin = (info) => {
+        if (info.file.status === 'done') {
+            setAvatarByAdmin(info.file.response.url);
+        }
+    };
+    const handleCreateUser = async () => {
+        await createUserByAdmin(CreateUserData.fName
+            , CreateUserData.lName
+            , CreateUserData.dob
+            , CreateUserData.phone,
+            email,
+            CreateUserData.address,
+            CreateUserData.gender,
+            avatarByAdmin
+        ).then(response => {
+            if (response && response.data && response.data.status === 'OK') {
+                notification.success({
+                    message: "Message",
+                    description: "add account success full"
+                });
+                setIsViewCreateAccountModalVisible(false);
+                setIsModalCreateUserVisible(true);
+
+            } else {
+                notification.error({
+                    message: "Message",
+                    description: response.data.message
+                });
+            }
+        })
+            .catch(error => {
+                notification.error({
+                    message: "Message",
+                    description: error.message
+                });
+            })
+    };
+
+    const handleChange = (key, value) => {
+        setCreateUserData(prevState => ({
+            ...prevState,
+            [key]: value
+        }));
+    };
+
+
     return (
         <>
             <Form layout="inline" style={{ marginBottom: 16 }}>
@@ -272,6 +386,9 @@ const UserTable = () => {
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" onClick={handleSearchSubmit}>Search</Button>
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" onClick={handleAddUser}>Add User</Button>
                 </Form.Item>
             </Form>
 
@@ -466,39 +583,47 @@ const UserTable = () => {
                             <Input value={accountData.id} disabled />
                         </Form.Item>
                         <Form.Item label="Email">
-                            <Input value={accountData.email} />
+                            <Input value={accountData.email} onChange={(e) => setAccountData({ ...accountData, email: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="Password">
-                            <Input value={accountData.password} disabled />
+                            <Input disabled value={accountData.password} onChange={(e) => setAccountData({ ...accountData, password: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="Role" name="role">
                             <Select
                                 mode="multiple"
                                 style={{ width: '100%' }}
                                 defaultValue={accountData.role.map(role => role.name)}
+                                onChange={(value) => setAccountData({ ...accountData, role: value })}
                             >
-                                <Option value="ADMIN">ADMIN</Option>
-                                <Option value="STAFF">STAFF</Option>
-                                <Option value="USER">USER</Option>
+                                <Option value='ADMIN'>ADMIN</Option>
+                                <Option value='STAFF'>STAFF</Option>
+                                <Option value='USER'>USER</Option>
                             </Select>
                         </Form.Item>
 
                         <Form.Item label="Is Active" name="isActive">
-                            <Select style={{ width: '100%' }} defaultValue={accountData.isActive}>
-                                <Option value="ACTIVE">ACTIVE</Option>
-                                <Option value="INACTIVE">INACTIVE</Option>
-                                <Option value="BANED">BANED</Option>
+                            <Select
+                                style={{ width: '100%' }}
+                                defaultValue={accountData.isActive}
+                                onChange={(value) => setAccountData({ ...accountData, isActive: value })}
+                            >
+                                <Option value='ACTIVE'>ACTIVE</Option>
+                                <Option value='INACTIVE'>INACTIVE</Option>
+                                <Option value='BANED'>BANED</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item label="Access Token Active" name="accessTokenActive">
-                            <Select style={{ width: '100%' }} defaultValue={String(accountData.accessTokenActive)}>
+                            <Select
+                                style={{ width: '100%' }}
+                                defaultValue={String(accountData.accessTokenActive)}
+                                onChange={(value) => setAccountData({ ...accountData, accessTokenActive: value === "true" })}
+                            >
                                 <Option value="true">True</Option>
                                 <Option value="false">False</Option>
                             </Select>
                         </Form.Item>
-
                         <Form.Item label="Access Token">
-                            <Input value={accountData.accessToken} disabled />
+                            <Input disabled value={accountData.accessToken} onChange={(e) => setAccountData({ ...accountData, accessToken: e.target.value })} />
                         </Form.Item>
                         <Form.Item label="Created Date">
                             <Input value={accountData.createdDate} disabled />
@@ -510,8 +635,263 @@ const UserTable = () => {
                     </Form>
                 )}
             </Modal>
+            <Modal
+                title="Create Account"
+                visible={isViewCreateAccountModalVisible}
+                onCancel={onCancelModalCreateAccount}
+                footer={null}>
+                <Form
+                    autoComplete="off"
+                    labelCol={{ span: 10 }}
+                    wrapperCol={{ span: 14 }}
+                    onFinish={(values) => {
+                        handleCreateAccount();
+                    }}
+                    onFinishFailed={(error) => {
+                    }}
+                >
+                    <Form.Item
+                        name="email"
+                        label="Email"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter your email",
+                            },
+                            { type: "email", message: "Please enter a valid email" },
+                        ]}
+                        hasFeedback
+                    >
+                        <Input onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Type your email" />
+                    </Form.Item>
 
+                    <Form.Item
+                        name="password"
+                        label="Password"
+                        rules={[
+                            {
+                                required: true,
+                            },
+                            {
+                                pattern: new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,20})$/),
+                                message: "Please enter a valid password"
+                            },
+                        ]}
+                        hasFeedback
+                    >
+                        <Input.Password onChange={(e) => setPassword(e.target.value)} placeholder="Type your password" />
+                    </Form.Item>
 
+                    <Form.Item
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        dependencies={["password"]}
+                        rules={[
+                            {
+                                required: true,
+                            },
+                            {
+                                pattern: new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,20})$/),
+                                message: "Please enter a valid password"
+                            },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue("password") === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                        "The two passwords that you entered does not match."
+                                    );
+                                },
+                            }),
+                        ]}
+                        hasFeedback
+                    >
+                        <Input.Password placeholder="Confirm your password" />
+                    </Form.Item>
+                    <Form.Item label="Role" name="role">
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            value={selectedRoles}
+                            onChange={handleRoleChange}
+                        >
+                            <Option value='ADMIN'>ADMIN</Option>
+                            <Option value='STAFF'>STAFF</Option>
+                            <Option value='USER'>USER</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item wrapperCol={{ span: 24 }}>
+                        <Button block type="primary" htmlType="submit" >
+                            Create Account
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+                title="Create User"
+                visible={isModalCreateUserVisible}
+                onCancel={onCancelModal}
+                footer={null}
+            >
+                <div>
+                    <h4>User information</h4>
+                    <Form
+                        autoComplete="off"
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 16 }}
+                        onFinish={handleCreateUser}
+                        initialValues={{
+                            fName: CreateUserData.fName,
+                            lName: CreateUserData.lName,
+                            address: CreateUserData.address,
+                            gender: CreateUserData.gender,
+                            dob: CreateUserData.dob,
+                            phone: CreateUserData.phone,
+                        }}
+                    >
+                        <Form.Item
+                            name="fName"
+                            label="First Name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your first name",
+                                },
+                                {
+                                    pattern: new RegExp(/^[a-zA-Z\s]{2,25}$/),
+                                    message: "Please enter a valid first name"
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <Input
+                                placeholder="Type your first name"
+                                onChange={(e) => handleChange('fName', e.target.value)}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="lName"
+                            label="Last Name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your last name",
+                                },
+                                {
+                                    pattern: new RegExp(/^[a-zA-Z\s]{2,25}$/),
+                                    message: "Please enter a valid last name"
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <Input
+                                placeholder="Type your last name"
+                                onChange={(e) => handleChange('lName', e.target.value)}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="address"
+                            label="Address"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your address",
+                                },
+                                {
+                                    pattern: new RegExp(/^[a-zA-Z0-9\s\.,#-]{3,100}$/),
+                                    message: "Please enter a valid address"
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <Input
+                                placeholder="Type your address"
+                                onChange={(e) => handleChange('address', e.target.value)}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="gender"
+                            label="Gender"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please select your gender",
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <Select
+                                placeholder="Select your gender"
+                                onChange={(value) => handleChange('gender', value)}
+                            >
+                                <Option value="Male">Male</Option>
+                                <Option value="Female">Female</Option>
+                                <Option value="Other">Other</Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                            name="dob"
+                            label="Date of Birth"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please provide your date of birth",
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <DatePicker
+                                style={{ width: "100%" }}
+                                picker="date"
+                                placeholder="Chose date of birth"
+                                onChange={(date, dateString) => handleChange('dob', dateString)}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="phone"
+                            label="Phone Number"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please provide your phone number",
+                                },
+                                {
+                                    pattern: new RegExp(/^\+?[0-9]{8,15}$/),
+                                    message: "Please provide a valid phone number"
+                                },
+                            ]}
+                            hasFeedback
+                        >
+                            <Input
+                                placeholder="Type your phone number"
+                                onChange={(e) => handleChange('phone', e.target.value)}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Avatar" valuePropName="fileList" getValueFromEvent={avatarByAdmin} hasFeedback>
+                            <Upload listType="picture-card"
+                                multiple={false}
+                                maxCount={1}
+                                onChange={handleChangeImageByAdmin}
+                            >
+                                <button style={{ border: 0, background: 'none' }} type="button">
+                                    <PlusOutlined />
+                                    <div style={{ marginTop: 8 }}>Avatar</div>
+                                </button>
+                            </Upload>
+                        </Form.Item>
+
+                        <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+                            <Button type="primary" htmlType="submit">Create User</Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Modal>
         </>
     );
 };

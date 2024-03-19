@@ -29,6 +29,11 @@ const navigation = [
     href: "/admin/servicemanage",
     icon: "bi bi-box2-heart",
   },
+  {
+    title: "Users",
+    href: "/admin/user",
+    icon: "bi bi-box2-heart",
+  },
 ];
 
 const Sidebar = () => {

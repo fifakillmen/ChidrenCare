@@ -24,6 +24,7 @@ const Header = () => {
     useEffect(() => {
         // Kiểm tra xem userInfo có dữ liệu hay không để cập nhật trạng thái isLoggedIn
         if (userInfo && Object.keys(userInfo).length !== 0) {
+            console.log(userInfo.email);
             setIsLoggedIn(true);
         }
     }, [userInfo]); // Chỉ chạy effect khi userInfo thay đổi

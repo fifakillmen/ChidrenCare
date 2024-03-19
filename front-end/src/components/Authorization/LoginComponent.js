@@ -155,6 +155,9 @@ const LoginComponent = () => {
                                     <Form.Item >
                                         <a href='/auth/verifyemail'>Verify email?</a>
                                     </Form.Item>
+                                    <Form.Item >
+                                        <a href='/auth/signup'>Sign up</a>
+                                    </Form.Item>
                                 </Form>
 
                                 <div className="text-center">

@@ -21,8 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<Result> addUser(String email, Long Create_By_UserId,  String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
         try{
             User user = new User();
@@ -56,7 +59,7 @@ public class UserServiceImpl implements UserService {
             user.setIsActive(enumActive.ACTIVE);
             Account account= accountRepository.findByEmail(email);
             user = userRepository.save(user);
-            if (Create_By_UserId != 0L) {
+            if (Create_By_UserId > 0L) {
                 User created_user = userRepository.findUserById(Create_By_UserId);
                 user.setCreatedBy(created_user);
                 user = userRepository.save(user);
@@ -84,6 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public  ResponseEntity<Result> updateUser(Long Modified_By_UserId, Long UserId,  String firstName, String lastName, LocalDate dob, String phone, String address, MultipartFile avatarFile, enumGender gender) {
         try{
             User user = userRepository.findUserById(UserId);
@@ -136,32 +140,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public  ResponseEntity<Result> deleteUser(Long UserId) {
-        try{
-            User user = userRepository.findUserById(UserId);
-            if (user != null) {
-                userRepository.delete(user);
-                if (user.getFirstName() != null) {
-                    deleteAvatar(user.getId(), user.getAvatarFileName());
-                }
-                return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,true));
-            }
-            return ResponseEntity.ok(new Result("FAIL", enumResultStatus.OK,false));
-        }catch (Exception ex){
-            if (ex instanceof ConstraintViolationException) {
-                // Lỗi validate dữ liệu
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Validate value of account in delete User", enumResultStatus.ERROR, ex.getMessage()));
-
-            } else if (ex instanceof DataIntegrityViolationException) {
-                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Data integrity constraint violation error in delete User", enumResultStatus.ERROR, ex.getMessage()));
-            } else {
-                // Các lỗi khác
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Other Error", enumResultStatus.ERROR, ex.getMessage()));
-            }
-        }
-    }
 
     @Override
     public  UserDto findUserByEmail(String email) {

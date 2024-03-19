@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { checkAccessToken } from './authService';
+import { checkAccessToken, logout } from './authService';
 
 export const saveToCookies = (name, data) => {
     Cookies.set(name, data);
@@ -33,6 +33,10 @@ export function getUserInfoFromCookie() {
     }
     return null; // Trả về null nếu không tìm thấy cookie
 };
+
+
+
+
 export function getAccessToken() {
     const data = Cookies.get("accessToken");
 
@@ -40,8 +44,8 @@ export function getAccessToken() {
         if (checkAccessToken(data)) {
             return data;
         }
-    }else{
-        window.location.href = "/auth/login";
+    } else {
+        logout();
     }
 };
 

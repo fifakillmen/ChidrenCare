@@ -44,6 +44,8 @@ root.render(
                 <Route path="starter" element={<Starter />} />
                 <Route path="feedback" element={<Feedback />} />
                 <Route path="children" element={<Children />} />
+                <Route path="user" element={<UserList />} />
+
                 
                 {/* <Route path="newpost" element={<NewPost />} /> */}
                 <Route path="managePost" element={<ManagePost />} />
@@ -63,7 +65,6 @@ root.render(
             <Route path={"/children"} element={<CreateChildren />} />
             <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
             <Route path="/auth/verifyemail" element={<VerifyEmail />} />
-            <Route path="/listUser" element={<UserList />} />
             <Route path="/post" element={<Post />} />
             <Route path="postdetail/:id" element={<PostDetail />} /> 
             <Route path="/blog" element={<Blog />} />

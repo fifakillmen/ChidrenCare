@@ -2,6 +2,8 @@ package com.v1.ChildrenCare.restController;
 
 import com.v1.ChildrenCare.configuration.Security.CustomUserDetails;
 import com.v1.ChildrenCare.constaint.Result;
+import com.v1.ChildrenCare.entity.Role;
+import com.v1.ChildrenCare.enumPack.enumActive;
 import com.v1.ChildrenCare.enumPack.enumRole;
 import com.v1.ChildrenCare.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,19 +43,19 @@ public class AccountRestController {
     }
     @PostMapping("/addAccountByAdmin")
     public ResponseEntity<Result> addAccountByAdmin(@RequestBody Map<String, Object> requestBody) {
+        Integer adminIdInteger = (Integer) requestBody.get("AdminId");
+        Long adminId = adminIdInteger != null ? adminIdInteger.longValue() : 0L;
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
         List<String> roles = (List<String>) requestBody.get("lsRole");
-        // lấy user từ token login nếu chưa có user nào trong token thì set Modified_By_UserId =0
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        List<enumRole> roleList= new ArrayList<>();
-        for (String r :roles){
+        List<enumRole> roleList = new ArrayList<>();
+        for (String r : roles) {
             roleList.add(enumRole.valueOf(r));
         }
-        return accountService.createAccount(userDetails.getAccount().getId(),email, password,roleList);
+        return accountService.createAccount(adminId, email, password, roleList);
     }
+
 
 
 
@@ -74,14 +76,24 @@ public class AccountRestController {
         String password = (String) requestBody.get("password");
         List<String> roles = (List<String>) requestBody.get("lsRole");
 
-        // lấy user từ token login nếu chưa có user nào trong token thì set Modified_By_UserId =0
-        Long Modify_By_UserId= 0L;
-        List<enumRole> roleList= new ArrayList<>();
-        for (String r :roles){
-            roleList.add(enumRole.valueOf(r));
+        // Lấy user từ token login, nếu chưa có user nào trong token thì set Modified_By_UserId = 0
+        Long modifyByUserId = 0L;
+
+        // Mặc định cho các trường mới là null hoặc giá trị mặc định của kiểu dữ liệu tương ứng
+        enumActive isActive = null;
+        Boolean accessTokenActive = null;
+
+        // Kiểm tra xem các trường mới có trong requestBody hay không
+        if (requestBody.containsKey("isActive")) {
+            isActive = enumActive.valueOf((String) requestBody.get("isActive")) ;
         }
-        return accountService.updateAccount(Modify_By_UserId,email, password, roleList);
+        if (requestBody.containsKey("accessTokenActive")) {
+            accessTokenActive = (Boolean) requestBody.get("accessTokenActive");
+        }
+
+        return accountService.updateAccount(modifyByUserId, email, password, roles, isActive, accessTokenActive);
     }
+
 
     //boolean
     @PostMapping("/resetPassword")
