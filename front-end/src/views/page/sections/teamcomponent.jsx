@@ -17,14 +17,6 @@ const TeamComponent = () => {
                         <Col lg="3" md="6" className="m-b-30">
                             <Row className="no-gutters m-2">
                                 <Col md="12" className="pro-pic t1">
-                                    {/*<div className="card-img-overlay">*/}
-                                    {/*    <ul className="list-inline">*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-facebook"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-twitter"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-instagram"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-behance"></i></a></li>*/}
-                                    {/*    </ul>*/}
-                                    {/*</div>*/}
                                 </Col>
                                 <Col md="12">
                                     <div className="p-t-10">
@@ -38,14 +30,6 @@ const TeamComponent = () => {
                         <Col lg="3" md="6" className="m-b-30">
                             <Row className="no-gutters m-2">
                                 <Col md="12" className="col-md-12 pro-pic t2">
-                                    {/*<div className="card-img-overlay">*/}
-                                    {/*    <ul className="list-inline">*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-facebook"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-twitter"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-instagram"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-behance"></i></a></li>*/}
-                                    {/*    </ul>*/}
-                                    {/*</div>*/}
                                 </Col>
                                 <Col md="12">
                                     <div className="p-t-10">
@@ -59,14 +43,6 @@ const TeamComponent = () => {
                         <Col lg="3" md="6" className="m-b-30">
                             <Row className="no-gutters m-2">
                                 <Col md="12" className="col-md-12 pro-pic t3">
-                                    {/*<div className="card-img-overlay">*/}
-                                    {/*    <ul className="list-inline">*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-facebook"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-twitter"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-instagram"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-behance"></i></a></li>*/}
-                                    {/*    </ul>*/}
-                                    {/*</div>*/}
                                 </Col>
                                 <Col md="12">
                                     <div className="p-t-10">
@@ -80,14 +56,6 @@ const TeamComponent = () => {
                         <Col lg="3" md="6" className="m-b-30">
                             <Row className="no-gutters m-2">
                                 <Col md="12" className="col-md-12 pro-pic t4">
-                                    {/*<div className="card-img-overlay">*/}
-                                    {/*    <ul className="list-inline">*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-facebook"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-twitter"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-instagram"></i></a></li>*/}
-                                    {/*        <li className="list-inline-item"><a href="#"><i className="fa fa-behance"></i></a></li>*/}
-                                    {/*    </ul>*/}
-                                    {/*</div>*/}
                                 </Col>
                                 <Col md="12">
                                     <div className="p-t-10">

@@ -1,18 +1,18 @@
-import {DatePicker, Button, Form, Input, Modal, notification, Radio, Table, Space} from "antd";
-import React, {useState, useRef, useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {Button, DatePicker, Form, Input, Modal, notification, Radio, Space, Table} from "antd";
+import axios from "axios";
+import {getUserInfoFromCookie} from "../../../services/cookeiService";
 import {
     CheckCircleOutlined,
-    SearchOutlined,
     CloseCircleOutlined,
     DeleteOutlined,
-    EditOutlined
-} from '@ant-design/icons';
-import axios from "axios";
-import moment from 'moment';
-import Highlighter from 'react-highlight-words';
-import {getUserInfoFromCookie} from '../../services/cookeiService';
+    EditOutlined,
+    SearchOutlined
+} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
+import moment from "moment/moment";
 
-const TableChildren = () => {
+const Createchildrens = () => {
     const [children, setChildren] = useState([]);
     const [childrenSelected, setChildrenSelect] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,8 +26,9 @@ const TableChildren = () => {
     const getChildrenList = () => {
         axios.get('http://localhost:9999/api/children/list')
             .then(res => {
-                // console.log(res.data.data);
-                setChildren(res.data.data.map((record, index) => {
+                const userEmail = getUserInfoFromCookie().email;
+                const filteredChildren = res.data.data.filter(child => child.createdBy === userEmail);
+                setChildren(filteredChildren.map((record, index) => {
                     return {
                         index: index + 1,
                         id: record.id,
@@ -84,7 +85,7 @@ const TableChildren = () => {
             dob: values.dob,
             gender: values.gender,
             isActive: "ACTIVE", // Always set to ACTIVE
-            createdBy: getUserInfoFromCookie().lname,
+            createdBy: getUserInfoFromCookie().email,
         };
         axios.post('http://localhost:9999/api/children/create', payload)
             .then(res => {
@@ -327,10 +328,10 @@ const TableChildren = () => {
     ]
     return (
         <>
-            <h1>Manager Children</h1>
-            <div>
+            <h1 className="container">Manager Children</h1>
+            <div className="container">
                 <div style={{marginBottom: 16}}>
-                    <Button type="primary" onClick={showCreateModal}>Create</Button>
+                    <Button type="primary" onClick={showCreateModal}>Create New Children</Button>
                 </div>
                 <Table
                     columns={columns}
@@ -470,6 +471,5 @@ const TableChildren = () => {
             </div>
         </>
     );
-};
-
-export default TableChildren;
+}
+export default Createchildrens;

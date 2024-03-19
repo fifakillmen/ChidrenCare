@@ -443,8 +443,10 @@ const SignUpComponent = () => {
                                                         </Button>
                                                     </Form.Item>)}
                                             </Form>
-
-
+                                            <br></br>
+                                            <Form.Item >
+                                                <a href='/auth/login'>You have a account, Login ?</a>
+                                            </Form.Item>
                                         </div>
                                     )
                                     }

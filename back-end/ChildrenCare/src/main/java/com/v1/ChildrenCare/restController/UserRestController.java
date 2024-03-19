@@ -46,6 +46,22 @@ public class UserRestController {
         return userService.addUser(email,Create_By_UserId, firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
     }
 
+    @PostMapping("/addUserByAdmin")
+    public synchronized ResponseEntity<Result> addUser(
+            @RequestParam(name = "AdminId") Long adminId,
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "firstName") String firstName,
+            @RequestParam(name = "lastName") String lastName,
+            @RequestParam(name = "dob") String dobString,
+            @RequestParam(name = "phone") String phone,
+            @RequestParam(name = "address") String address,
+            @RequestParam(name = "gender") String gender,
+            @RequestParam(name = "avatarFile", required = false) MultipartFile avatarFile) throws IOException, GeneralSecurityException {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate dob = LocalDate.parse(dobString, formatter);
+        return userService.addUser(email,adminId, firstName,lastName,dob,phone,address,avatarFile, enumGender.valueOf(gender));
+    }
+
 
     @PostMapping("/searchUser")
     public ResponseEntity<Result> searchUser(
@@ -78,11 +94,6 @@ public class UserRestController {
         Long Modified_By_UserId= 0L;
 
         return userService.updateUser(Modified_By_UserId, UserId,  firstName,  lastName,  dob,  phone,  address,  avatarFile,  enumGender.valueOf(gender));
-    }
-
-    @DeleteMapping("/deleteUser")
-    public synchronized  ResponseEntity<Result> deleteUser(@RequestParam(name = "UserId") Long UserId) {
-        return userService.deleteUser(UserId);
     }
 
 }

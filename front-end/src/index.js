@@ -32,6 +32,7 @@ import NewPost from './views/Admin/Post/newPost.jsx'
 import PostDetail from './views/Admin/Post/PostDetail.jsx'
 import Blog from './components/Blog/Blog.jsx'
 import ManagePost from './views/Admin/ManagePost.jsx';
+import CreateChildren from "./views/page/CreateChildren";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -43,6 +44,8 @@ root.render(
                 <Route path="starter" element={<Starter />} />
                 <Route path="feedback" element={<Feedback />} />
                 <Route path="children" element={<Children />} />
+                <Route path="user" element={<UserList />} />
+
                 
                 {/* <Route path="newpost" element={<NewPost />} /> */}
                 <Route path="managePost" element={<ManagePost />} />
@@ -59,9 +62,9 @@ root.render(
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
             <Route path={"/feedback"} element={<CreateFeedback />} />
+            <Route path={"/children"} element={<CreateChildren />} />
             <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
             <Route path="/auth/verifyemail" element={<VerifyEmail />} />
-            <Route path="/listUser" element={<UserList />} />
             <Route path="/post" element={<Post />} />
             <Route path="postdetail/:id" element={<PostDetail />} /> 
             <Route path="/blog" element={<Blog />} />

@@ -73,16 +73,20 @@ public class AccountServiceImpl implements AccountService {
                 account.setPassword(passwordEncoder.encode(password));
                 account.setIsActive(enumActive.INACTIVE);
                 account.setAccessTokenActive(false);
+                account.setVerifiEmailCode(generateRandomCode());
                 account = uRole(roles, account);
                 if (Created_By_AccountId!=0){
-                    Optional<Account> crA= accountRepository.findById(Created_By_AccountId);
-                    if(crA.isEmpty()) account.setCreatedBy(crA.get());
+                    Account crA= accountRepository.findAccountByUserId(Created_By_AccountId);
+                    if(crA!=null){
+                        account.setIsActive(enumActive.ACTIVE);
+                        account.setVerifiEmailCode(null);
+                        account.setCreatedBy(crA);
+                    }
                 }
                 account.setCreatedDate(LocalDate.now());
-                account.setVerifiEmailCode(generateRandomCode());
                 account=accountRepository.save(account);
 
-              //  emailService.sendVerifyAccount(account.getEmail(),account.getVerifiEmailCode());
+                emailService.sendVerifyAccount(account.getEmail(),account.getVerifiEmailCode());
                 return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,account));
             }
             return  ResponseEntity.ok(new Result("Email is used", enumResultStatus.ERROR,null));
@@ -102,40 +106,52 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity<Result> updateAccount(Long modify_By_UserId, String email, String password, List<enumRole> roles) {
-        try{
+    public ResponseEntity<Result> updateAccount(Long modify_By_UserId, String email, String password, List<String> roles, enumActive isActive, Boolean accessTokenActive) {
+        try {
             Account account = accountRepository.findByEmail(email);
             if (account != null) {
                 if (password != null) {
                     account.setPassword(passwordEncoder.encode(password));
                 }
-                if (! roles.isEmpty()) {
-                    account = uRole(roles, account);
+                if (!roles.isEmpty()) {
+                    List<Role> newRoles = new ArrayList<>();
+                    for (String r : roles) {
+                        newRoles.add(roleRepository.findRoleByName(enumRole.valueOf(r)));
+                    }
+                    account.setRole(newRoles);
                 }
-                if (modify_By_UserId!=0){
-                    User mdU= userRepository.findUserById(modify_By_UserId);
-                    if(mdU!=null){
+
+                if (modify_By_UserId != 0) {
+                    User mdU = userRepository.findUserById(modify_By_UserId);
+                    if (mdU != null) {
                         account.setModifiedBy_UserId(mdU.getId());
                     }
                 }
-                return  ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,accountRepository.save(account)));
+                if (isActive != null) {
+                    account.setIsActive(isActive);
+                }
+                if (accessTokenActive != null) {
+                    account.setAccessTokenActive(accessTokenActive);
+                }
+                return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK, accountRepository.save(account)));
             }
-            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
-        }catch (Exception ex){
+            return ResponseEntity.ok(new Result("Cannot find Account", enumResultStatus.ERROR, null));
+        } catch (Exception ex) {
             if (ex instanceof ConstraintViolationException) {
                 // Lỗi validate dữ liệu
-                return  ResponseEntity.ok(new Result("Validate value of account in update Account", enumResultStatus.OK,null));
+                return ResponseEntity.ok(new Result("Validate value of account in update Account", enumResultStatus.ERROR, null));
 
             } else if (ex instanceof DataIntegrityViolationException) {
                 // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
-                return  ResponseEntity.ok(new Result("Validate value of account in update Account", enumResultStatus.OK,null));
+                return ResponseEntity.ok(new Result("Validate value of account in update Account", enumResultStatus.ERROR, null));
 
             } else {
                 // Các lỗi khác
-                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
+                return ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.ERROR, null));
             }
         }
     }
+
 
     @Override
     public ResponseEntity<Result> resetPassword(String email) {
