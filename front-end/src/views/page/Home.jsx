@@ -9,6 +9,8 @@ import BlogComponent from "./sections/blogcomponent";
 import ContactComponent from "./sections/contactcomponent";
 import CallToAction from "../../components/homepage/call-to-action/CallToAction";
 import PropTypes from "prop-types";
+import BannerComponent from "./sections/bannercomponent";
+import Banner from "../../components/homepage/banner/banner";
 
 
 const Home = () => {
@@ -18,13 +20,11 @@ const Home = () => {
             <Header/>
             <div className="page-wrapper">
                 <div className="container-fluid">
-                    <FormBannerComponent/>
+                    <Banner/>
                     <PricingComponent/>
                     <TeamComponent/>
-                    <CallToAction/>
                     <TestimonialComponent/>
                     <BlogComponent/>
-                    <ContactComponent/>
                 </div>
             </div>
             <Footer/>

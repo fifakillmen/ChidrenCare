@@ -78,6 +78,7 @@ const Header = () => {
                                                 <DropdownItem>
                                                     <Link to="/profile">Profile</Link> {/* Link tới trang Profile */}
                                                 </DropdownItem>
+                                                <DropdownItem><Link to="/children">Children Manager</Link></DropdownItem>
                                                 <DropdownItem onClick={handleLogout}>Logout</DropdownItem> {/* Xử lý logout */}
                                             </DropdownMenu>
                                         </UncontrolledDropdown>
