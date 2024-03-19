@@ -8,9 +8,9 @@ const HeaderBanner = () => {
             <Container>
                 <Row className="justify-content-center">
                     <Col lg="8" md="6" className="align-self-center text-center">
-                        <h1 className="title">Wrapkit Lite</h1>
-                        <h4 className="subtitle font-light">Powerful Reactstrap UI Kit with<br /> Beautiful Pre-Built Demos</h4>
-                        <Link to="/#coming" className="btn btn-md m-t-30 btn-info-gradiant font-14">Upgrade To Pro</Link>
+                        <h1 className="title">CHILDREN CARE</h1>
+                        <h4 className="subtitle font-light">Your health<br /> is our priority</h4>
+                        <Link to="/service" className="btn btn-md m-t-30 btn-info-gradiant font-14">All service</Link>
                     </Col>
                 </Row>
             </Container>

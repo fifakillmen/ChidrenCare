@@ -32,6 +32,7 @@ import NewPost from './views/Admin/Post/newPost.jsx'
 import PostDetail from './views/Admin/Post/PostDetail.jsx'
 import Blog from './components/Blog/Blog.jsx'
 import ManagePost from './views/Admin/ManagePost.jsx';
+import CreateChildren from "./views/page/CreateChildren";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -59,6 +60,7 @@ root.render(
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
             <Route path={"/feedback"} element={<CreateFeedback />} />
+            <Route path={"/children"} element={<CreateChildren />} />
             <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
             <Route path="/auth/verifyemail" element={<VerifyEmail />} />
             <Route path="/listUser" element={<UserList />} />
