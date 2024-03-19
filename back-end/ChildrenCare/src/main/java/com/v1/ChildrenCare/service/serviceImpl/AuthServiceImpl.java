@@ -71,6 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
             UserDto userDto= userService.findUserByEmail(myAccount.getEmail());
             if (userDto != null){
+                loginResponse.setUserId(userDto.getId());
                 loginResponse.setFname(userDto.getFirstName());
                 loginResponse.setLname(userDto.getLastName());
                 loginResponse.setAvatar(userDto.getAvartaLink());

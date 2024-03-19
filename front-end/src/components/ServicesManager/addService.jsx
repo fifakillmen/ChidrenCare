@@ -1,130 +1,110 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Row, Col, Form, Button, notification, Input } from "antd";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 
-function AddPostModal({ show, handleClose, handleAddProduct }) {
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const AddService = () => {
+  const [form] = Form.useForm();
+  const [userId, setUserId] = useState(null);
 
-  const onSubmit = async (data) => {
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        // Gửi yêu cầu lấy userId từ server
+        const response = await axios.get("http://localhost:9999/userid");
+        // Lưu userId vào state
+        setUserId(response.data.userId);
+      } catch (error) {
+        console.error("Error fetching userId:", error);
+        // Xử lý lỗi nếu cần thiết
+      }
+    };
+
+    // Gọi hàm fetchUserId khi component được tải lần đầu
+    fetchUserId();
+  }, []);
+
+  const handleAddService = async (values) => {
     try {
-      const response = await axios.post(
-        "http://localhost:9999/manager/service/add",
-        data,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const payload = {
+        serviceTitle: values.serviceTitle,
+        serviceDetail: values.serviceDetail,
+        price: values.price,
+        salePrice: values.salePrice,
+        categoryId: 1,
+        createdBy: userId, // Sử dụng userId lấy được từ server
+      };
 
-      console.log(response.data);
+      // Gửi yêu cầu thêm dịch vụ đến backend
+      const response = await axios.post("http://localhost:9999/manager/service/add", payload);
 
-      setSuccessMessage("Service submitted successfully!");
-      setErrorMessage(null);
-
-      setTimeout(() => {
-        navigate("/admin/servicemanage");
-      }, 2000);
+      notification.success({
+        message: "Success",
+        description: "Service has been added successfully!",
+      });
+      
+      form.resetFields();
     } catch (error) {
-      console.log(error.response.data.message);
-      setErrorMessage(
-        "An error occurred while submitting the form. " +
-          error.response.data.message
-      );
-      setSuccessMessage(null);
+      console.error("Error adding service:", error);
+
+      notification.error({
+        message: "Error",
+        description: "An error occurred while adding service.",
+      });
     }
   };
 
   return (
     <div>
-      <Container>
-        <Row>
+      <div>
+        <Row justify="center">
           <Col>
-            <h2 style={{ textAlign: "center" }}>List of Service</h2>
+            <h2 style={{ textAlign: "center" }}>Add Service</h2>
           </Col>
         </Row>
-        {errorMessage && (
-          <p className="alert alert-danger">{errorMessage}</p>
-        )}
-        {successMessage && (
-          <p className="alert alert-success">{successMessage}</p>
-        )}
-        <Form onSubmit={handleSubmit(onSubmit)} className="container mt-5 mb-5">
-          <Form.Group className="mb-3" controlId="serviceTitle">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter title"
-              {...register("serviceTitle", { required: true })}
-            />
-            {errors.serviceTitle && (
-              <p className="text-danger">Title is required</p>
-            )}
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="serviceDetail">
-            <Form.Label>Content</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              placeholder="Enter content"
-              {...register("serviceDetail", { required: true })}
-            />
-            {errors.serviceDetail && (
-              <p className="text-danger">Content is required</p>
-            )}
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="price">
-            <Form.Label>Price</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter price"
-              {...register("price", { required: true, pattern: /^[0-9]+$/ })}
-            />
-            {errors.price && errors.price.type === "required" && (
-              <p className="text-danger">Price is required</p>
-            )}
-            {errors.price && errors.price.type === "pattern" && (
-              <p className="text-danger">Price must be a non-negative number</p>
-            )}
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="salePrice">
-            <Form.Label>Sale Price</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter sale price"
-              {...register("salePrice", { pattern: /^[0-9]+$/ })}
-            />
-            {errors.salePrice && errors.salePrice.type === "pattern" && (
-              <p className="text-danger">Sale Price must be a non-negative number</p>
-            )}
-          </Form.Group>
-
-          {/* Thêm trường nhập userID */}
-          <Form.Group className="mb-3" controlId="userId">
-            <Form.Label>User ID</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter user ID"
-              {...register("createdBy", { required: true })}
-            />
-            {errors.userId && <p className="text-danger">User ID is required</p>}
-          </Form.Group>
-
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-      </Container>
+      </div>
+      <div className="contact1 container">
+        <Row justify="center">
+          <Col lg={14}>
+            <Form form={form} onFinish={handleAddService}>
+              <Form.Item
+                name="serviceTitle"
+                label="Service Title"
+                rules={[{ required: true, message: "Please enter service title!" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="serviceDetail"
+                label="Service Detail"
+                rules={[{ required: true, message: "Please enter service detail!" }]}
+              >
+                <Input.TextArea />
+              </Form.Item>
+              <Form.Item
+                name="price"
+                label="Price"
+                rules={[{ required: true, message: "Please enter price!" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="salePrice"
+                label="Sale Price"
+                rules={[{ required: true, message: "Please enter sale price!" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Add Service
+                </Button>
+              </Form.Item>
+            </Form>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
-}
+};
 
-export default AddPostModal;
+export default AddService;
