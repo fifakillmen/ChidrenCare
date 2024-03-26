@@ -45,7 +45,7 @@ public class ServiceChildrenServiceImpl implements ServiceChildrenService {
     }
 
     @Override
-    public Service saveService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, Long createBy, MultipartFile file) {
+    public Service saveService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, String createBy, MultipartFile file) {
         Service service;
         if (serviceId == null) {
             service = new Service();

@@ -1,4 +1,3 @@
-// Trong UpdatePost.jsx
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from 'axios';
@@ -17,18 +16,12 @@ function UpdatePost({ postId, handleCloseModal }) {
     axios.get(`http://localhost:9999/manager/post/getDetails?id=${postId}`)
       .then(response => {
         const postData = response.data; // Assuming response.data is an object containing post data
-        setFormData({
-          title: postData.title,
-          content: postData.content,
-          author: postData.author,
-          imageLink: postData.imageLink,
-          isActive: postData.isActive
-        });
+        setFormData(postData);
       })
       .catch(error => {
         console.error("Error fetching post details:", error);
       });
-  }, [postId]);
+  }, [postId]); // The effect will run whenever the postId changes
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,8 +92,8 @@ function UpdatePost({ postId, handleCloseModal }) {
           onChange={handleChange}
           required
         >
-          <option value="true">Active</option>
-          <option value="false">Inactive</option>
+          <option value="1">Active</option>
+          <option value="0">Inactive</option>
         </Form.Control>
       </Form.Group>
       <Button variant="primary" type="submit">

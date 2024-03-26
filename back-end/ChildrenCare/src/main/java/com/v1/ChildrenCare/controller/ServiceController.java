@@ -47,7 +47,7 @@ public class ServiceController {
             @RequestParam(value ="serviceTitle", required = false) String serviceTitle,
             @RequestParam(value ="serviceDetail", required = false) String serviceDetail,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "createdBy", required = false) Long createdBy,
+            @RequestParam(value = "createdBy", required = false) String createdBy,
             @RequestParam(value =  "price", required = false) String price,
             @RequestParam(value =  "salePrice", required = false) String salePrice) {
         try {
@@ -65,7 +65,7 @@ public class ServiceController {
             @RequestParam(value = "serviceDetail", required = false) String serviceDetail,
             @RequestParam(value = "price", required = false) String price,
             @RequestParam(value = "salePrice", required = false) String salePrice,
-            @RequestParam(value = "createdBy", required = false) Long createdBy,
+            @RequestParam(value = "createdBy", required = false) String createdBy,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
             @RequestParam(value = "isActive", required = false) String isActive) {
         try {

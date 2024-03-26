@@ -21,6 +21,7 @@ const ServicesManager = () => {
       .get("http://localhost:9999/manager/service/getlist")
       .then((response) => {
         setServices(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching posts:", error);
@@ -47,11 +48,12 @@ const ServicesManager = () => {
     setSelectedService(service);
     setShowDeleteModal(true);
   };
-  
 
   const handleDeleteConfirm = () => {
     axios
-      .delete(`http://localhost:9999/manager/service/delete?id=${selectedService.id}`)
+      .delete(
+        `http://localhost:9999/manager/service/delete?id=${selectedService.id}`
+      )
       .then(() => {
         setShowDeleteModal(false);
         fetchData();
@@ -87,7 +89,7 @@ const ServicesManager = () => {
                 <thead className="bg-light">
                   <tr>
                     <th>User Name</th>
-                    <th>Category</th>
+                    {/* <th>Category</th> */}
                     <th>Services Name</th>
                     <th>Detail</th>
                     <th>Price</th>
@@ -99,9 +101,16 @@ const ServicesManager = () => {
                 <tbody>
                   {services.map((service) => (
                     <tr key={service.id}>
-                      <td>{`${service.createdBy?.firstName || ""} ${service.createdBy?.lastName || ""}`}</td>
+                      <td>
+                        {typeof service.createdBy === "object"
+                          ? `${service.createdBy?.firstName || ""} ${
+                              service.createdBy?.lastName || ""
+                            }`
+                          : service.createdBy}
+                      </td>
 
-                      <td>{service.category.id}</td>
+                      {/* <td>{service.category ? service.category.id : ""}</td> */}
+
                       <td>{service.serviceTitle}</td>
                       <td>{service.serviceDetail}</td>
                       <td>{service.servicePrice}</td>
@@ -152,20 +161,19 @@ const ServicesManager = () => {
         />
       )}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-  <Modal.Header closeButton>
-    <Modal.Title>Confirm Delete</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>Are you sure you want to delete this service?</Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-      Cancel
-    </Button>
-    <Button variant="danger" onClick={handleDeleteConfirm}>
-      Delete
-    </Button>
-  </Modal.Footer>
-</Modal>
-
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this service?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteConfirm}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

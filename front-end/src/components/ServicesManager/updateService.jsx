@@ -5,7 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 
-function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdateError }) {
+function UpdateService({
+  service,
+  handleClose,
+  handleUpdateSuccess,
+  handleUpdateError,
+}) {
   const [previews, setPreviews] = useState([]);
   const [sizeError, setSizeError] = useState("");
   const navigate = useNavigate();
@@ -17,12 +22,20 @@ function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdate
   } = useForm();
 
   useEffect(() => {
-  }, [service]);
+    // Set initial form values with service data
+    if (service) {
+      setValue("title", service.serviceTitle || "");
+      setValue("content", service.serviceDetail || "");
+      setValue("price", service.servicePrice || "");
+      setValue("salePrice", service.salePrice || "");
+      // You can add more setValue calls for additional fields if needed
+    }
+  }, [service, setValue]);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    // formData.append("file", data.file);
-    formData.append("serviceId", 1);
+    // Append form data with updated values
+    formData.append("serviceId", service.id);
     formData.append("serviceTitle", data.title);
     formData.append("serviceDetail", data.content);
     formData.append("price", data.price);
@@ -39,31 +52,20 @@ function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdate
         }
       );
 
-        response = await axios.put(
-        `http://localhost:9999/manager/service/update`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
       console.log(response.data);
-      // Gọi hàm handleUpdateSuccess khi update thành công
+      // Call handleUpdateSuccess when update is successful
       handleUpdateSuccess();
     } catch (error) {
-    console.error("Error updating service:", error);
-    // Gọi hàm handleUpdateError khi có lỗi xảy ra
-    if (handleUpdateError) {
-      handleUpdateError(error);
+      console.error("Error updating service:", error);
+      // Call handleUpdateError in case of an error
+      if (handleUpdateError) {
+        handleUpdateError(error);
+      }
     }
-  }
-
   };
 
   const onDrop = (acceptedFiles, fileRejections) => {
-    // Cập nhật các trường preview và sizeError tương ứng
+    // Update previews and sizeError state accordingly
     setPreviews(acceptedFiles.map((file) => URL.createObjectURL(file)));
     if (fileRejections.length > 0) {
       setSizeError("File is too large. Maximum size allowed is 10MB.");
@@ -79,7 +81,7 @@ function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdate
   });
 
   const handleRemoveImage = (index) => {
-    // Xử lý khi click vào nút xóa ảnh
+    // Handle image removal
     setValue("images", (prevImages) =>
       prevImages.filter((_, i) => i !== index)
     );
@@ -103,9 +105,7 @@ function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdate
               id="title"
               className="form-control"
             />
-            {errors.title && (
-              <p className="text-danger">Title is required</p>
-            )}
+            {errors.title && <p className="text-danger">Title is required</p>}
           </div>
 
           <div className="mb-3">
@@ -136,9 +136,7 @@ function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdate
               <p className="text-danger">Price is required</p>
             )}
             {errors.price && errors.price.type === "pattern" && (
-              <p className="text-danger">
-                Price must be a non-negative number
-              </p>
+              <p className="text-danger">Price must be a non-negative number</p>
             )}
           </div>
 
@@ -166,9 +164,7 @@ function UpdateService({ service, handleClose, handleUpdateSuccess, handleUpdate
               <p>Choose an image, or drag 'n' drop multiple images here</p>
             </div>
             <div>
-              {sizeError && (
-                <p className="alert alert-danger">{sizeError}</p>
-              )}
+              {sizeError && <p className="alert alert-danger">{sizeError}</p>}
             </div>
             <div className="d-flex flex-wrap mt-2">
               {previews.map((preview, index) => (
