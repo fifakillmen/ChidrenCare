@@ -50,7 +50,7 @@ const LoginComponent = () => {
             if (userInfo && userInfo.roles) {
                 const isAdmin = userInfo.roles.some(role => role.name === "ADMIN");
                 if (isAdmin) {
-                    window.location.href = "/admin";
+                    window.location.href = "/admin/starter";
                 } else {
                     window.location.href = "/";
                 }

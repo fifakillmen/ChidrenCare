@@ -63,7 +63,7 @@ const Header = () => {
                                 <Nav navbar className="ms-auto mt-2 mt-lg-0">
                                     <NavItem className="active"><NavLink href="/">Trang Chủ</NavLink></NavItem>
                                     {userInfo && userInfo.roles && userInfo.roles.some(role => role.name === "ADMIN") && 
-                                        <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
+                                        <NavItem><NavLink href="/admin/starter">Admin</NavLink></NavItem>
                                     }
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav>
