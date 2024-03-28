@@ -17,6 +17,7 @@ import { ReactComponent as LogoWhite } from "../assets/images/logos/materialprow
 import { getUserInfoFromCookie, deleteCookies, getAccessToken } from '../services/cookeiService'
 import UserProfileComponent from '../components/User/UserProfileComponent';
 import ChangePasswordComponent from '../components/Authorization/ChangePasswordComponent';
+import { logout } from '../services/authService';
 
 
 const Header = () => {
@@ -35,9 +36,7 @@ const Header = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   const handleLogout = () => {
-    deleteCookies('accessToken');
-    deleteCookies('userInfo');
-    window.location.reload();
+    logout();
   };
   const toggleProfileModal = () => {
     setIsProfileModalVisible(!isProfileModalVisible);
@@ -88,11 +87,11 @@ const Header = () => {
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle color="transparent">
             <img
-              src={userInfor.avatar}
+              src={userInfor?.avatar || ""}
               alt="profile"
               className="rounded-circle"
               width="30"
-            ></img>
+            />
           </DropdownToggle>
           <DropdownMenu>
             <DropdownItem header>Info</DropdownItem>

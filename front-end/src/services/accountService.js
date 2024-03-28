@@ -113,3 +113,30 @@ export const changePassword = async (email, currentPassword, newPassword) => {
         headers: headers
     });
 };
+export const forgotPassword = async (email) => {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    const body = {
+        email: email,
+    };
+
+    return await axios.post(REST_API_BASE_URL + 'forgotPassword', body, {
+        headers: headers
+    });
+};
+export const changePasswordWithToken = async (token, newPassword) => {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    const body = {
+        token: token,
+        newPassword: newPassword
+    };
+
+    return await axios.post(REST_API_BASE_URL + 'changePasswordWithToken', body, {
+        headers: headers
+    });
+};
