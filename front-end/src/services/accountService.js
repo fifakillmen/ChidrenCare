@@ -1,5 +1,5 @@
 import axios from "axios"
-import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies,getUserInfoFromCookie } from './cookeiService'
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies, getUserInfoFromCookie } from './cookeiService'
 
 const REST_API_BASE_URL = 'http://localhost:9999/account/'
 
@@ -45,7 +45,7 @@ export const resendVerifyEmail = async (email) => {
     });
 };
 export const searchAccount = async (userId) => {
-    const accessToken = getAccessToken();
+    const accessToken = await getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`
     };
@@ -60,7 +60,7 @@ export const searchAccount = async (userId) => {
     });
 };
 export const updateAccount = async (requestData) => {
-    const accessToken = getAccessToken();
+    const accessToken = await getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json"
@@ -76,7 +76,7 @@ export const updateAccount = async (requestData) => {
     }
 };
 export const createAccountByAdmin = async (email, password, roles) => {
-    const accessToken = getAccessToken();
+    const accessToken = await getAccessToken();
     const UserAdmin = getUserInfoFromCookie();
 
     const headers = {
@@ -85,13 +85,31 @@ export const createAccountByAdmin = async (email, password, roles) => {
     };
 
     const body = {
-        AdminId:UserAdmin.userId,
+        AdminId: UserAdmin.userId,
         email: email,
         password: password,
         lsRole: roles
     };
 
     return await axios.post(REST_API_BASE_URL + 'addAccountByAdmin', body, {
+        headers: headers
+    });
+};
+export const changePassword = async (email, currentPassword, newPassword) => {
+    const accessToken = await getAccessToken();
+
+    const headers = {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+    };
+
+    const body = {
+        email: email,
+        currentPassword: currentPassword,
+        newPassword: newPassword
+    };
+
+    return await axios.post(REST_API_BASE_URL + 'changePassword', body, {
         headers: headers
     });
 };

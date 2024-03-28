@@ -20,4 +20,5 @@ public interface UserService {
 
     ResponseEntity<Result> searchUser(String firstName, String lastName, String email, LocalDate dob, Pageable pageable);
 
+    ResponseEntity<Result> findUser(Long userId);
 }

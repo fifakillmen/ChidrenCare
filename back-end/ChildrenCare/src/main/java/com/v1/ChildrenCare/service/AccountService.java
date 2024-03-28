@@ -15,7 +15,7 @@ public interface AccountService {
 
     ResponseEntity<Result> createAccount(Long Created_By_AccountId,String email,String password, List<enumRole> roles);
 
-    ResponseEntity<Result> updateAccount(Long modify_By_UserId, String email, String password, List<String> roles, enumActive isActivity, Boolean accessTokenActive);
+    ResponseEntity<Result> updateAccount(Long modify_By_UserId,Long accountId, String email, String password, List<String> roles, enumActive isActivity, Boolean accessTokenActive);
 
     ResponseEntity<Result> resetPassword(String email);
 
@@ -26,4 +26,6 @@ public interface AccountService {
     ResponseEntity<Result> verifyEmail(String email, String code);
 
     ResponseEntity<Result> resendVerifyEmail(String email);
+
+    ResponseEntity<Result> changePassword(String email, String currentPassword, String newPassword);
 }

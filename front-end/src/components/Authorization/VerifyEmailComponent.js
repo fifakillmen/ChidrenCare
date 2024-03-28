@@ -47,6 +47,19 @@ const VerifyEmailComponent = () => {
                                     <p>Verify Email</p>
                                 </h4>
 
+                                <Form
+                                    labelCol={{ span: 6 }}
+                                    wrapperCol={{ span: 16 }}
+                                >
+                                    <Form.Item label="Email">
+                                        <Input value={accountData.email} onChange={(e) => setAccountData({ ...accountData, email: e.target.value })} />
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button type="primary" onClick={handleUpdateAccount}>Update</Button>
+                                        <Button danger type="primary" onClick={handleResetPassword}>Reset Password</Button>
+                                    </Form.Item>
+                                </Form>
+
                                 <div className="text-center">
 
                                     <p>or sign up with:</p>

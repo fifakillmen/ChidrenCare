@@ -34,15 +34,15 @@ export function getUserInfoFromCookie() {
     return null; // Trả về null nếu không tìm thấy cookie
 };
 
-
-
-
-export function getAccessToken() {
+export async function getAccessToken() {
     const data = Cookies.get("accessToken");
-
     if (data) {
-        if (checkAccessToken(data)) {
+        const isAccestoken = await checkAccessToken(data);
+
+        if (isAccestoken) {
             return data;
+        } else {
+            logout();
         }
     } else {
         logout();
