@@ -1,20 +1,15 @@
 package com.v1.ChildrenCare.controller;
 
-import com.v1.ChildrenCare.constaint.Result;
-import com.v1.ChildrenCare.dto.PostDto;
 import com.v1.ChildrenCare.dto.response.GeneralResponse;
-import com.v1.ChildrenCare.entity.Post;
 import com.v1.ChildrenCare.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/manager/post")
-public class PostController {
+@RequestMapping("/user/post")
+public class UserPostController {
     @Autowired
     private PostService postService;
 
@@ -59,13 +54,13 @@ public class PostController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<GeneralResponse> updatePost(@RequestParam(name = "modifiedByUserId", required = false) String modifiedByUserId,
-                                                      @RequestParam(name = "postId", required = false) String postId,
-                                                      @RequestParam(name = "title", required = false) String title,
-                                                      @RequestParam(name = "content", required = false) String content,
-                                                      @RequestParam(name = "imageFile", required = false) MultipartFile imageFile) {
+    public ResponseEntity<GeneralResponse> updatePost(@RequestParam("modifiedByUserId") Long modifiedByUserId,
+                                                      @RequestParam("postId") Long postId,
+                                                      @RequestParam("title") String title,
+                                                      @RequestParam("content") String content,
+                                                      @RequestParam("imageFile") MultipartFile imageFile) {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(postService.updatePost(Long.parseLong(modifiedByUserId) , Long.parseLong(postId) , title, content, imageFile)));
+            return ResponseEntity.ok(GeneralResponse.of(postService.updatePost(modifiedByUserId, postId, title, content, imageFile)));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }

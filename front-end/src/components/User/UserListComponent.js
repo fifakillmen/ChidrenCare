@@ -3,7 +3,8 @@ import { Table, Button, Modal, notification, Input, Form, Pagination, DatePicker
 import moment from 'moment';
 import { PlusOutlined } from '@ant-design/icons';
 import { searchUser, deleteUser, createUserByAdmin, updateUser } from '../../services/userService';
-import { searchAccount, updateAccount, createAccountByAdmin } from '../../services/accountService';
+import { searchAccount, updateAccount, createAccountByAdmin,forgotPassword } from '../../services/accountService';
+import { getUserInfoFromCookie } from '../../services/cookeiService';
 
 const { Option } = Select;
 
@@ -163,8 +164,11 @@ const UserTable = () => {
 
     const handleUpdateAccount = async () => {
         setLoading(true);
+        const u = getUserInfoFromCookie();
         try {
             const requestData = {
+                accountId: accountData.id,
+                modifyByUserId: u.userId,
                 email: accountData.email,
                 lsRole: accountData.role,
                 isActive: accountData.isActive,
@@ -176,10 +180,11 @@ const UserTable = () => {
                     message: "Success",
                     description: "Account updated successfully!"
                 });
+
             } else {
                 notification.error({
                     message: "Error",
-                    description: "Failed to update account"
+                    description: response.message
                 });
             }
         } catch (error) {
@@ -190,8 +195,30 @@ const UserTable = () => {
         }
     };
 
-    const handleResetPassword = () => {
-        // Reset password functionality
+    const handleResetPassword = async () => {
+        try {
+            const response = await forgotPassword(accountData.email);
+            const data = response.data;
+            if (data.status === 'OK') {
+                notification.success(
+                    {
+                        message: "Message",
+                        description: "The password reset link has been sent in to "+accountData.email
+                    })
+            } else if (data.status === 'NOT_FOUND') {
+                notification.error(
+                    {
+                        message: "Message",
+                        description: data.message
+                    })
+            }
+        } catch (error) {
+            notification.error(
+                {
+                    message: "Message",
+                    description: error.message
+                })
+        }
     }
 
     const handleAddUser = () => {
@@ -381,12 +408,15 @@ const UserTable = () => {
             </Form>
 
             <Table columns={columns} dataSource={userData} rowKey="id" pagination={false} />
+            
+            <div style={{ textAlign: "center",marginTop: "30px"}}>
+                <Pagination
+                    current={searchValues.targetPageNumber + 1}
+                    total={totalPages * 10}
+                    onChange={handlePageChange}
+                />
+            </div>
 
-            <Pagination
-                current={searchValues.targetPageNumber + 1}
-                total={totalPages * 10}
-                onChange={handlePageChange}
-            />
 
             <Modal
                 title="Edit User"
@@ -580,7 +610,7 @@ const UserTable = () => {
                             <Select
                                 mode="multiple"
                                 style={{ width: '100%' }}
-                                defaultValue={accountData.role.map(role => role.name)}
+                                defaultValue={accountData.role}
                                 onChange={(value) => setAccountData({ ...accountData, role: value })}
                             >
                                 <Option value='ADMIN'>ADMIN</Option>

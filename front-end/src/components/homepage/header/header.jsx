@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashLink as Link } from 'react-router-hash-link';
-import { getUserInfoFromCookie,deleteCookies } from '../../../services/cookeiService'
+import { getUserInfoFromCookie, deleteCookies } from '../../../services/cookeiService'
 import {
     Container,
     NavbarBrand,
@@ -12,14 +12,23 @@ import {
     NavLink,
     UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
+import UserProfileComponent from '../../../components/User/UserProfileComponent';
+
+
 
 import logo from '../../../assets/images/Images/logo (1).png';
+import ChangePasswordComponent from '../../Authorization/ChangePasswordComponent';
+import { logout } from '../../../services/authService';
+
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const userInfo = getUserInfoFromCookie(); // Lấy thông tin người dùng từ cookie
+    const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+    const [isToggleChangePassWordModal, setIsToggleChangePassWordModal] = useState(false);
+
 
     useEffect(() => {
         // Kiểm tra xem userInfo có dữ liệu hay không để cập nhật trạng thái isLoggedIn
@@ -30,11 +39,15 @@ const Header = () => {
     }, [userInfo]); // Chỉ chạy effect khi userInfo thay đổi
 
     const handleLogout = () => {
-        deleteCookies('accessToken');
-        deleteCookies('userInfo');
-        window.location.reload();
+        logout();
     };
 
+    const toggleProfileModal = () => {
+        setIsProfileModalVisible(!isProfileModalVisible);
+    };
+    const toggleChangePassWordModal = () => {
+        setIsToggleChangePassWordModal(!isToggleChangePassWordModal);
+    };
     /*--------------------------------------------------------------------------------*/
     /*To open NAVBAR in MOBILE VIEW                                                   */
     /*--------------------------------------------------------------------------------*/
@@ -50,7 +63,7 @@ const Header = () => {
                                 <Nav navbar className="ms-auto mt-2 mt-lg-0">
                                     <NavItem className="active"><NavLink href="/">Home</NavLink></NavItem>
                                     <NavItem><NavLink href="#">About Me</NavLink></NavItem>
-                                    {userInfo && userInfo.roles && userInfo.roles.some(role => role.name === "ADMIN") && // Kiểm tra nếu có vai trò là ADMIN thì hiển thị link Admin
+                                    {userInfo && userInfo.roles && userInfo.roles.some(role => role.name === "ADMIN") && 
                                         <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
                                     }
                                     <UncontrolledDropdown nav inNavbar>
@@ -72,25 +85,31 @@ const Header = () => {
                                     {isLoggedIn ? ( // Nếu người dùng đã đăng nhập
                                         <UncontrolledDropdown nav inNavbar>
                                             <DropdownToggle nav caret>
-                                                {userInfo.email} {/* Hiển thị tên người dùng hoặc thông tin khác */}
+                                                {userInfo.fname} {userInfo.lname} {/* Hiển thị tên người dùng hoặc thông tin khác */}
                                             </DropdownToggle>
-                                            <DropdownMenu right>
-                                                <DropdownItem>
-                                                    <Link to="/profile">Profile</Link> {/* Link tới trang Profile */}
-                                                </DropdownItem>
+                                            <DropdownMenu end>
+                                                <DropdownItem onClick={toggleProfileModal}>Edit Profile</DropdownItem>
+                                                <DropdownItem onClick={toggleChangePassWordModal}>Change Password</DropdownItem>
                                                 <DropdownItem><Link to="/children">Children Manager</Link></DropdownItem>
-                                                <DropdownItem onClick={handleLogout}>Logout</DropdownItem> {/* Xử lý logout */}
+                                                <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
                                             </DropdownMenu>
                                         </UncontrolledDropdown>
                                     ) : (
                                         <NavItem><a className="btn btn-outline-success" href="/auth/login">Login</a></NavItem>
-                                    )}                                </Nav>
+                                    )}
+                                </Nav>
                             </Collapse>
                         </Navbar>
                     </Container>
                 </div>
             </div>
+            {isProfileModalVisible && (
+                <UserProfileComponent visible={isProfileModalVisible} onClose={toggleProfileModal} />
+            )}
+            {isToggleChangePassWordModal && (
+                <ChangePasswordComponent visible={isToggleChangePassWordModal} onClose={toggleChangePassWordModal} />
+            )}
+        </div>
     );
-
 }
 export default Header;

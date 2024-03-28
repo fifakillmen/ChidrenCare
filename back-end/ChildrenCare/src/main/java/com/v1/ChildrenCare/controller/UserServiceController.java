@@ -1,8 +1,6 @@
 package com.v1.ChildrenCare.controller;
 
 import com.v1.ChildrenCare.dto.response.GeneralResponse;
-import com.v1.ChildrenCare.entity.Service;
-import com.v1.ChildrenCare.service.BlogService;
 import com.v1.ChildrenCare.service.ServiceChildrenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/manager/service")
-public class ServiceController {
+@RequestMapping("/user/service")
+public class UserServiceController {
     @Autowired
     private ServiceChildrenService serviceChildrenService;
 

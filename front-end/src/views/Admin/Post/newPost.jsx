@@ -1,10 +1,17 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 // import userService from '../../services/user.service';
 import axios from 'axios';
 // import authHeader from '../../services/auth-header';
-import { useNavigate } from 'react-router-dom';
+import {
+    getAccessToken,
+    getDataFromCookies,
+    saveToCookies,
+    deleteCookies,
+    getUserInfoFromCookie,
+  } from "../../../services/cookeiService";
 
 const NewPost = () => {
     const navigate = useNavigate();
@@ -13,8 +20,12 @@ const NewPost = () => {
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [sizeError, setSizeError] = useState('')
-
-
+    const accessToken = getAccessToken();
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'multipart/form-data',
+      };
+    
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('title', data.title);
@@ -35,9 +46,8 @@ const NewPost = () => {
                 "imageLink": "aaaaaa"
             }
             const response = await axios.post('http://localhost:9999/manager/post/add', formData, {
-                headers: {
-                'Content-Type': 'multipart/form-data',
-                },
+                headers: headers 
+
             })
             .then(response => {
                 return response.data.data
@@ -86,6 +96,8 @@ const NewPost = () => {
         <div>
             {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
             {successMessage && <p className="alert alert-success">{successMessage}</p>}
+            {/* Add Back button here */}
+            <Link to="/admin/managePost" className="btn btn-secondary">Back</Link>
             <form onSubmit={handleSubmit(onSubmit)} className='container mt-5 mb-5'>
                 <div className="mb-3">
                     <label htmlFor="title" className="form-label">Title</label>
@@ -116,7 +128,8 @@ const NewPost = () => {
                         ))}
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                
             </form>
         </div>
     );

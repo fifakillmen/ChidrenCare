@@ -95,6 +95,6 @@ public class AuthServiceImpl implements AuthService {
         if (jwtTokenUtil.validateAccessToken(accessToken)) {
             return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,true));
         }
-        return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body(false);
+        return ResponseEntity.ok(new Result("FALSE", enumResultStatus.ERROR,false));
     }
 }

@@ -36,28 +36,21 @@ export const login = async (email, password) => {
         }
     });
 };
-export const logout = async () => {
+export const logout = () => {
     deleteCookies('accessToken');
     deleteCookies('userInfo');
     window.location.href = "/auth/login";
 };
-export const checkAccessToken = (accessToken) => {
+export const checkAccessToken = async  (accessToken) => {
     const headers = {
         "Authorization": `Bearer ${accessToken}`
     };
-    return new Promise((resolve, reject) => {
-        axios.post(REST_API_BASE_URL + 'checkAccessToken', "", { headers: headers })
-            .then(response => {
-                if (response.data.status === 'OK' && response.data.data === 'true') {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            })
-            .catch(error => {
-                resolve(false);
-            });
-    });
+    try {
+       const response= await axios.post(REST_API_BASE_URL + 'checkAccessToken', "", { headers: headers });
+        return response.data.data;
+    } catch (error) {
+        console.log(error.message);
+    }
 };
 
 

@@ -13,8 +13,10 @@ public interface ServiceChildrenService {
 //    Page<Service> findAllService(Pageable pageable, @Param("search") String search, @Param("categoryId") Long categoryId, @Param("isActive") String isActive);
 
     List<Service> findAllService(int page, int size, String search, Long categoryId, String isActive);
-    Service saveService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, Long createBy, MultipartFile file);
-    Service updateService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, Long createBy, MultipartFile file);
+
+    Service saveService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, String createBy, MultipartFile file);
+
+    Service updateService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, String createBy, MultipartFile file);
 
     Service findServiceById(Long id);
 

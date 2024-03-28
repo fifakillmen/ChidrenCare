@@ -1,157 +1,116 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
-// import authHeader from '../../services/auth-header';
-// import userService from '../../services/user.service';
-import './Post.css';
-import { Card, Form, Button } from "react-bootstrap";
-// import authService from '../../services/auth.service';
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-// import { FaTrash } from 'react-icons/fa';
-// import './PostView.css';
+import { Card, Form, Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import './PostDetail.css'
+import image from "../../../assets/images/Images/blog1.jpg";
+import Header from "../../../components/homepage/header/header";
 
-function PostView() {
-    const { id } = useParams();
 
-    const [post, setPost] = useState([]);
-    const [imageUrl, setImageUrl] = useState("");
-    const [comments, setComments] = useState([]);
-    const [postExist, setPostExist] = useState(false);
-    const [successMessage, setSuccessMessage] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [currentUser, setCurrentUser] = useState(null);
-    const [isUser, setIsUser] = useState(false);
-    const [isManager, setIsManager] = useState(false);
-    const navigate = useNavigate();
+const PostDetail = () => {
+  const { id } = useParams();
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+  useEffect(() => {
+    fetchPostDetails();
+  }, []);
 
-    const fetchPostData = async () => {
-        // try {
-        //     const response = await userService.getPostDetails(id);
-        //     setPost(response.data);
-        //     setPostExist(true);
+  const fetchPostDetails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:9999/user/post/detail?id=${id}`);
+      if (response.data && response.data.data) {
+        setPost(response.data.data);
+        setComments(response.data.data.comments || []);
+      } else {
+        setErrorMessage('Invalid response data format');
+      }
+    } catch (error) {
+      console.error('Error fetching post details:', error);
+      setErrorMessage('Error fetching post details. Please try again later.');
+    }
+  };
 
-        //     const response2 = await userService.getPostImage(id);
-        //     setImageUrl(response2.data);
-
-        //     const response3 = await userService.getUserInfo(id);
-        //     setCurrentUser(response3.data);
-
-        //     const user = authService.getCurrentUser();
-        //     setIsManager(user.roles.includes("ROLE_MANAGER"));
-        //     setIsUser(user.roles.includes("ROLE_USER"));
-        // } catch (error) {
-        //     console.error('Error fetching posts:', error);
-        //     toast.error('Error fetching posts. Please try again later.');
-        // }
-    };
-
-    useEffect(() => {
-        fetchPostData();
-    }, []);
-
-    const onSubmit = async (data) => {
-        try {
-            const content = data.content;
-            const postId = id;
-            // const response = await axios.post('http://localhost:8080/api/post/comments/submit', { postId, content }, { headers: authHeader() });
-            const response = await axios.post('http://localhost:8080/api/post/comments/submit', { postId, content });
-            const responseData = response.data;
-            setSuccessMessage('Comment Successfully!');
-            setComments(responseData);
-            setErrorMessage(null);
-        } catch (error) {
-            setErrorMessage('An error occurred while submitting the form. ' + error.response.data.message);
-            setSuccessMessage(null);
-            console.log(error.response.data.message)
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        // 'http://localhost:8080/api/post/comments/submit',
+        {
+          postId: id,
+          content: newComment,
         }
-    };
+      );
+      setComments([...comments, response.data]);
+      setNewComment('');
+      setSuccessMessage('Comment submitted successfully.');
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+      setErrorMessage('Failed to submit comment. Please try again later.');
+    }
+  };
 
-    const handleEdit = (postId) => {
-    };
+  return (
+    <div>
 
-    const handleDeleteComment = async (commentId) => {
-        console.log(commentId);
-    };
+    
+    <Header />
+    <div className="post-detail">
+      <Card className="post-card">
+        <Card.Body>
+          <div className="post-header">
+            <div className="post-author">
+              {/* <img src={post.user.profilePicture} alt="Author" /> */}
+              <h5>{post.user?.username}</h5>
+            </div>
+          </div>
+          <div className="post-content">
+            <p>{post.content}</p>
+          </div>
 
-    const handleDelete = async (postId) => {
-        // try {
-        //     if (currentUser.id !== post?.user?.id) {
-        //         throw new Error("You are not authorized to delete this post.");
-        //     }
-        //     await userService.deletePost(postId);
-        //     toast.success("Post deleted successfully.");
-        //     navigate("/post");
-        // } catch (error) {
-        //     console.error("Error deleting post:", error);
-        //     toast.error(error.message);
-        // }
-    };
-
-    return (
-        <Card className="my-4">
-            {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
-            {successMessage && <p className="alert alert-success">{successMessage}</p>}
-
-            <Card.Body>
-                <div className="d-flex align-items-center">
-                    {/* <img src={userService.getUserPfpLink(post?.user?.id)} alt="" className="rounded-circle mr-3" width="50" height="50" /> */}
-                    <div className='ml-5'>
-                        <h5>{post?.user?.username}</h5>
-                        <p className="text-muted">{post.title}</p>
+          {post.imageLink && <img src={post.imageLink} alt="Post" className="post-image" />}
+          {/* ảnh ví dụ */}
+          <img src={image} alt="Post" className="post-image" /> 
+          <hr />
+          <div className="post-comments">
+            <h6>Comments</h6>
+            <Form onSubmit={handleCommentSubmit}>
+              <Form.Group className="d-flex align-items-center">
+                <Form.Control
+                  type="text"
+                  placeholder="Write a comment..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <Button variant="primary" type="submit" className="ml-2">
+                  Post
+                </Button>
+              </Form.Group>
+            </Form>
+            {errorMessage && <div className="text-danger">{errorMessage}</div>}
+            {successMessage && <div className="text-success">{successMessage}</div>}
+            <div className="comment-list">
+              {comments &&
+                comments.map((comment, index) => (
+                  <div className="comment" key={index}>
+                    <div className="comment-author">
+                      {/* <img src={comment.user.profilePicture} alt="Author" /> */}
+                      <h6>{comment.user.username}</h6>
                     </div>
-                </div>
-                <hr />
-                <div>
-                    {/* <img src={userService.getImagePostLink(id)} alt="" className="img-fluid" /> */}
-                    <p>{post.content}</p>
-                </div>
-                <hr />
-                <h6>Comments</h6>
-                {
-                    isUser && (
-                        <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Form.Group className="d-flex align-items-center">
-                                {/* <img src={userService.getUserPfpLink(currentUser?.id)} alt={post?.user?.username} className="rounded-circle mr-3" width="30" height="30" /> */}
-                                <Form.Control type="text" placeholder="Add a comment..." className='ml-2' {...register('content', { required: true })} />
-                                <Button variant="primary" type="submit" className="ml-2">Submit</Button>
-                            </Form.Group>
-                        </Form>
-                    )
-                }
-                <div>
-                    {
-                        post?.comments?.map((comment, index) => (
-                            <div className="d-flex align-items-center my-3" key={index}>
-                                {/* <img src={userService.getUserPfpLink(comment.userDto.id)} alt={comment.userDto.username} className="rounded-circle mr-3" width="30" height="30" /> */}
-                                <div className='ml-5'>
-                                    <h6>{comment.userDto.username}</h6>
-                                    <p>{comment.content}</p>
+                    <p>{comment.content}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
+    </div>
+  );
+};
 
-                                    {
-                                        // isManager && (
-                                        // <div className="d-flex align-items-center">
-                                        //     <Button
-                                        //         variant="danger"
-                                        //         onClick={() => handleDeleteComment(comment.id)}
-                                        //         className="p-1"
-                                        //     >
-                                        //         <FaTrash size={14} />
-                                        //     </Button>
-                                        // </div>
-                                        // )
-                                    }
-                                </div>
-                            </div>
-                        ))
-                    }
-                </div>
-            </Card.Body>
-        </Card>
-    );
-}
-
-export default PostView;
+export default PostDetail;

@@ -32,6 +32,9 @@ public class Role {
     public enumRole getName() {
         return name;
     }
+    public String getStringName() {
+        return name.toString();
+    }
 
     public void setName(enumRole name) {
         this.name = name;

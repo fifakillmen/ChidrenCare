@@ -93,23 +93,33 @@ public class SecurityConfig {
                         .requestMatchers("/user/searchUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/deleteUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/addUserByAdmin").hasAnyAuthority( "ADMIN")
-                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","ADMIN")
+                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","STAFF","ADMIN")
+                        .requestMatchers("/user/findUser").hasAnyAuthority("USER","ADMIN","STAFF")
                         // account
-                        .requestMatchers("/account/searchEmailNoConnected").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/searchAccount").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/addAccountByAdmin").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/addAccount").permitAll()
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/account/resetPassword").permitAll()
+                        .requestMatchers("/account/changePassword").hasAnyAuthority("ADMIN","USER","STAFF")
+                        .requestMatchers("/account/changePasswordWithToken").permitAll()
+                        .requestMatchers("/account/forgotPassword").permitAll()
+                        //
+
+
                         .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
-//                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
+//                       .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
 
 
                         // post
-                        .requestMatchers("/manager/post/**").permitAll()
+//                        .requestMatchers("/manager/post/**").permitAll()
+                                .requestMatchers("/manager/post/**").hasAnyAuthority("ADMIN")
+                                .requestMatchers("/user/post/**").permitAll()
                          // service
-                                .requestMatchers("/manager/service/**").permitAll()
+//                        .requestMatchers("/manager/service/**").permitAll()
+                                .requestMatchers("/manager/service/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/user/service/**").permitAll()
+
 
                         .requestMatchers("/account/verifyEmail").permitAll()
                         .requestMatchers("/account/resendVerifyEmail").permitAll()

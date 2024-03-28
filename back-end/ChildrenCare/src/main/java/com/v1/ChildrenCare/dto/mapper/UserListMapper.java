@@ -6,6 +6,7 @@ import com.v1.ChildrenCare.entity.User;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 @DecoratedWith(UserListMapperDecorator.class)
@@ -19,4 +20,7 @@ public interface UserListMapper {
     @Mapping(source = "avatarFileName", target = "avatarFileName")
     @Mapping(source = "gender", target = "gender")
     UserDto UserToUserDto(User user);
+
+
+
 }

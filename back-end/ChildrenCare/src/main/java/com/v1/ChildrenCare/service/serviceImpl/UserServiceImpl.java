@@ -170,6 +170,28 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public ResponseEntity<Result> findUser(Long userId) {
+        try{
+            if (userId>0) {
+                return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,userRepository.findUserWithUserID(userId)));
+            }else {
+                return ResponseEntity.ok(new Result("Cannot find user", enumResultStatus.NOT_FOUND,false));
+            }
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Validate value of account in create Account", enumResultStatus.ERROR, ex.getMessage()));
+
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Data integrity constraint violation error in create Account", enumResultStatus.ERROR, ex.getMessage()));
+            } else {
+                // Các lỗi khác
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Other Error", enumResultStatus.ERROR, ex.getMessage()));
+            }
+        }    }
+
     @Async
     public User updateAvatar(Long userId, MultipartFile avatar) {
         User user = userRepository.findUserById(userId);

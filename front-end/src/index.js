@@ -20,6 +20,8 @@ import CreateFeedback from "./views/page/CreateFeedback";
 import ForgotPassword from "../src/components/Authorization/ForgotPasswordComponent"
 import VerifyEmail from "../src/components/Authorization/VerifyEmailComponent"
 import UserList from "../src/components/User/UserListComponent"
+import ChangePassword from "../src/components/Authorization/ChangePasswordWithTokenComponent.js"
+
 
 // import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
 import Servicemanage from './components/ServicesManager/ServicesManager.jsx';
@@ -65,8 +67,10 @@ root.render(
             <Route path={"/children"} element={<CreateChildren />} />
             <Route path="/auth/forgotpassword" element={<ForgotPassword />} />
             <Route path="/auth/verifyemail" element={<VerifyEmail />} />
+            <Route path="/auth/changePassword/:token" element={<ChangePassword />} />
+
             <Route path="/post" element={<Post />} />
-            <Route path="postdetail/:id" element={<PostDetail />} /> 
+            <Route path="post/detail/:id" element={<PostDetail />} /> 
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Service />} />
             <Route path="/servicedetail/:id" element={<ServiceDetail />} />
