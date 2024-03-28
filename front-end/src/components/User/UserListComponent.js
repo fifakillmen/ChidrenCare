@@ -3,7 +3,7 @@ import { Table, Button, Modal, notification, Input, Form, Pagination, DatePicker
 import moment from 'moment';
 import { PlusOutlined } from '@ant-design/icons';
 import { searchUser, deleteUser, createUserByAdmin, updateUser } from '../../services/userService';
-import { searchAccount, updateAccount, createAccountByAdmin } from '../../services/accountService';
+import { searchAccount, updateAccount, createAccountByAdmin,forgotPassword } from '../../services/accountService';
 import { getUserInfoFromCookie } from '../../services/cookeiService';
 
 const { Option } = Select;
@@ -195,8 +195,30 @@ const UserTable = () => {
         }
     };
 
-    const handleResetPassword = () => {
-        // Reset password functionality
+    const handleResetPassword = async () => {
+        try {
+            const response = await forgotPassword(accountData.email);
+            const data = response.data;
+            if (data.status === 'OK') {
+                notification.success(
+                    {
+                        message: "Message",
+                        description: "The password reset link has been sent in to "+accountData.email
+                    })
+            } else if (data.status === 'NOT_FOUND') {
+                notification.error(
+                    {
+                        message: "Message",
+                        description: data.message
+                    })
+            }
+        } catch (error) {
+            notification.error(
+                {
+                    message: "Message",
+                    description: error.message
+                })
+        }
     }
 
     const handleAddUser = () => {

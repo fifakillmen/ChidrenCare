@@ -49,7 +49,6 @@ const submitButtonStyle = {
 };
 const ChangePasswordWithTokenComponent = () => {
     const [changePasswordToken, setchangePasswordToken] = useState('');
-    const [currentpassword, setCurrentpassword] = useState('');
     const [newpassword, setNewpassword] = useState('');
 
     const { token } = useParams();
