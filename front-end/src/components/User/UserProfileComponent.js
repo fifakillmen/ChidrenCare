@@ -15,7 +15,7 @@ const UserProfileComponent = ({ visible, onClose }) => {
     const [dob, setDob] = useState(null);
     const [phone, setPhone] = useState('');
     const [avatarFile, setAvatarFile] = useState(null);
-    const [userInfo, setUserInfo] = useState(null); 
+    const [userInfo, setUserInfo] = useState(null);
 
     useEffect(() => {
         const userInfoFromCookie = getUserInfoFromCookie();
@@ -44,13 +44,13 @@ const UserProfileComponent = ({ visible, onClose }) => {
 
     const handleUpdateUserInfo = (newUserInfo) => {
         const updatedUserInfo = {
-            ...userInfo, 
+            ...userInfo,
             fName: newUserInfo.firstName,
             lastName: newUserInfo.lastName,
             avatar: newUserInfo.avartaLink,
-            
-        };        
-        setUserInfo(updatedUserInfo); 
+
+        };
+        setUserInfo(updatedUserInfo);
 
         setUserInfoToCookie(updatedUserInfo);
     };
@@ -188,6 +188,18 @@ const UserProfileComponent = ({ visible, onClose }) => {
                                 required: true,
                                 message: "Please provide your date of birth",
                             },
+                            ({ getFieldValue }) => ({
+                                validator() {
+                                    const minimumAge = 18;
+                                    var diff = moment().diff(moment(dob), 'milliseconds');
+                                    var duration = moment.duration(diff);
+                                    if (duration.years() > minimumAge) {
+                                        return Promise.resolve();
+                                    } else {
+                                        return Promise.reject(`You must be ${minimumAge} or older.`);
+                                    }
+                                },
+                            }),
                         ]}
                         hasFeedback
                     >

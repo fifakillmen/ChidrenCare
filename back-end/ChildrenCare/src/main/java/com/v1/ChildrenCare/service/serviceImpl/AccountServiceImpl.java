@@ -212,13 +212,17 @@ public class AccountServiceImpl implements AccountService {
         try{
             Account account= accountRepository.findByEmail(email);
             if(account!=null){
-                if(account.getVerifiEmailCode().equals(code)){
-                    account.setVerifiEmailCode(null);
-                    account.setIsActive(enumActive.ACTIVE);
-                    accountRepository.save(account);
-                    return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
+                if (!account.getIsActive().equals(enumActive.BANED)){
+                    if(account.getVerifiEmailCode().equals(code)){
+                        account.setVerifiEmailCode(null);
+                        account.setIsActive(enumActive.ACTIVE);
+                        accountRepository.save(account);
+                        return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
+                    }else {
+                        return ResponseEntity.ok(new Result("Verify code is wrong",enumResultStatus.NOT_FOUND,false));
+                    }
                 }else {
-                    return ResponseEntity.ok(new Result("Verify code is wrong",enumResultStatus.NOT_FOUND,false));
+                    return ResponseEntity.ok(new Result("Your account is baned",enumResultStatus.NOT_FOUND,false));
                 }
             }else{
                 return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.NOT_FOUND,null));
@@ -305,6 +309,7 @@ public class AccountServiceImpl implements AccountService {
                         return ResponseEntity.ok(new Result("New password cant be used password in the pass",enumResultStatus.NOT_FOUND,true));
                     }
                     account.setPassword(passwordEncoder.encode(newPassword));
+                    account.setResetPasswordToken(null);
                     accountRepository.save(account);
                     return ResponseEntity.ok(new Result("Change Password success",enumResultStatus.OK,true));
             }

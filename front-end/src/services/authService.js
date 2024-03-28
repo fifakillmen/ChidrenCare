@@ -17,23 +17,20 @@ export const login = async (email, password) => {
     await axios.post(REST_API_BASE_URL + 'login', body, {
         headers: headers
     }).then(response => {
-        if (response.data.data.accessToken !== null) {
+        if (response.data.status === 'OK') {
             saveToCookies('accessToken', response.data.data.accessToken);
             // Lưu thông tin người dùng vào cookie
             setUserInfoToCookie(response.data.data);
+        } else if (response.data.status === 'NOT_FOUND') {
+            message.error(`${response.data.message}`);
+        } else if (response.data.status === 'UNAUTHORIZED') {
+            message.error(`${response.data.message}`);
+        } else if (response.data.status === 'FORBIDDEN') {
+            message.error(`${response.data.message}`);
         }
     }).catch(error => {
-        if (error.response) {
-            if (error.response.status === 401) {
-                message.error('Invalid email or password. Please try again.');
-            } else if (error.response.status === 403) {
-                message.error('Access Forbidden. You do not have permission to access this resource.');
-            } else {
-                message.error('An error occurred. Please try again later.');
-            }
-        } else {
-            message.error('An error occurred. Please check your internet connection.');
-        }
+        message.error(error.message);
+
     });
 };
 export const logout = () => {
@@ -41,12 +38,12 @@ export const logout = () => {
     deleteCookies('userInfo');
     window.location.href = "/auth/login";
 };
-export const checkAccessToken = async  (accessToken) => {
+export const checkAccessToken = async (accessToken) => {
     const headers = {
         "Authorization": `Bearer ${accessToken}`
     };
     try {
-       const response= await axios.post(REST_API_BASE_URL + 'checkAccessToken', "", { headers: headers });
+        const response = await axios.post(REST_API_BASE_URL + 'checkAccessToken', "", { headers: headers });
         return response.data.data;
     } catch (error) {
         console.log(error.message);

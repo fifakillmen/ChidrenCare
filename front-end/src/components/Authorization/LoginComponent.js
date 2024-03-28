@@ -55,8 +55,6 @@ const LoginComponent = () => {
                     window.location.href = "/";
                 }
             }
-        } else {
-            message.error('Login failed');
         }
     };
 

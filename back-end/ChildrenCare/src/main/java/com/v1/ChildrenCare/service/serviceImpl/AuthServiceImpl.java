@@ -47,44 +47,46 @@ public class AuthServiceImpl implements AuthService {
             );
             CustomUserDetails accountDetail = (CustomUserDetails) authentication.getPrincipal();
             Account myAccount = accountDetail.getAccount();
-            LoginRespone loginResponse = new LoginRespone();
-            loginResponse.setEmail(myAccount.getEmail());
-            loginResponse.setCreated_date(myAccount.getCreatedDate());
-            if (myAccount.getCreatedBy()!=null){
-                loginResponse.setCreatedBy_UserId(myAccount.getCreatedBy().getId());
-            }else{
-                loginResponse.setCreatedBy_UserId(null);
+            if (myAccount.getIsActive().equals(enumActive.ACTIVE)){
+                LoginRespone loginResponse = new LoginRespone();
+                loginResponse.setEmail(myAccount.getEmail());
+                loginResponse.setCreated_date(myAccount.getCreatedDate());
+                if (myAccount.getCreatedBy()!=null){
+                    loginResponse.setCreatedBy_UserId(myAccount.getCreatedBy().getId());
+                }else{
+                    loginResponse.setCreatedBy_UserId(null);
+                }
+                loginResponse.setIs_account_active(myAccount.getIsActive());
+                loginResponse.setModifiedBy_UserId(myAccount.getModifiedBy_UserId());
+
+                String accessToken = jwtTokenUtil.generateAccessToken(accountDetail);
+                loginResponse.setAccessToken(accessToken);
+                loginResponse.setIs_access_token_active(true);
+                loginResponse.setRoles(myAccount.getRole());
+                // luu vao db thong tin access token
+                Account account= accountRepository.findByEmail(myAccount.getEmail());
+                account.setAccessToken(accessToken);
+                account.setAccessTokenActive(true);
+                accountRepository.save(account);
+                //
+                UserDto userDto= userService.findUserByEmail(myAccount.getEmail());
+                if (userDto != null){
+                    loginResponse.setUserId(userDto.getId());
+                    loginResponse.setFname(userDto.getFirstName());
+                    loginResponse.setLname(userDto.getLastName());
+                    loginResponse.setAvatar(userDto.getAvartaLink());
+                }
+                return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,loginResponse));
+            }else {
+                return ResponseEntity.ok(new Result("Account is InActive or got Baned from Admin", enumResultStatus.NOT_FOUND,null));
             }
-            loginResponse.setIs_account_active(myAccount.getIsActive());
-            loginResponse.setModifiedBy_UserId(myAccount.getModifiedBy_UserId());
-
-            String accessToken = jwtTokenUtil.generateAccessToken(accountDetail);
-            loginResponse.setAccessToken(accessToken);
-            loginResponse.setIs_access_token_active(true);
-            loginResponse.setRoles(myAccount.getRole());
-            // luu vao db thong tin access token
-            Account account= accountRepository.findByEmail(myAccount.getEmail());
-            account.setAccessToken(accessToken);
-            account.setAccessTokenActive(true);
-            accountRepository.save(account);
-            //
-
-            UserDto userDto= userService.findUserByEmail(myAccount.getEmail());
-            if (userDto != null){
-                loginResponse.setUserId(userDto.getId());
-                loginResponse.setFname(userDto.getFirstName());
-                loginResponse.setLname(userDto.getLastName());
-                loginResponse.setAvatar(userDto.getAvartaLink());
-            }
-
-            return ResponseEntity.ok(new Result("SUCCESS", enumResultStatus.OK,loginResponse));
         }
         catch (BadCredentialsException e) {
             // Sai tên đăng nhập hoặc mật khẩu, trả về mã trạng thái 401
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Result("Invalid email or password", enumResultStatus.UNAUTHORIZED,null ));
+            return ResponseEntity.ok(new Result("Invalid email or password", enumResultStatus.UNAUTHORIZED,null ));
         } catch (AuthenticationException e) {
             // Quyền truy cập bị từ chối, trả về mã trạng thái 403
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Result("Access Denied", enumResultStatus.FORBIDDEN,null ));
+            return ResponseEntity.ok(new Result("Access Denied", enumResultStatus.FORBIDDEN,null ));
         }
     }
 
