@@ -93,7 +93,8 @@ public class SecurityConfig {
                         .requestMatchers("/user/searchUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/deleteUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/addUserByAdmin").hasAnyAuthority( "ADMIN")
-                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","ADMIN")
+                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","STAFF","ADMIN")
+                        .requestMatchers("/user/findUser").hasAnyAuthority("USER","ADMIN","STAFF")
                         // account
                         .requestMatchers("/account/searchEmailNoConnected").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/searchAccount").hasAnyAuthority("ADMIN")
@@ -101,6 +102,7 @@ public class SecurityConfig {
                         .requestMatchers("/account/addAccount").permitAll()
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/account/changePassword").hasAnyAuthority("ADMIN","USER","STAFF")
                         .requestMatchers("/account/resetPassword").permitAll()
                         .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
 //                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")

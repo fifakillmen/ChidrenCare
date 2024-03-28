@@ -34,4 +34,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	Account searchAccountWithUserId(@Param("userId") Long userId);
 
 	Account findAccountByUserId(Long id);
+	@Query("""
+           select a from Account a join User u on a.user.id= u.id where a.id=:id
+            """)
+	Account findWithId(@Param("id")Long id);
 }

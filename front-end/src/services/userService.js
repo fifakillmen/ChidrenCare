@@ -3,9 +3,9 @@ import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies, getUs
 
 const REST_API_BASE_URL = 'http://localhost:9999/user/'
 // http://localhost:9999/user/deleteUser
-
-export const createUser = (firstName, lastName, dob, phone, email, address, gender, avatarFile) => {
-    const accessToken = getAccessToken();
+// http://localhost:9999/user/findUser
+export const createUser = async (firstName, lastName, dob, phone, email, address, gender, avatarFile) => {
+    const accessToken = await  getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": 'multipart/form-data'
@@ -20,12 +20,12 @@ export const createUser = (firstName, lastName, dob, phone, email, address, gend
     formData.append('gender', gender);
     formData.append('avatarFile', avatarFile);
 
-    return axios.post(REST_API_BASE_URL + 'addUser', formData, {
+    return await axios.post(REST_API_BASE_URL + 'addUser', formData, {
         headers: headers
     });
 };
-export const searchUser = (firstName, lastName, dob, targetPageNumber) => {
-    const accessToken = getAccessToken();
+export const searchUser = async (firstName, lastName, dob, targetPageNumber) => {
+    const accessToken = await getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`
     };
@@ -42,12 +42,12 @@ export const searchUser = (firstName, lastName, dob, targetPageNumber) => {
     }
     params.append('targetPageNumber', targetPageNumber);
 
-    return axios.post(REST_API_BASE_URL + 'searchUser', params.toString(), {
+    return await axios.post(REST_API_BASE_URL + 'searchUser', params.toString(), {
         headers: headers
     });
 };
-export const updateUser = (UserId, firstName, lastName, dob, phone, address, gender, avatarFile) => {
-    const accessToken = getAccessToken();
+export const updateUser = async (UserId, firstName, lastName, dob, phone, address, gender, avatarFile) => {
+    const accessToken = await getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": 'multipart/form-data'
@@ -62,25 +62,25 @@ export const updateUser = (UserId, firstName, lastName, dob, phone, address, gen
     formData.append('gender', gender);
     formData.append('avatarFile', avatarFile);
 
-    return axios.put(REST_API_BASE_URL + 'updateUser', formData, {
+    return await axios.put(REST_API_BASE_URL + 'updateUser', formData, {
         headers: headers
     });
 };
-export const deleteUser = (UserId) => {
-    const accessToken = getAccessToken();
+export const deleteUser = async (UserId) => {
+    const accessToken = await getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
     };
     const formData = new FormData();
     formData.append('UserId', UserId);
 
-    return axios.delete(REST_API_BASE_URL + 'deleteUser', {
+    return await axios.delete(REST_API_BASE_URL + 'deleteUser', {
         headers: headers,
         data: formData
     });
 };
 export const createUserByAdmin = async (firstName, lastName, dob, phone, email, address, gender, avatarFile) => {
-    const accessToken = getAccessToken();
+    const accessToken = await getAccessToken();
     const UserAdmin = getUserInfoFromCookie();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
@@ -98,6 +98,19 @@ export const createUserByAdmin = async (firstName, lastName, dob, phone, email, 
     formData.append('avatarFile', avatarFile);
 
     return await axios.post(REST_API_BASE_URL + 'addUserByAdmin', formData, {
+        headers: headers
+    });
+};
+export const findUser = async (userId) => {
+    const accessToken = await getAccessToken();
+    const headers = {
+        "Authorization": `Bearer ${accessToken}`
+    };
+    const params = new URLSearchParams();
+    
+    params.append('userId', userId);
+
+    return await axios.post(REST_API_BASE_URL + 'findUser', params.toString(), {
         headers: headers
     });
 };
