@@ -44,14 +44,14 @@ public class ServiceController {
     @PostMapping("/add")
     public ResponseEntity<GeneralResponse> addService(
             @RequestParam(value = "file", required = false) MultipartFile file,
-            @RequestParam(value ="serviceTitle", required = true) String serviceTitle,
+            @RequestParam(value ="serviceTitle", required = false) String serviceTitle,
             @RequestParam(value ="serviceDetail", required = false) String serviceDetail,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "createdBy", required = false) Long createdBy,
+            @RequestParam(value = "createdBy", required = false) String createdBy,
             @RequestParam(value =  "price", required = false) String price,
             @RequestParam(value =  "salePrice", required = false) String salePrice) {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.saveService(null, serviceTitle, serviceDetail, price, salePrice, categoryId, "ACTIVE", createdBy, null)));
+            return ResponseEntity.ok(GeneralResponse.of(serviceChildrenService.saveService(null, serviceTitle, serviceDetail, price, salePrice, categoryId, "ACTIVE", createdBy, file)));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }
@@ -65,7 +65,7 @@ public class ServiceController {
             @RequestParam(value = "serviceDetail", required = false) String serviceDetail,
             @RequestParam(value = "price", required = false) String price,
             @RequestParam(value = "salePrice", required = false) String salePrice,
-            @RequestParam(value = "createdBy", required = false) Long createdBy,
+            @RequestParam(value = "createdBy", required = false) String createdBy,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
             @RequestParam(value = "isActive", required = false) String isActive) {
         try {

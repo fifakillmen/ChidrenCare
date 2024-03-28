@@ -1,11 +1,8 @@
 package com.v1.ChildrenCare.service.serviceImpl;
 
-import com.v1.ChildrenCare.entity.Blog;
 import com.v1.ChildrenCare.entity.Category;
-import com.v1.ChildrenCare.entity.Post;
 import com.v1.ChildrenCare.entity.Service;
 import com.v1.ChildrenCare.enumPack.enumActive;
-import com.v1.ChildrenCare.enumPack.enumRole;
 import com.v1.ChildrenCare.repository.*;
 import com.v1.ChildrenCare.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +45,7 @@ public class ServiceChildrenServiceImpl implements ServiceChildrenService {
     }
 
     @Override
-    public Service saveService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, Long createBy, MultipartFile file) {
+    public Service saveService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, String createBy, MultipartFile file) {
         Service service;
         if (serviceId == null) {
             service = new Service();
@@ -81,7 +78,7 @@ public class ServiceChildrenServiceImpl implements ServiceChildrenService {
     }
 
     @Override
-    public Service updateService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, Long createBy, MultipartFile file) {
+    public Service updateService(Long serviceId, String serviceTitle, String serviceDetail, String price, String salePrice, Long categoryId, String isActive, String createBy, MultipartFile file) {
         Service service = serviceRepository.findById(serviceId).orElse(null);
         if(service == null){
             throw new IllegalArgumentException("Service not found");
