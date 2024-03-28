@@ -13,7 +13,7 @@ import {
     UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
 
-import logo from '../../../assets/images/logos/green-logo.png';
+import logo from '../../../assets/images/Images/logo (1).png';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,11 +40,10 @@ const Header = () => {
     /*--------------------------------------------------------------------------------*/
 
     return (
-        <div>
             <div id="section">
                 <div className="header1 po-relative">
                     <Container>
-                        <Navbar className="navbar-expand-lg h1-nav h4">
+                        <Navbar className="navbar-expand-lg h1-nav h5">
                             <NavbarBrand href="/"><img src={logo} alt="wrapkit" /></NavbarBrand>
                             <NavbarToggler onClick={toggle}><span className="ti-menu"></span></NavbarToggler>
                             <Collapse isOpen={isOpen} navbar id="header1">
@@ -91,7 +90,6 @@ const Header = () => {
                     </Container>
                 </div>
             </div>
-        </div>
     );
 
 }

@@ -11,7 +11,7 @@ const CustomFooter = () => {
                 <Row gutter={[16, 16]} justify="center">
                     <Col xs={24} sm={12} md={6}>
                         <h5 className="m-b-20">Address</h5>
-                        <p>71 Amsteroum Avenue Cronish Night, NY 35098</p>
+                        <p>2R2R+CF Đống Đa, Hà Nội, Việt Nam</p>
                     </Col>
                     <Col xs={24} sm={12} md={6}>
                         <h5 className="m-b-20">Phone</h5>
@@ -19,7 +19,7 @@ const CustomFooter = () => {
                     </Col>
                     <Col xs={24} sm={12} md={6}>
                         <h5 className="m-b-20">Email</h5>
-                        <p>Office :  <a href="#" className="link">info@wrappixel.com</a> <br />Site :  <a href="#" className="link">wrapkit@wrappixel.com</a></p>
+                        <p>Office :  <a href="#" className="link">support.childrencare@gmail.com</a> <br /></p>
                     </Col>
                     <Col xs={24} sm={12} md={6}>
                         <h5 className="m-b-20">Social</h5>

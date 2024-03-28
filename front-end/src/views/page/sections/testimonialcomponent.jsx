@@ -9,7 +9,14 @@ const TestimonialComponent = () => {
         const fetchTestimonials = async () => {
             try {
                 const response = await axios.get('http://localhost:9999/api/feedback/list');
-                setTestimonials(response.data.data); // Assuming 'data' holds the array of testimonials
+
+                // Sort testimonials in descending order by createdDate
+                const sortedTestimonials = response.data.data.sort((a, b) => {
+                    return new Date(b.createdDate) - new Date(a.createdDate);
+                });
+
+                // Take the first 3 testimonials (the newest ones)
+                setTestimonials(sortedTestimonials.slice(0, 3));
             } catch (error) {
                 console.error('Error fetching testimonials:', error);
             }
@@ -28,7 +35,7 @@ const TestimonialComponent = () => {
                     </Col>
                 </Row>
                 <Row className="testi3 m-t-40 justify-content-center">
-                    {testimonials.slice(0, 3).map((testimonial, index) => (
+                    {testimonials.map((testimonial, index) => (
                         <Col lg="4" md="6" key={index}>
                             <Card className="card-shadow">
                                 <CardBody>

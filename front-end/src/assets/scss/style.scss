@@ -1,5 +1,8 @@
 @import "variables";
-
+//@import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+@import 'react-date-range/dist/styles.css'; // main style file
+@import 'react-date-range/dist/theme/default.css'; // theme css file
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons.scss";
 @import "./layout/sidebar";
@@ -11,7 +14,3 @@
 @import 'app.scss';
 @import 'common.scss';
 @import 'responsive.scss';
-@import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-@import "@fortawesome/fontawesome-free/css/all.min.css";
-@import 'react-date-range/dist/styles.css'; // main style file
-@import 'react-date-range/dist/theme/default.css'; // theme css file

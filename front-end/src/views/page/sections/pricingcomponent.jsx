@@ -29,8 +29,7 @@ const PricingComponent = () => {
                 <Container>
                     <Row className="justify-content-center">
                         <Col md="7" className="text-center">
-                            <h2 className="title">Service</h2>
-                            <h6 className="subtitle">Your satisfaction is our joy</h6>
+                            <h2 className="title text-success">DỊCH VỤ NỔI BẬT</h2>
                         </Col>
                     </Row>
                     <Row className="m-t-40">
