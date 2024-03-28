@@ -125,7 +125,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendResetPassword(String toEmail, String link)  {
+    public void sendForgotPassword(String toEmail, String link)  {
         try {
             Template template =freeMarkerConfiguration
                     .freeMarkerConfig()

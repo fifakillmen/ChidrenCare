@@ -18,6 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -106,21 +107,39 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity<Result> updateAccount(Long modify_By_UserId, String email, String password, List<String> roles, enumActive isActive, Boolean accessTokenActive) {
+    public ResponseEntity<Result> updateAccount(Long modify_By_UserId,Long accountId, String email, String password, List<String> roles, enumActive isActive, Boolean accessTokenActive) {
         try {
-            Account account = accountRepository.findByEmail(email);
+            Account account = accountRepository.findWithId(accountId);
+
             if (account != null) {
+                if (email != null) {
+                   Account a= accountRepository.findByEmail(email);
+                    if (a==null||account.getEmail().equals(a.getEmail())) {
+                        account.setEmail(email);
+                    }else  {
+                        return ResponseEntity.ok(new Result("Email is used", enumResultStatus.ERROR, null));
+
+                    }
+                }
                 if (password != null) {
                     account.setPassword(passwordEncoder.encode(password));
                 }
                 if (!roles.isEmpty()) {
+                    List<Role> roleOfAccount = accountRepository.findAccountByUserId(modify_By_UserId).getRole();
+                    if (roleOfAccount != null && !roleOfAccount.isEmpty()) {
+                        // Duyệt qua từng vai trò trong danh sách
+                        for (Role role : roleOfAccount) {
+                            if ("ADMIN".equals(role.getName())) {
+                                return ResponseEntity.ok(new Result("Admins cannot update their roles", enumResultStatus.ERROR, accountRepository.save(account)));
+                            }
+                        }
+                    }
                     List<Role> newRoles = new ArrayList<>();
                     for (String r : roles) {
                         newRoles.add(roleRepository.findRoleByName(enumRole.valueOf(r)));
                     }
                     account.setRole(newRoles);
                 }
-
                 if (modify_By_UserId != 0) {
                     User mdU = userRepository.findUserById(modify_By_UserId);
                     if (mdU != null) {
@@ -153,32 +172,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    @Override
-    public ResponseEntity<Result> resetPassword(String email) {
-        try{
-            Account account = accountRepository.findByEmail(email);
-            if (account != null) {
-                account.setPassword(passwordEncoder.encode(generateRandomPassword()));
-                accountRepository.save(account);
-                // gửi email về email đó link để change password
-                String link= "link của server font-end dẫn đến trang đổi mật khẩu";
-                emailService.sendResetPassword(account.getEmail(),link);
-                return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
-            }
-            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
-        }catch (Exception ex){
-            if (ex instanceof ConstraintViolationException) {
-                // Lỗi validate dữ liệu
-                return  ResponseEntity.ok(new Result("Validate value of account in reset password", enumResultStatus.OK,null));
-            } else if (ex instanceof DataIntegrityViolationException) {
-                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
-                return  ResponseEntity.ok(new Result("Validate value of account in reset password", enumResultStatus.OK,null));
-            } else {
-                // Các lỗi khác
-                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
-            }
-        }
-    }
+
 
     @Override
     public ResponseEntity<Result> deleteAccount(String email) {
@@ -227,7 +221,7 @@ public class AccountServiceImpl implements AccountService {
                     return ResponseEntity.ok(new Result("Verify code is wrong",enumResultStatus.NOT_FOUND,false));
                 }
             }else{
-                return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+                return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.NOT_FOUND,null));
             }
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {
@@ -254,7 +248,7 @@ public class AccountServiceImpl implements AccountService {
                 accountRepository.save(account);
                 return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
             }
-            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.NOT_FOUND,null));
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {
                 // Lỗi validate dữ liệu
@@ -267,7 +261,95 @@ public class AccountServiceImpl implements AccountService {
                 // Các lỗi khác
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Other Error", enumResultStatus.ERROR, ex.getMessage()));
             }
-        }    }
+        }
+    }
+
+    @Override
+    public ResponseEntity<Result> changePassword(String email, String currentPassword, String newPassword) {
+        try{
+            Account account= accountRepository.findByEmail(email);
+            if(account!=null){
+               if (checkPassword(currentPassword,account.getPassword())){
+                   if (currentPassword.equals(newPassword)){
+                       return ResponseEntity.ok(new Result("New password cant be current password",enumResultStatus.NOT_FOUND,true));
+                   }
+                   account.setPassword(passwordEncoder.encode(newPassword));
+                   accountRepository.save(account);
+                   return ResponseEntity.ok(new Result("Change Password success",enumResultStatus.OK,true));
+               }else {
+                   return ResponseEntity.ok(new Result("Current password is wrong",enumResultStatus.NOT_FOUND,false));
+               }
+            }
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Validate value of account in change password", enumResultStatus.ERROR, ex.getMessage()));
+
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Data integrity constraint violation error in change password", enumResultStatus.ERROR, ex.getMessage()));
+            } else {
+                // Các lỗi khác
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Other Error", enumResultStatus.ERROR, ex.getMessage()));
+            }
+        }
+    }
+
+    @Override
+    public ResponseEntity<Result> changePasswordWithToken(String token , String newPassword) {
+        try{
+            Account account= accountRepository.findAccountByResetPasswordToken(token);
+            if(account!=null){
+                    if (checkPassword(newPassword,account.getPassword())){
+                        return ResponseEntity.ok(new Result("New password cant be used password in the pass",enumResultStatus.NOT_FOUND,true));
+                    }
+                    account.setPassword(passwordEncoder.encode(newPassword));
+                    accountRepository.save(account);
+                    return ResponseEntity.ok(new Result("Change Password success",enumResultStatus.OK,true));
+            }
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Validate value of account in change password", enumResultStatus.ERROR, ex.getMessage()));
+
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Data integrity constraint violation error in change password", enumResultStatus.ERROR, ex.getMessage()));
+            } else {
+                // Các lỗi khác
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("Other Error", enumResultStatus.ERROR, ex.getMessage()));
+            }
+        }
+    }
+
+    @Override
+    public ResponseEntity<Result> forgotPassword(String email) {
+        try{
+            Account account = accountRepository.findByEmail(email);
+            if (account != null) {
+                account.setResetPasswordToken(generateRandomCode());
+                accountRepository.save(account);
+                // gửi email về email đó link để change password
+                String link= "http://localhost:3000/auth/changePassword/"+account.getResetPasswordToken();
+                emailService.sendForgotPassword(account.getEmail(),link);
+                return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
+            }
+            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.ERROR,null));
+        }catch (Exception ex){
+            if (ex instanceof ConstraintViolationException) {
+                // Lỗi validate dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in forgot password", enumResultStatus.OK,null));
+            } else if (ex instanceof DataIntegrityViolationException) {
+                // Lỗi vi phạm ràng buộc toàn vẹn dữ liệu
+                return  ResponseEntity.ok(new Result("Validate value of account in forgot password", enumResultStatus.OK,null));
+            } else {
+                // Các lỗi khác
+                return  ResponseEntity.ok(new Result(ex.getMessage(), enumResultStatus.OK,null));
+            }
+        }
+    }
 
 
     private String generateRandomPassword() {
@@ -314,6 +396,9 @@ public class AccountServiceImpl implements AccountService {
             codeArray[randomIndex] = temp;
         }
         return new String(codeArray);
+    }
+    public static boolean checkPassword(String plainPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainPassword, hashedPassword);
     }
 
 }

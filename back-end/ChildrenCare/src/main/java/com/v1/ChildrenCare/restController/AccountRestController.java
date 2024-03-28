@@ -72,16 +72,16 @@ public class AccountRestController {
     }
     @PutMapping("/updateAccount")
     public ResponseEntity<Result> updateAccount(@RequestBody Map<String, Object> requestBody) {
+        Integer accountIdInterger = (Integer) requestBody.get("accountId");
+        Long accountId = accountIdInterger.longValue();
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
-        List<String> roles = (List<String>) requestBody.get("lsRole");
-
-        // Lấy user từ token login, nếu chưa có user nào trong token thì set Modified_By_UserId = 0
-        Long modifyByUserId = 0L;
 
         // Mặc định cho các trường mới là null hoặc giá trị mặc định của kiểu dữ liệu tương ứng
         enumActive isActive = null;
         Boolean accessTokenActive = null;
+        List<String> roles=null;
+        Long modifyByUserId = 0L;
 
         // Kiểm tra xem các trường mới có trong requestBody hay không
         if (requestBody.containsKey("isActive")) {
@@ -90,16 +90,20 @@ public class AccountRestController {
         if (requestBody.containsKey("accessTokenActive")) {
             accessTokenActive = (Boolean) requestBody.get("accessTokenActive");
         }
+        if (requestBody.containsKey("lsRole")) {
+             roles = (List<String>) requestBody.get("lsRole");
+        }
+        if (requestBody.containsKey("modifyByUserId")) {
+            Integer modifyByUserIdInteger = (Integer) requestBody.get("modifyByUserId");
+            modifyByUserId = modifyByUserIdInteger.longValue();
+        }
 
-        return accountService.updateAccount(modifyByUserId, email, password, roles, isActive, accessTokenActive);
+        return accountService.updateAccount(modifyByUserId,accountId, email, password, roles, isActive, accessTokenActive);
     }
 
 
     //boolean
-    @PostMapping("/resetPassword")
-    public ResponseEntity<Result> resetPassword(@RequestParam(name = "email") String email) {
-        return accountService.resetPassword(email);
-    }
+
     //boolean
     @DeleteMapping("/deleteAccount")
     public ResponseEntity<Result> deleteAccount(@RequestParam(name = "email") String email) {
@@ -117,6 +121,29 @@ public class AccountRestController {
             @RequestBody Map<String, Object> requestBody) {
         String email = (String) requestBody.get("email");
         return accountService.resendVerifyEmail(email);
+    }
+    @PostMapping("/changePassword")
+    public ResponseEntity<Result> changePassword(
+            @RequestBody Map<String, Object> requestBody) {
+        String email = (String) requestBody.get("email");
+        String currentPassword = (String) requestBody.get("currentPassword");
+        String newPassword = (String) requestBody.get("newPassword");
+        return accountService.changePassword(email,currentPassword,newPassword);
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<Result> forgotPassword(
+            @RequestBody Map<String, Object> requestBody) {
+        String email = (String) requestBody.get("email");
+        return accountService.forgotPassword(email);
+    }
+
+    @PostMapping("/changePasswordWithToken")
+    public ResponseEntity<Result> changePasswordWithToken(
+            @RequestBody Map<String, Object> requestBody) {
+        String token = (String) requestBody.get("token");
+        String newPassword = (String) requestBody.get("newPassword");
+        return accountService.changePasswordWithToken(token,newPassword);
     }
 
 

@@ -1,12 +1,9 @@
 package com.v1.ChildrenCare.restController;
 
 import com.v1.ChildrenCare.constaint.Result;
-import com.v1.ChildrenCare.dto.UserDto;
 import com.v1.ChildrenCare.enumPack.enumGender;
 import com.v1.ChildrenCare.enumPack.enumResultStatus;
 import com.v1.ChildrenCare.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,9 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/user")
@@ -74,7 +69,6 @@ public class UserRestController {
         if (targetPageNumber < 0) {
             return ResponseEntity.badRequest().body(new Result("Invalid page number", enumResultStatus.OK,null));
         }
-
         Pageable pageable = PageRequest.of(targetPageNumber, 10);
         return userService.searchUser(firstName, lastName, email, dob, pageable);
     }
@@ -94,6 +88,12 @@ public class UserRestController {
         Long Modified_By_UserId= 0L;
 
         return userService.updateUser(Modified_By_UserId, UserId,  firstName,  lastName,  dob,  phone,  address,  avatarFile,  enumGender.valueOf(gender));
+    }
+    @PostMapping("/findUser")
+    public ResponseEntity<Result> searchUser(
+            @RequestParam(name = "userId") Long userId
+    ) {
+        return userService.findUser(userId);
     }
 
 }

@@ -12,7 +12,7 @@ public class AccountDto {
     private String password;
     private String accessToken;
     private Boolean isAccessTokenActive;
-    private List<Role> role;
+    private List<String> role;
     private enumActive isActive;
     private LocalDate CreatedDate;
     private Long ModifiedBy_UserId ;
@@ -21,7 +21,7 @@ public class AccountDto {
     public AccountDto() {
     }
 
-    public AccountDto(Long id, String email, String password, String accessToken, Boolean isAccessTokenActive, List<Role> role, enumActive isActive, LocalDate createdDate, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
+    public AccountDto(Long id, String email, String password, String accessToken, Boolean isAccessTokenActive, List<String> role, enumActive isActive, LocalDate createdDate, Long modifiedBy_UserId, LocalDate lastModifiedDate) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -74,11 +74,11 @@ public class AccountDto {
         isAccessTokenActive = accessTokenActive;
     }
 
-    public List<Role> getRole() {
+    public List<String> getRole() {
         return role;
     }
 
-    public void setRole(List<Role> role) {
+    public void setRole(List<String> role) {
         this.role = role;
     }
 

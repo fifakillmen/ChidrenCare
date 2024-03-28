@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import {
   Navbar,
@@ -14,14 +14,17 @@ import {
 } from "reactstrap";
 import Logo from "./Logo";
 import { ReactComponent as LogoWhite } from "../assets/images/logos/materialprowhite.svg";
-import user1 from "../assets/images/users/user4.jpg";
-import { getUserInfoFromCookie,deleteCookies,getAccessToken } from '../services/cookeiService'
+import { getUserInfoFromCookie, deleteCookies, getAccessToken } from '../services/cookeiService'
+import UserProfileComponent from '../components/User/UserProfileComponent';
+import ChangePasswordComponent from '../components/Authorization/ChangePasswordComponent';
+import { logout } from '../services/authService';
 
 
 const Header = () => {
-  const accessToken= getAccessToken();
-  const userInfor=getUserInfoFromCookie();
+  const userInfor = getUserInfoFromCookie();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [isChangePasswordModalVisible, setIsChangePasswordModalVisible] = useState(false);
 
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
@@ -33,10 +36,14 @@ const Header = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   const handleLogout = () => {
-    deleteCookies('accessToken');
-    deleteCookies('userInfo');
-    window.location.reload();
-};
+    logout();
+  };
+  const toggleProfileModal = () => {
+    setIsProfileModalVisible(!isProfileModalVisible);
+  };
+  const toggleChangePasswordModal = () => {
+    setIsChangePasswordModalVisible(!isChangePasswordModalVisible);
+  };
   return (
     <Navbar color="primary" dark expand="md" className="fix-header">
       <div className="d-flex align-items-center">
@@ -80,16 +87,18 @@ const Header = () => {
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle color="transparent">
             <img
-              src={userInfor.avatar}
+              src={userInfor?.avatar || ""}
               alt="profile"
               className="rounded-circle"
               width="30"
-            ></img>
+            />
           </DropdownToggle>
           <DropdownMenu>
             <DropdownItem header>Info</DropdownItem>
-            <DropdownItem>My Account</DropdownItem>
-            <DropdownItem>Edit Profile</DropdownItem>
+            <DropdownItem onClick={toggleProfileModal}>Edit Profile</DropdownItem>
+
+            <DropdownItem onClick={toggleChangePasswordModal}>Change Password</DropdownItem>
+
             <DropdownItem divider />
             <DropdownItem>My Balance</DropdownItem>
             <DropdownItem>Inbox</DropdownItem>
@@ -97,6 +106,16 @@ const Header = () => {
           </DropdownMenu>
         </Dropdown>
       </Collapse>
+      <div> {/* Render UserProfileComponent inside the return statement */}
+        {isProfileModalVisible && (
+          <UserProfileComponent visible={isProfileModalVisible} onClose={toggleProfileModal} />
+        )}
+      </div>
+      <div> {/* Render UserProfileComponent inside the return statement */}
+        {isChangePasswordModalVisible && (
+          <ChangePasswordComponent visible={isChangePasswordModalVisible} onClose={toggleChangePasswordModal} />
+        )}
+      </div>
     </Navbar>
   );
 };
