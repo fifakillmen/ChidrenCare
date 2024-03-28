@@ -3,11 +3,31 @@ import { Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
+// import { getUserInfoFromCookie } from "../../services/cookeiService";
+import {
+  getAccessToken,
+  getDataFromCookies,
+  saveToCookies,
+  deleteCookies,
+  getUserInfoFromCookie,
+} from "../../../services/cookeiService";
 
-function UpdatePost({ postId, handleCloseModal, handleUpdateSuccess, handleUpdateError }) {
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+const createdByValue = getUserInfoFromCookie();
+function UpdatePost({
+  postId,
+  handleCloseModal,
+  handleUpdateSuccess,
+  handleUpdateError,
+}) {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
   const [formData, setFormData] = useState({});
   const [previews, setPreviews] = useState([]);
+  const accessToken = getAccessToken();
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -15,10 +35,18 @@ function UpdatePost({ postId, handleCloseModal, handleUpdateSuccess, handleUpdat
     },
   });
 
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'multipart/form-data',
+  };
+
   useEffect(() => {
+    console.log(createdByValue);
     // Fetch data of selected post
     axios
-      .get(`http://localhost:9999/manager/post/detail?id=${postId}`)
+      .get(`http://localhost:9999/manager/post/detail?id=${postId}`, {
+        headers: headers,
+      })
       .then((response) => {
         const postData = response.data.data;
         setFormData(postData);
@@ -41,24 +69,24 @@ function UpdatePost({ postId, handleCloseModal, handleUpdateSuccess, handleUpdat
   };
 
   const onSubmit = (data) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("content", data.content);
-    formData.append("author", data.author);
-    formData.append("isActive", data.isActive);
+    // alert(createdByValue)
+    const formDataPut = new FormData();
+    formDataPut.append("title", data.title);
+    formDataPut.append("content", data.content);
+    formDataPut.append("isActive", data.isActive);
+    formDataPut.append("postId", postId);
+    formDataPut.append("modifiedByUserId", "1");
 
     if (previews.length > 0) {
       previews.forEach((preview, index) => {
-        formData.append(`images[${index}]`, preview);
+        formDataPut.append(`images[${index}]`, preview);
       });
     }
 
     // Submit updated data to backend
     axios
-      .put(`http://localhost:9999/manager/post/update?id=${postId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      .put(`http://localhost:9999/manager/post/update`, formDataPut, {
+        headers: headers,
       })
       .then((response) => {
         console.log("Post updated successfully");
@@ -95,14 +123,14 @@ function UpdatePost({ postId, handleCloseModal, handleUpdateSuccess, handleUpdat
         {errors.content && <p className="text-danger">Content is required</p>}
       </Form.Group>
       <Form.Group controlId="formAuthor">
-      <Form.Label>Author</Form.Label>
-      <Form.Control
-        type="text"
-        name="author"
-        value={formData.user?.username || ""} // Hiển thị tên author từ dữ liệu
-        readOnly // Không cho phép sửa
-      />
-    </Form.Group>
+        <Form.Label>Author</Form.Label>
+        <Form.Control
+          type="text"
+          name="author"
+          value={formData.user?.username || ""} // Hiển thị tên author từ dữ liệu
+          readOnly // Không cho phép sửa
+        />
+      </Form.Group>
       <Form.Group controlId="formImages">
         <Form.Label>Images</Form.Label>
         <div {...getRootProps()} className="dropzone">
@@ -128,7 +156,9 @@ function UpdatePost({ postId, handleCloseModal, handleUpdateSuccess, handleUpdat
           <option value="ACTIVE">Active</option>
           <option value="INACTIVE">Inactive</option>
         </Form.Control>
-        {errors.isActive && <p className="text-danger">Is Active is required</p>}
+        {errors.isActive && (
+          <p className="text-danger">Is Active is required</p>
+        )}
       </Form.Group>
       <Button variant="primary" type="submit">
         Update

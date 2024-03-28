@@ -50,9 +50,9 @@ const Service = () => {
           <section className="home-cards">
             {services.map((service) => (
               <div key={service.id}>
-                <img src={service.image} alt="" />
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
+                <img src={service.thumbnail} alt="Error" />
+                <h3>{service.serviceTitle}</h3>
+                <p>{service.serviceDetail}</p>
                 <Link to={`/servicedetail/${service.id}`}>Learn More <i className="fas fa-chevron-right"></i></Link>
               </div>
             ))}

@@ -112,11 +112,12 @@ public class SecurityConfig {
 
 
                         // post
-                        .requestMatchers("/manager/post/**").permitAll()
+//                        .requestMatchers("/manager/post/**").permitAll()
+                                .requestMatchers("/manager/post/**").hasAnyAuthority("ADMIN")
                                 .requestMatchers("/user/post/**").permitAll()
                          // service
-                        .requestMatchers("/manager/service/**").permitAll()
-
+//                        .requestMatchers("/manager/service/**").permitAll()
+                                .requestMatchers("/manager/service/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user/service/**").permitAll()
 
 

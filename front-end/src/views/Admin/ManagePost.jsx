@@ -5,6 +5,7 @@ import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import UpdatePost from './Post/updatePost.jsx'; 
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies,getUserInfoFromCookie } from "../../services/cookeiService.js";
 
 const fakeData = [
   {
@@ -22,13 +23,19 @@ function PostManage() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [postId, setPostId] = useState(null); // Lưu trữ ID của bài viết đang được chọn
-  const itemsPerPage = 6;
+  const itemsPerPage = 4;
 
   const handleCloseModal = () => setShowModal(false);
-
+  const accessToken = getAccessToken();
   const fetchPosts = () => {
+    
+    const headers = {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+  };
+  
     axios
-      .get("http://localhost:9999/manager/post/getList")
+      .get("http://localhost:9999/manager/post/getList", { headers: headers})
       .then((response) => {
         setPosts(response.data.data);
         console.log(response.data.data);
@@ -89,22 +96,16 @@ function PostManage() {
         });
     }
   };
-
-  // Hàm xử lý khi click vào nút Edit
   const handleEdit = (postId) => {
-    setPostId(postId); // Thiết lập ID của bài viết đang được chọn
-    setShowModal(true); // Hiển thị modal
+    setPostId(postId); 
+    setShowModal(true); 
   };
   const handleUpdateError = (error) => {
-    // Xử lý lỗi tại đây
     console.error("Error updating post:", error);
-    // Hiển thị thông báo lỗi cho người dùng, hoặc thực hiện các hành động khác
   };
   
   const handleUpdateSuccess = () => {
-    // Xử lý sau khi cập nhật thành công
-    // Ví dụ: hiển thị thông báo thành công, tải lại danh sách bài viết
-    fetchPosts(); // Tải lại danh sách bài viết
+    fetchPosts();
   };
   return (
     <>

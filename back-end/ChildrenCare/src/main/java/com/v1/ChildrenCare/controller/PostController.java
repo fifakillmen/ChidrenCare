@@ -59,13 +59,13 @@ public class PostController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<GeneralResponse> updatePost(@RequestParam("modifiedByUserId") Long modifiedByUserId,
-                                                      @RequestParam("postId") Long postId,
-                                                      @RequestParam("title") String title,
-                                                      @RequestParam("content") String content,
-                                                      @RequestParam("imageFile") MultipartFile imageFile) {
+    public ResponseEntity<GeneralResponse> updatePost(@RequestParam(name = "modifiedByUserId", required = false) String modifiedByUserId,
+                                                      @RequestParam(name = "postId", required = false) String postId,
+                                                      @RequestParam(name = "title", required = false) String title,
+                                                      @RequestParam(name = "content", required = false) String content,
+                                                      @RequestParam(name = "imageFile", required = false) MultipartFile imageFile) {
         try {
-            return ResponseEntity.ok(GeneralResponse.of(postService.updatePost(modifiedByUserId, postId, title, content, imageFile)));
+            return ResponseEntity.ok(GeneralResponse.of(postService.updatePost(Long.parseLong(modifiedByUserId) , Long.parseLong(postId) , title, content, imageFile)));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(GeneralResponse.of(e));
         }

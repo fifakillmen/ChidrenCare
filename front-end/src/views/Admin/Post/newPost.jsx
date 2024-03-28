@@ -5,6 +5,13 @@ import { useDropzone } from 'react-dropzone';
 // import userService from '../../services/user.service';
 import axios from 'axios';
 // import authHeader from '../../services/auth-header';
+import {
+    getAccessToken,
+    getDataFromCookies,
+    saveToCookies,
+    deleteCookies,
+    getUserInfoFromCookie,
+  } from "../../../services/cookeiService";
 
 const NewPost = () => {
     const navigate = useNavigate();
@@ -13,8 +20,12 @@ const NewPost = () => {
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [sizeError, setSizeError] = useState('')
-
-
+    const accessToken = getAccessToken();
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'multipart/form-data',
+      };
+    
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('title', data.title);
@@ -35,9 +46,8 @@ const NewPost = () => {
                 "imageLink": "aaaaaa"
             }
             const response = await axios.post('http://localhost:9999/manager/post/add', formData, {
-                headers: {
-                'Content-Type': 'multipart/form-data',
-                },
+                headers: headers 
+
             })
             .then(response => {
                 return response.data.data
