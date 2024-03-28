@@ -312,8 +312,9 @@ public class AccountServiceImpl implements AccountService {
                     account.setResetPasswordToken(null);
                     accountRepository.save(account);
                     return ResponseEntity.ok(new Result("Change Password success",enumResultStatus.OK,true));
+            }else {
+                return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.NOT_FOUND,null));
             }
-            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {
                 // Lỗi validate dữ liệu
@@ -363,7 +364,7 @@ public class AccountServiceImpl implements AccountService {
         String lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
         String upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String numbers = "0123456789";
-        String specialChars = "!@#$%^&*()";
+        String specialChars = "!@#$^*()";
 
         String allChars = lowerCaseChars + upperCaseChars + numbers + specialChars;
 
