@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Container, Card } from 'reactstrap';
 import axios from 'axios';
+import image from "../../../assets/images/Images/blog1.jpg";
 
 const BlogComponent = () => {
   const [blogs, setBlogs] = useState([]);
@@ -34,14 +35,22 @@ const BlogComponent = () => {
           <Row className="m-t-40 justify-content-center">
             {blogs.map(blog => (
               <Col lg="4" md="6" key={blog.id}>
+              <div className="blog-post">
                 <Card>
-                  <a href="#"><img className="card-img-top" src={blog.imageLink} alt="blog image" /></a>
-                  {/* <div className="date-pos bg-info-gradiant">Oct<span>23</span></div> */}
-                  <h5 className="font-medium m-t-30"><a href="#" className="link">{blog.title}</a></h5>
-                  <p className="m-t-20">{blog.content}</p>
-                  <Link to={`/user/post/${blog.id}`} className="linking text-themecolor m-t-10">Learn More <i className="ti-arrow-right"></i></Link>
+                  <img className="card-img-top" src={blog.imageLink} alt="blog image" />
+                  <img className="card-img-top" src={image} alt="blog image" />
+                  <div className="card-body">
+                    <h5 className="card-title">{blog.title}</h5>
+                    <p className="card-text">{blog.content}</p>
+                    <div className="read-more">
+                      <Link to={`/post/detail/${blog.id}`} className="linking text-themecolor">
+                        Read More <i className="ti-arrow-right"></i>
+                      </Link>
+                    </div>
+                  </div>
                 </Card>
-              </Col>
+              </div>
+            </Col>
             ))}
           </Row>
         </Container>

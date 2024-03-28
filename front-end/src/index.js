@@ -70,7 +70,7 @@ root.render(
             <Route path="/auth/changePassword/:token" element={<ChangePassword />} />
 
             <Route path="/post" element={<Post />} />
-            <Route path="postdetail/:id" element={<PostDetail />} /> 
+            <Route path="post/detail/:id" element={<PostDetail />} /> 
             <Route path="/blog" element={<Blog />} />
             <Route path="/service" element={<Service />} />
             <Route path="/servicedetail/:id" element={<ServiceDetail />} />
