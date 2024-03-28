@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, notification, Input, Form, Pagination, DatePicker, Select, Upload, message } from 'antd';
-import axios from 'axios';
-import { searchUser, deleteUser, createUserByAdmin } from '../../services/userService';
-import { searchAccount, updateAccount, createAccountByAdmin } from '../../services/accountService';
-
 import moment from 'moment';
 import { PlusOutlined } from '@ant-design/icons';
-import { updateUser } from '../../services/userService'
-import { async } from 'q';
-import { roles } from 'aria-query';
+import { searchUser, deleteUser, createUserByAdmin, updateUser } from '../../services/userService';
+import { searchAccount, updateAccount, createAccountByAdmin } from '../../services/accountService';
 
 const { Option } = Select;
-
 
 const UserTable = () => {
     const [userData, setUserData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalCreateUserVisible, setIsModalCreateUserVisible] = useState(false);
-
     const [isViewAccountModalVisible, setIsViewAccountModalVisible] = useState(false);
     const [isViewCreateAccountModalVisible, setIsViewCreateAccountModalVisible] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -38,7 +31,6 @@ const UserTable = () => {
         createdDate: ''
     });
     const [totalPages, setTotalPages] = useState(1);
-    // state of modal 
     const [fName, setFName] = useState('');
     const [lName, setLName] = useState('');
     const [address, setAddress] = useState('');
@@ -46,38 +38,44 @@ const UserTable = () => {
     const [dob, setDob] = useState(null);
     const [phone, setPhone] = useState('');
     const [avatarFile, setAvatarFile] = useState(null);
-    //
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    //
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [selectedRoles, setSelectedRoles] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [CreateUserData, setCreateUserData] = useState({
+        fName: '',
+        lName: '',
+        address: '',
+        gender: '',
+        dob: null,
+        phone: '',
+        avatarFile: null
+    });
+    const [avatarByAdmin, setAvatarByAdmin] = useState(null);
+
     const handleRoleChange = (value) => {
         setSelectedRoles(value);
     };
+
     const handleUpdateInformation = () => {
         updateUser(selectedUser.id, fName, lName, dob, phone, address, gender, avatarFile)
             .then(response => {
                 if (response && response.data && response.data.status === 'OK') {
-                    notification.success(
-                        {
-                            message: "Message",
-                            description: "Update information Success!!!"
-                        }
-                    )
+                    notification.success({
+                        message: "Message",
+                        description: "Update information Success!!!"
+                    });
                 } else {
-                    notification.error(
-                        {
-                            message: "Message",
-                            description: "Update information fail!!!"
-                        }
-                    )
+                    notification.error({
+                        message: "Message",
+                        description: "Update information fail!!!"
+                    });
                 }
             })
             .catch(error => {
                 message.error('An error occurred 4: ' + error.message);
             });
     };
-
 
     useEffect(() => {
         fetchUserData();
@@ -98,6 +96,7 @@ const UserTable = () => {
                 console.error('Error fetching user data:', error);
             });
     };
+
     const handleImageUpload = (info) => {
         const file = info.file.originFileObj;
         setAvatarFile(file);
@@ -122,6 +121,7 @@ const UserTable = () => {
             targetPageNumber: pageNumber - 1
         }));
     };
+
     const handleDateChange = (date, dateString) => {
         setSearchValues(prevState => ({
             ...prevState,
@@ -132,19 +132,14 @@ const UserTable = () => {
     const handleEditUser = (user) => {
         setSelectedUser(user);
         setIsModalVisible(true);
-        // Set các trường thông tin người dùng vào state
         setFName(user.firstName);
         setLName(user.lastName);
         setAddress(user.address);
         setGender(user.gender);
         setDob(user.dob);
         setPhone(user.phone);
-        // Set ảnh đại diện (nếu có)
-        // setAvatar(user.avatar);
     };
 
-
-    
     const handleViewAccount = async (userId) => {
         await searchAccount(userId)
             .then(response => {
@@ -165,7 +160,6 @@ const UserTable = () => {
             });
         setIsViewAccountModalVisible(true);
     };
-    const [loading, setLoading] = useState(false);
 
     const handleUpdateAccount = async () => {
         setLoading(true);
@@ -176,7 +170,6 @@ const UserTable = () => {
                 isActive: accountData.isActive,
                 accessTokenActive: accountData.accessTokenActive,
             };
-            console.log(requestData);
             const response = await updateAccount(requestData);
             if (response && response.status === 'OK') {
                 notification.success({
@@ -196,12 +189,15 @@ const UserTable = () => {
             setLoading(false);
         }
     };
-    const handleResetPassword = () => {
 
+    const handleResetPassword = () => {
+        // Reset password functionality
     }
+
     const handleAddUser = () => {
         setIsViewCreateAccountModalVisible(true);
     }
+
     const handleCreateAccount = async () => {
         try {
             const emailValue = email;
@@ -217,7 +213,6 @@ const UserTable = () => {
                 });
                 setIsViewCreateAccountModalVisible(false);
                 setIsModalCreateUserVisible(true);
-
             } else {
                 notification.error({
                     message: "Message",
@@ -281,6 +276,7 @@ const UserTable = () => {
             ),
         },
     ];
+
     useEffect(() => {
         if (selectedUser) {
             setFName(selectedUser.firstName || '');
@@ -291,62 +287,56 @@ const UserTable = () => {
             setPhone(selectedUser.phone || '');
         }
     }, [selectedUser]);
+
     const onCancel = () => {
         setIsViewAccountModalVisible(false);
     };
+
     const onCancelModal = () => {
         setIsModalCreateUserVisible(false);
     };
+
     const onCancelModalCreateAccount = () => {
         setIsViewCreateAccountModalVisible(false);
     };
-
-    const [CreateUserData, setCreateUserData] = useState({
-        fName: '',
-        lName: '',
-        address: '',
-        gender: '',
-        dob: null,
-        phone: '',
-        avatarFile: null
-    });
-    const [avatarByAdmin, setAvatarByAdmin] = useState(null);
 
     const handleChangeImageByAdmin = (info) => {
         const file = info.file.originFileObj;
         setAvatarByAdmin(file);
     };
+
     const handleCreateUser = async () => {
-        await createUserByAdmin(CreateUserData.fName
-            , CreateUserData.lName
-            , CreateUserData.dob
-            , CreateUserData.phone,
+        await createUserByAdmin(
+            CreateUserData.fName,
+            CreateUserData.lName,
+            CreateUserData.dob,
+            CreateUserData.phone,
             email,
             CreateUserData.address,
             CreateUserData.gender,
             avatarByAdmin
-        ).then(response => {
-            if (response && response.data && response.data.status === 'OK') {
-                notification.success({
-                    message: "Message",
-                    description: "add account success full"
-                });
-                setIsViewCreateAccountModalVisible(false);
-                setIsModalCreateUserVisible(true);
-
-            } else {
-                notification.error({
-                    message: "Message",
-                    description: response.data.message
-                });
-            }
-        })
+        )
+            .then(response => {
+                if (response && response.data && response.data.status === 'OK') {
+                    notification.success({
+                        message: "Message",
+                        description: "add account success full"
+                    });
+                    setIsViewCreateAccountModalVisible(false);
+                    setIsModalCreateUserVisible(true);
+                } else {
+                    notification.error({
+                        message: "Message",
+                        description: response.data.message
+                    });
+                }
+            })
             .catch(error => {
                 notification.error({
                     message: "Message",
                     description: error.message
                 });
-            })
+            });
     };
 
     const handleChange = (key, value) => {
@@ -355,7 +345,6 @@ const UserTable = () => {
             [key]: value
         }));
     };
-
 
     return (
         <>
@@ -403,7 +392,7 @@ const UserTable = () => {
                 title="Edit User"
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                footer={null} // Loại bỏ footer của modal
+                footer={null}
                 key={selectedUser ? selectedUser.id : 'modal'}
             >
                 <div>
@@ -563,10 +552,10 @@ const UserTable = () => {
 
                         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
                             <Button type="primary" htmlType="submit">Update</Button>
-                        </Form.Item>
-                    </Form>
+                        </Form.Item>                    </Form>
                 </div>
             </Modal>
+
             <Modal
                 title="View Account"
                 visible={isViewAccountModalVisible}
@@ -634,20 +623,18 @@ const UserTable = () => {
                     </Form>
                 )}
             </Modal>
+
             <Modal
                 title="Create Account"
                 visible={isViewCreateAccountModalVisible}
                 onCancel={onCancelModalCreateAccount}
-                footer={null}>
+                footer={null}
+            >
                 <Form
                     autoComplete="off"
                     labelCol={{ span: 10 }}
                     wrapperCol={{ span: 14 }}
-                    onFinish={(values) => {
-                        handleCreateAccount();
-                    }}
-                    onFinishFailed={(error) => {
-                    }}
+                    onFinish={() => handleCreateAccount()}
                 >
                     <Form.Item
                         name="email"
@@ -728,6 +715,7 @@ const UserTable = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+
             <Modal
                 title="Create User"
                 visible={isModalCreateUserVisible}
@@ -841,6 +829,18 @@ const UserTable = () => {
                                     required: true,
                                     message: "Please provide your date of birth",
                                 },
+                                ({ getFieldValue }) => ({
+                                    validator() {
+                                        const minimumAge = 18;
+                                        var diff = moment().diff(moment(CreateUserData.dob), 'milliseconds');
+                                        var duration = moment.duration(diff);
+                                        if (duration.years() > minimumAge) {
+                                            return Promise.resolve();
+                                        } else {
+                                            return Promise.reject(`You must be ${minimumAge} or older.`);
+                                        }
+                                    },
+                                }),
                             ]}
                             hasFeedback
                         >
@@ -851,6 +851,9 @@ const UserTable = () => {
                                 onChange={(date, dateString) => handleChange('dob', dateString)}
                             />
                         </Form.Item>
+
+
+
 
                         <Form.Item
                             name="phone"
@@ -887,8 +890,7 @@ const UserTable = () => {
 
                         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
                             <Button type="primary" htmlType="submit">Create User</Button>
-                        </Form.Item>
-                    </Form>
+                        </Form.Item>                    </Form>
                 </div>
             </Modal>
         </>

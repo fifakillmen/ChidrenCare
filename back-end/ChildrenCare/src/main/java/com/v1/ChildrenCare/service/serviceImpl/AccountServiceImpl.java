@@ -223,9 +223,12 @@ public class AccountServiceImpl implements AccountService {
                     account.setIsActive(enumActive.ACTIVE);
                     accountRepository.save(account);
                     return ResponseEntity.ok(new Result("SUCCESS",enumResultStatus.OK,true));
+                }else {
+                    return ResponseEntity.ok(new Result("Verify code is wrong",enumResultStatus.NOT_FOUND,false));
                 }
+            }else{
+                return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
             }
-            return ResponseEntity.ok(new Result("Cannot find Account",enumResultStatus.OK,null));
         }catch (Exception ex){
             if (ex instanceof ConstraintViolationException) {
                 // Lỗi validate dữ liệu
