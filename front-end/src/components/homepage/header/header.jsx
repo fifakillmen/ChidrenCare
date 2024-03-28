@@ -16,6 +16,8 @@ import UserProfileComponent from '../../../components/User/UserProfileComponent'
 
 
 import logo from '../../../assets/images/logos/green-logo.png';
+import ChangePasswordComponent from '../../Authorization/ChangePasswordComponent';
+import { logout } from '../../../services/authService';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +25,7 @@ const Header = () => {
     const toggle = () => setIsOpen(!isOpen);
     const userInfo = getUserInfoFromCookie(); // Lấy thông tin người dùng từ cookie
     const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+    const [isToggleChangePassWordModal, setIsToggleChangePassWordModal] = useState(false);
 
 
     useEffect(() => {
@@ -34,13 +37,14 @@ const Header = () => {
     }, [userInfo]); // Chỉ chạy effect khi userInfo thay đổi
 
     const handleLogout = () => {
-        deleteCookies('accessToken');
-        deleteCookies('userInfo');
-        window.location.reload();
+        logout();
     };
 
     const toggleProfileModal = () => {
         setIsProfileModalVisible(!isProfileModalVisible);
+    };
+    const toggleChangePassWordModal = () => {
+        setIsToggleChangePassWordModal(!isToggleChangePassWordModal);
     };
     /*--------------------------------------------------------------------------------*/
     /*To open NAVBAR in MOBILE VIEW                                                   */
@@ -84,6 +88,7 @@ const Header = () => {
                                             </DropdownToggle>
                                             <DropdownMenu end>
                                                 <DropdownItem onClick={toggleProfileModal}>Edit Profile</DropdownItem>
+                                                <DropdownItem onClick={toggleChangePassWordModal}>Change Password</DropdownItem>
                                                 <DropdownItem><Link to="/children">Children Manager</Link></DropdownItem>
                                                 <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
                                             </DropdownMenu>
@@ -99,6 +104,9 @@ const Header = () => {
             </div>
             {isProfileModalVisible && (
                 <UserProfileComponent visible={isProfileModalVisible} onClose={toggleProfileModal} />
+            )}
+            {isToggleChangePassWordModal && (
+                <ChangePasswordComponent visible={isToggleChangePassWordModal} onClose={toggleChangePassWordModal} />
             )}
 
         </div>

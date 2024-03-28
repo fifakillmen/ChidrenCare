@@ -1,4 +1,4 @@
-<#ftl encoding="utf-8">
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
@@ -17,10 +17,8 @@
     </p>
 
     <div class="alert alert-success text-center">
-        <p class="display-4 fw-bold">${duongdan}</p>
+        <a href="${duongdan}" class="btn btn-primary btn-lg">Cập nhật mật khẩu</a>
     </div>
-
-    <p>Truy cập vào đường dẫn trên để cập nhật mật khẩu.</p>
 
     <p>Trân trọng!</p>
 

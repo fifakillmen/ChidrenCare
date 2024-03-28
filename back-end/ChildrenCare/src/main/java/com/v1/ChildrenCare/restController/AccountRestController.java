@@ -103,10 +103,7 @@ public class AccountRestController {
 
 
     //boolean
-    @PostMapping("/resetPassword")
-    public ResponseEntity<Result> resetPassword(@RequestParam(name = "email") String email) {
-        return accountService.resetPassword(email);
-    }
+
     //boolean
     @DeleteMapping("/deleteAccount")
     public ResponseEntity<Result> deleteAccount(@RequestParam(name = "email") String email) {
@@ -132,6 +129,21 @@ public class AccountRestController {
         String currentPassword = (String) requestBody.get("currentPassword");
         String newPassword = (String) requestBody.get("newPassword");
         return accountService.changePassword(email,currentPassword,newPassword);
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<Result> forgotPassword(
+            @RequestBody Map<String, Object> requestBody) {
+        String email = (String) requestBody.get("email");
+        return accountService.forgotPassword(email);
+    }
+
+    @PostMapping("/changePasswordWithToken")
+    public ResponseEntity<Result> changePasswordWithToken(
+            @RequestBody Map<String, Object> requestBody) {
+        String token = (String) requestBody.get("token");
+        String newPassword = (String) requestBody.get("newPassword");
+        return accountService.changePasswordWithToken(token,newPassword);
     }
 
 
