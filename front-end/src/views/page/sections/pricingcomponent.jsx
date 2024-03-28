@@ -23,7 +23,6 @@ const PricingComponent = () => {
         console.error("Error fetching posts:", error);
       });
   };
-
   return (
     <div>
       <div className="pricing8 spacer b-t">
@@ -73,5 +72,6 @@ const PricingComponent = () => {
     </div>
   );
 };
+
 
 export default PricingComponent;
