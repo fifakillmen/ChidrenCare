@@ -18,8 +18,10 @@ import {
     Select,
     Upload,
     Input,
-    message
+    message,
+    notification
 } from 'antd';
+import { da } from 'date-fns/locale';
 
 const Card = styled(MDBCard)`
   width: 60%;
@@ -51,67 +53,81 @@ const SignUpComponent = () => {
     };
 
 
-    const resendVerifyCode = () => {
-        resendVerifyEmail(email).then(
-            response => {
-                const data = response.data;
-                if (data.status === 'OK') {
-                    message.info('New code sended to your email')
-                } else {
-                    message.error(data.message)
-                }
+    const resendVerifyCode = async () => {
+        try {
+            const response = await resendVerifyEmail(email);
+            const data = response.data;
+            if (data.status === 'OK') {
+                message.info('New code sended to your email')
+            } else if (data.status === 'NOT_FOUND') {
+                notification.error(
+                    {
+                        message: "Message",
+                        description: data.message
+                    })
             }
-        );
+        } catch (error) {
+            notification.error(
+                {
+                    message: "Message",
+                    description: error.message
+                }
+            )
+        }
     };
 
 
-    const handleCreateAccount = () => {
-        createAccount(email, password)
-            .then(response => {
-                const data = response.data;
-                if (data.status === 'OK') {
-                    setIsCreated(true);
-                } else {
-                    message.error(data.message)
-                }
-            })
-            .catch(error => {
-                message.error('An error occurred 1');
-            })
-
+    const handleCreateAccount = async () => {
+        try {
+            const response = await createAccount(email, password);
+            const data = response.data;
+            if (data.status === 'OK') {
+                setIsCreated(true);
+            } else {
+                message.error(data.message)
+            }
+        } catch (error) {
+            message.error('An error occurred 1');
+        }
     }
-    const handleVerify = () => {
-        verifyEmail(email, verifyCode)
-            .then(response => {
-                const data = response.data;
-                if (data.data === true) {
-                    // sau khi verify thanh cong thi login luon 
-                    login(email, password);
-                    if (getDataFromCookies('accessToken')) {
-                        setAfterLogin(true);
-                    } else {
-                        message.error('login fail')
-                    }
-                }
-            })
-            .catch(error => {
-                message.error('An error occurred 2');
-            })
+    const handleVerify = async () => {
+        try {
+            const response = await verifyEmail(email, verifyCode);
+            const data = response.data;
+            if (data.status === 'OK') {
+                // sau khi verify thanh cong thi login luon 
+                await login(email, password);
+                if (getDataFromCookies('accessToken')) {
+                    setAfterLogin(true);
+                } 
+            } else if (data.status === 'NOT_FOUND') {
+                notification.error(
+                    {
+                        message: "Message",
+                        description: data.message
+                    })
+            }
+        } catch (error) {
+            notification.error(
+                {
+                    message: "Message",
+                    description: error.message
+                })
+        }
     }
-    const handleUpdateInformation = () => {
-        createUser(fName, lName, dob, phone, email, address, gender, avatarFile)
-            .then(response => {
-                if (response && response.data && response.data.status === 'OK') {
-                    setIsCreated(true);
-                    // chuyển đến trang home
-                    window.location.href = "/";
-                } else {
-                    message.error('An error occurred 3. No valid user ID found in the response.');
-                }
-            })
-            .catch(error => {
-                message.error('An error occurred 4: ' + error.message);
-            });
+    const handleUpdateInformation = async () => {
+        try {
+            const response = await createUser(fName, lName, dob, phone, email, address, gender, avatarFile);
+            if (response && response.data && response.data.status === 'OK') {
+                setIsCreated(true);
+                // chuyển đến trang home
+                window.location.href = "/";
+            } else {
+                message.error('An error occurred 3. No valid user ID found in the response.');
+            }
+        } catch (error) {
+            message.error('An error occurred 4: ' + error.message);
+        }
     };
 
 
