@@ -1,20 +1,15 @@
 package com.v1.ChildrenCare.controller;
 
-import com.v1.ChildrenCare.constaint.Result;
-import com.v1.ChildrenCare.dto.PostDto;
 import com.v1.ChildrenCare.dto.response.GeneralResponse;
-import com.v1.ChildrenCare.entity.Post;
 import com.v1.ChildrenCare.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/manager/post")
-public class PostController {
+@RequestMapping("/user/post")
+public class UserPostController {
     @Autowired
     private PostService postService;
 

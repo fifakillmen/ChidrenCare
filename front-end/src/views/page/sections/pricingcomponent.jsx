@@ -13,6 +13,7 @@ const PricingComponent = () => {
 
     const fetchData = () => {
         axios
+            // .get("http://localhost:9999/user/service/getlist")
             .get("http://localhost:9999/manager/service/getlist")
             .then((response) => {
                 setServices(response.data.data);
@@ -34,17 +35,20 @@ const PricingComponent = () => {
                         </Col>
                     </Row>
                     <Row className="m-t-40">
-                        {services.slice(0, 3).map((service, index) => ( // Chỉ lặp qua 3 dịch vụ đầu tiên
+                        {services.map((service, index) => ( // Chỉ lặp qua 3 dịch vụ đầu tiên
                             <Col key={index} md="4" className="ms-auto pricing-box align-self-center">
                                 <Card className="b-all">
                                     <CardBody className="p-30 text-center">
-                                        <h5>{service.serviceTitle}</h5>
+                                <h5>{service.serviceTitle}</h5> 
+
+                                        
                                         <div>
                                             {service.salePrice && (
                                                 <div>
-                                                   <sup>Sale$</sup> <span className='text-bold display-5'>
-                                                        {service.salePrice}
-                                                    </span>
+                                                  
+                                                   <h3 className='text-bold text-red-500 display-5'>
+                                                   Sale ${service.salePrice}
+                                                    </h3>
                                                     <br />
                                                 </div>
                                             )}

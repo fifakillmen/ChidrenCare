@@ -108,8 +108,10 @@ public class SecurityConfig {
 
                         // post
                         .requestMatchers("/manager/post/**").permitAll()
+                                .requestMatchers("/user/post/**").permitAll()
                          // service
-                                .requestMatchers("/manager/service/**").permitAll()
+                        .requestMatchers("/manager/service/**").permitAll()
+                        .requestMatchers("/user/service/**").permitAll()
 
                         .requestMatchers("/account/verifyEmail").permitAll()
                         .requestMatchers("/account/resendVerifyEmail").permitAll()

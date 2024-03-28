@@ -1,55 +1,53 @@
-/* eslint-disable */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Row, Col, Container, Card } from 'reactstrap';
-
-import img1 from '../../../assets/images/blog/blog-home/img3.jpg';
-import img2 from '../../../assets/images/blog/blog-home/img2.jpg';
-import img3 from '../../../assets/images/blog/blog-home/img1.jpg';
+import axios from 'axios';
 
 const BlogComponent = () => {
-    return (
-        <div>
-            <div className="blog-home2 spacer">
-                <Container>
-                    <Row className="justify-content-center">
-                        <Col md="8" className="text-center">
-                            <h2 className="title">Recent Blogs</h2>
-                            <h6 className="subtitle">You can relay on our amazing features list and also our customer services will be great experience for you without doubt and in no-time</h6>
-                        </Col>
-                    </Row>
-                    <Row className="m-t-40 justify-content-center">
-                        <Col lg="4" md="6">
-                            <Card>
-                                <a href="#"><img className="card-img-top" src={img1} alt="wrappixel kit" /></a>
-                                <div className="date-pos bg-info-gradiant">Oct<span>23</span></div>
-                                <h5 className="font-medium m-t-30"><a href="#" className="link">You should have eagle’s eye on new trends and techonogies</a></h5>
-                                <p className="m-t-20">Business Park, Opp. Corns Sam Restaurant, New Yoark, US</p>
-                                <a href="#" className="linking text-themecolor m-t-10">Learn More <i className="ti-arrow-right"></i></a>
-                            </Card>
-                        </Col>
-                        <Col lg="4" md="6">
-                            <Card>
-                                <a href="#"><img className="card-img-top" src={img2} alt="wrappixel kit" /></a>
-                                <div className="date-pos bg-info-gradiant">Oct<span>23</span></div>
-                                <h5 className="font-medium m-t-30"><a href="#" className="link">New Seminar on Newest Food Recipe from World’s Best</a></h5>
-                                <p className="m-t-20">Business Park, Opp. Corns Sam Restaurant, New Yoark, US</p>
-                                <a href="#" className="linking text-themecolor m-t-10">Learn More <i className="ti-arrow-right"></i></a>
-                            </Card>
-                        </Col>
-                        <Col lg="4" md="6">
-                            <Card>
-                                <a href="#"><img className="card-img-top" src={img3} alt="wrappixel kit" /></a>
-                                <div className="date-pos bg-info-gradiant">Oct<span>23</span></div>
-                                <h5 className="font-medium m-t-30"><a href="#" className="link">Learn from small things to create something bigger.</a></h5>
-                                <p className="m-t-20">Business Park, Opp. Corns Sam Restaurant, New Yoark, US</p>
-                                <a href="#" className="linking text-themecolor m-t-10">Learn More <i className="ti-arrow-right"></i></a>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        </div>
-    );
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    axios
+      .get('http://localhost:9999/user/post/getList')
+      .then(response => {
+        setBlogs(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching blogs:', error);
+      });
+  };
+
+  return (
+    <div>
+      <div className="blog-home2 spacer">
+        <Container>
+          <Row className="justify-content-center">
+            <Col md="8" className="text-center">
+              <h2 className="title">Recent Blogs</h2>
+              <h6 className="subtitle">You can rely on our amazing features list and also our customer services will be great experience for you without doubt and in no-time</h6>
+            </Col>
+          </Row>
+          <Row className="m-t-40 justify-content-center">
+            {blogs.map(blog => (
+              <Col lg="4" md="6" key={blog.id}>
+                <Card>
+                  <a href="#"><img className="card-img-top" src={blog.imageLink} alt="blog image" /></a>
+                  {/* <div className="date-pos bg-info-gradiant">Oct<span>23</span></div> */}
+                  <h5 className="font-medium m-t-30"><a href="#" className="link">{blog.title}</a></h5>
+                  <p className="m-t-20">{blog.content}</p>
+                  <Link to={`/user/post/${blog.id}`} className="linking text-themecolor m-t-10">Learn More <i className="ti-arrow-right"></i></Link>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </div>
+    </div>
+  );
 }
 
 export default BlogComponent;

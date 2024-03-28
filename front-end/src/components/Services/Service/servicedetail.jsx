@@ -1,63 +1,84 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 import blog2Image from '../../../assets/images/Images/image.png';
-
-import FormBannerComponent from "../../../views/page/sections/formbannercomponent";
 import Footer from "../../../components/homepage/footer/footer";
 import Header from "../../../components/homepage/header/header";
 import './servicedetail.css';
-// import FormBannerComponent from "./sections/formbannercomponent";
-// import Home from "./views/page/Home";
 
 const ServiceDetail = () => {
   const { id } = useParams();
+  const [service, setService] = useState(null);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
-  const services = [
-    {
-      id: '1',
-      title: 'Early Childhood Education Program',
-      description: 'The childcare center may provide early childhood education programs for children from preschool age to elementary school age. This program includes educational activities and interactions between children and teachers, aimed at developing comprehensive skills for children. Activities may include drawing, music playing, basic English learning, and various educational games.',
-      price: '1500$'
-    },
-    {
-      id: '2',
-      title: 'Service 2',
-      description: 'This is the detailed description of Service 2. It includes all the features and benefits of this service.',
-    },
-    {
-      id: '3',
-      title: 'Service 3',
-      description: 'This is the detailed description of Service 3. It includes all the features and benefits of this service.',
-    },
-    {
-      id: '4',
-      title: 'Service 4',
-      description: 'This is the detailed description of Service 4. It includes all the features and benefits of this service.',
-    },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, [id]);
 
-  const service = services.find(service => service.id === id);
+  const fetchData = () => {
+    axios
+      .get(`http://localhost:9999/manager/service/detail?id=${id}`)
+      .then((response) => {
+        setService(response.data.data);
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching service:", error);
+      });
+  };
+
+  const toggleShowFullDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  };
 
   if (!service) {
-    return <div>Service not found!</div>;
+    return <div>Loading...</div>;
   }
+
+  const serviceDetailWords = service.serviceDetail.split(" ");
+  const shouldShowReadMore = serviceDetailWords.length > 50;
+  const displayedDescription = shouldShowReadMore
+    ? serviceDetailWords.slice(0, 50).join(" ") + "..."
+    : service.serviceDetail;
 
   return (
     <div>
-      <Header/>
-      <div className="single-blog-card ">
+      <Header />
+      <div className="single-blog-card">
         <div className="card-thumb">
+          <img src={service.thumbnail} className='mt-150' alt="" />
           <img src={blog2Image} className='mt-150' alt="" />
         </div>
-        <div className="card-content text-start">
-          <h3>{service.title}</h3>
-          <span>{service.price}</span>
+        <div className="card-content text-start mt-4">
+          <h3 className="serviceTitle">{service.serviceTitle}</h3>
+          {service.salePrice ? (
+            <>
+            <span className="salePrice">{service.salePrice}</span>
+              <span className="servicePrice" style={{ textDecoration: 'line-through' }}>{service.servicePrice}</span>
+              
+            </>
+          ) : (
+            <span className="servicePrice">{service.servicePrice}</span>
+          )}
+
+          <span>$</span>
+
+          
+          <hr />
+          <span>{displayedDescription}</span>
+          {showFullDescription && <span>{service.serviceDetail}</span>}
+          {shouldShowReadMore && (
+            <span className="read-more" onClick={toggleShowFullDescription}>
+              {showFullDescription ? "Read Less" : "Read More"}
+            </span>
+          )}
+          
           <div className="card-meta d-flex justify-content-between">
             <span>{service.description}</span>
-            
           </div>
-          {/* Thêm Link để dẫn đến ServiceDetail */}
-          <Link to={`/servicedetail/${id}`} className="btn btn-info-gradiant p-15 mt-10 btn-arrow btn-block">CHOOSE PLAN</Link>
+          <Link to={`/servicedetail/${id}`} className="btn btn-info-gradiant p-15 mt-10 btn-arrow btn-block">
+            CHOOSE PLAN
+          </Link>
         </div>
       </div>
       {/* <Footer/> */}

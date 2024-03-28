@@ -1,4 +1,3 @@
-// Import thêm useState để lưu trữ ID bài viết đang được chọn
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Pagination, Modal, Button } from "react-bootstrap";
 import { Link } from 'react-router-dom';
@@ -96,18 +95,32 @@ function PostManage() {
     setPostId(postId); // Thiết lập ID của bài viết đang được chọn
     setShowModal(true); // Hiển thị modal
   };
-
+  const handleUpdateError = (error) => {
+    // Xử lý lỗi tại đây
+    console.error("Error updating post:", error);
+    // Hiển thị thông báo lỗi cho người dùng, hoặc thực hiện các hành động khác
+  };
+  
+  const handleUpdateSuccess = () => {
+    // Xử lý sau khi cập nhật thành công
+    // Ví dụ: hiển thị thông báo thành công, tải lại danh sách bài viết
+    fetchPosts(); // Tải lại danh sách bài viết
+  };
   return (
     <>
       <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Post</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <UpdatePost postId={postId} handleCloseModal={handleCloseModal} />
-        </Modal.Body>
-      </Modal>
-
+  <Modal.Header closeButton>
+    <Modal.Title>Update Post</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <UpdatePost
+      postId={postId}
+      handleCloseModal={handleCloseModal}
+      handleUpdateSuccess={handleUpdateSuccess}
+      handleUpdateError={handleUpdateError} // Truyền hàm xử lý lỗi vào đây
+    />
+  </Modal.Body>
+</Modal>
       <Row md={5} className="title align-center">
         <Col md={4}>
           <h2>Mange Post</h2>
@@ -201,3 +214,4 @@ function PostManage() {
 }
 
 export default PostManage;
+

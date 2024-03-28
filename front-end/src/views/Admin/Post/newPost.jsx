@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 // import userService from '../../services/user.service';
 import axios from 'axios';
 // import authHeader from '../../services/auth-header';
-import { useNavigate } from 'react-router-dom';
 
 const NewPost = () => {
     const navigate = useNavigate();
@@ -86,6 +86,8 @@ const NewPost = () => {
         <div>
             {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
             {successMessage && <p className="alert alert-success">{successMessage}</p>}
+            {/* Add Back button here */}
+            <Link to="/admin/managePost" className="btn btn-secondary">Back</Link>
             <form onSubmit={handleSubmit(onSubmit)} className='container mt-5 mb-5'>
                 <div className="mb-3">
                     <label htmlFor="title" className="form-label">Title</label>
@@ -116,7 +118,8 @@ const NewPost = () => {
                         ))}
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button type="submit" className="btn btn-primary mr-2">Submit</button>
+                
             </form>
         </div>
     );
