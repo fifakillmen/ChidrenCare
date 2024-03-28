@@ -10,5 +10,4 @@ public class FreeMarkerConfiguration {
         config.setClassForTemplateLoading(EmailService.class, "/templates");
         return config;
     }
-
 }

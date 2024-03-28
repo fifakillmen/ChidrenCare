@@ -189,9 +189,6 @@ const TableFeedback = () => {
                     <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
                         style={{fontWeight: 'bold', marginRight: '10px'}}>Content:</span><span
                         style={{flex: 1}}>{feedbackSelected?.reviewText}</span></div>
-                    <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
-                        style={{fontWeight: 'bold', marginRight: '10px'}}>Service:</span><span
-                        style={{flex: 1}}>{feedbackSelected?.service}</span></div>
                 </Modal>
                 <Modal title="Message" open={isDeleteModalOpen} onOk={handleDeleteOk}
                        onCancel={handleCancel}>

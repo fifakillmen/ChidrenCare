@@ -1,8 +1,28 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Container, Card, CardBody } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import axios from 'axios'; // Import axios for HTTP requests
 
 const PricingComponent = () => {
+    const [services, setServices] = useState([]);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = () => {
+        axios
+            .get("http://localhost:9999/manager/service/getlist")
+            .then((response) => {
+                setServices(response.data.data);
+                console.log(response.data.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching posts:", error);
+            });
+    };
+
     return (
         <div>
             <div className="pricing8 spacer b-t">
@@ -10,43 +30,32 @@ const PricingComponent = () => {
                     <Row className="justify-content-center">
                         <Col md="7" className="text-center">
                             <h2 className="title">Service</h2>
-                            <h6 className="subtitle">We offer 100% satisafaction and Money back Guarantee</h6>
+                            <h6 className="subtitle">Your satisfaction is our joy</h6>
                         </Col>
                     </Row>
                     <Row className="m-t-40">
-                        <Col md="4" className="ms-auto pricing-box align-self-center">
-                            <Card className="b-all">
-                                <CardBody className="p-30 text-center">
-                                    <h5>Regular Plan</h5>
-                                    <sup>$</sup><span className="text-dark display-5">39</span>
-                                    <h6 className="font-light font-14">YEARLY</h6>
-                                    <p className="m-t-40">The Master license allows you to customize, store and even host your website using your platform</p>
-                                </CardBody>
-                                <a className="btn btn-info-gradiant p-15 btn-arrow btn-block" href="#">CHOOSE PLAN </a>
-                            </Card>
-                        </Col>
-                        <Col md="4" className="ms-auto pricing-box align-self-center">
-                            <Card className="b-all">
-                                <CardBody className="p-30 text-center">
-                                    <h5>Master Plan</h5>
-                                    <sup>$</sup><span className="text-dark display-5">49</span>
-                                    <h6 className="font-light font-14">YEARLY</h6>
-                                    <p className="m-t-40">The Master license allows you to customize, store and even host your website using your platform</p>
-                                </CardBody>
-                                <a className="btn btn-danger-gradiant p-15 btn-arrow btn-block" href="#">CHOOSE PLAN </a>
-                            </Card>
-                        </Col>
-                        <Col md="4" className="ms-auto pricing-box align-self-center">
-                            <Card className="b-all">
-                                <CardBody className="p-30 text-center">
-                                    <h5>Premium Plan</h5>
-                                    <sup>$</sup><span className="text-dark display-5">69</span>
-                                    <h6 className="font-light font-14">YEARLY</h6>
-                                    <p className="m-t-40">The Master license allows you to customize, store and even host your website using your platform</p>
-                                </CardBody>
-                                <a className="btn btn-info-gradiant p-15 btn-arrow btn-block" href="#">CHOOSE PLAN </a>
-                            </Card>
-                        </Col>
+                        {services.slice(0, 3).map((service, index) => ( // Chỉ lặp qua 3 dịch vụ đầu tiên
+                            <Col key={index} md="4" className="ms-auto pricing-box align-self-center">
+                                <Card className="b-all">
+                                    <CardBody className="p-30 text-center">
+                                        <h5>{service.serviceTitle}</h5>
+                                        <div>
+                                            {service.salePrice && (
+                                                <div>
+                                                   <sup>Sale$</sup> <span className='text-bold display-5'>
+                                                        {service.salePrice}
+                                                    </span>
+                                                    <br />
+                                                </div>
+                                            )}
+                                            <sup>$</sup>
+                                            <span className="text-dark display-5">{service.servicePrice}</span>
+                                        </div>
+                                    </CardBody>
+                                    <Link to={`/servicedetail/${service.id}`} className="btn btn-info-gradiant p-15 btn-arrow btn-block">CHOOSE PLAN</Link>
+                                </Card>
+                            </Col>
+                        ))}
                     </Row>
                 </Container>
             </div>

@@ -1,0 +1,45 @@
+.container-update {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .container-update h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .container-update label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .container-update input[type="text"],
+  .container-update textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .container-update input[type="file"] {
+    margin-bottom: 15px;
+  }
+  
+  .container-update button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .container-update button:hover {
+    background-color: #0056b3;
+  }
+  

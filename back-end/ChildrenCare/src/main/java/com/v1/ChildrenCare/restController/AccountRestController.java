@@ -2,6 +2,8 @@ package com.v1.ChildrenCare.restController;
 
 import com.v1.ChildrenCare.configuration.Security.CustomUserDetails;
 import com.v1.ChildrenCare.constaint.Result;
+import com.v1.ChildrenCare.entity.Role;
+import com.v1.ChildrenCare.enumPack.enumActive;
 import com.v1.ChildrenCare.enumPack.enumRole;
 import com.v1.ChildrenCare.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,53 +43,67 @@ public class AccountRestController {
     }
     @PostMapping("/addAccountByAdmin")
     public ResponseEntity<Result> addAccountByAdmin(@RequestBody Map<String, Object> requestBody) {
+        Integer adminIdInteger = (Integer) requestBody.get("AdminId");
+        Long adminId = adminIdInteger != null ? adminIdInteger.longValue() : 0L;
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
         List<String> roles = (List<String>) requestBody.get("lsRole");
-        // lấy user từ token login nếu chưa có user nào trong token thì set Modified_By_UserId =0
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        List<enumRole> roleList= new ArrayList<>();
-        for (String r :roles){
+        List<enumRole> roleList = new ArrayList<>();
+        for (String r : roles) {
             roleList.add(enumRole.valueOf(r));
         }
-        return accountService.createAccount(userDetails.getAccount().getId(),email, password,roleList);
+        return accountService.createAccount(adminId, email, password, roleList);
     }
+
 
 
 
     //Page<Account>
     @PostMapping("/searchAccount")
-    public ResponseEntity<Result> searchAccount(@RequestParam(value = "email", required = false) String email,
-                                       @RequestParam(name = "targetPageNumber") Integer targetPageNumber) {
-        if (targetPageNumber < 0) {
-            return null;
+    public ResponseEntity<Result> searchAccount(@RequestParam(name = "UserId" ,required = false) Long UserId,
+                                                @RequestParam(value = "email", required = false) String email,
+                                                @RequestParam(name = "targetPageNumber", required = false) Integer targetPageNumber) {
+        if (targetPageNumber ==null) {
+            targetPageNumber=0;
         }
         Pageable pageable = PageRequest.of(targetPageNumber, 20);
-        return accountService.searchAccount(email, pageable);
+        return accountService.searchAccount(UserId,email, pageable);
     }
-    //Account
     @PutMapping("/updateAccount")
     public ResponseEntity<Result> updateAccount(@RequestBody Map<String, Object> requestBody) {
+        Integer accountIdInterger = (Integer) requestBody.get("accountId");
+        Long accountId = accountIdInterger.longValue();
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
-        List<String> roles = (List<String>) requestBody.get("lsRole");
 
-        // lấy user từ token login nếu chưa có user nào trong token thì set Modified_By_UserId =0
-        Long Modify_By_UserId= 0L;
-        List<enumRole> roleList= new ArrayList<>();
-        for (String r :roles){
-            roleList.add(enumRole.valueOf(r));
+        // Mặc định cho các trường mới là null hoặc giá trị mặc định của kiểu dữ liệu tương ứng
+        enumActive isActive = null;
+        Boolean accessTokenActive = null;
+        List<String> roles=null;
+        Long modifyByUserId = 0L;
+
+        // Kiểm tra xem các trường mới có trong requestBody hay không
+        if (requestBody.containsKey("isActive")) {
+            isActive = enumActive.valueOf((String) requestBody.get("isActive")) ;
         }
-        return accountService.updateAccount(Modify_By_UserId,email, password, roleList);
+        if (requestBody.containsKey("accessTokenActive")) {
+            accessTokenActive = (Boolean) requestBody.get("accessTokenActive");
+        }
+        if (requestBody.containsKey("lsRole")) {
+             roles = (List<String>) requestBody.get("lsRole");
+        }
+        if (requestBody.containsKey("modifyByUserId")) {
+            Integer modifyByUserIdInteger = (Integer) requestBody.get("modifyByUserId");
+            modifyByUserId = modifyByUserIdInteger.longValue();
+        }
+
+        return accountService.updateAccount(modifyByUserId,accountId, email, password, roles, isActive, accessTokenActive);
     }
+
 
     //boolean
-    @PostMapping("/resetPassword")
-    public ResponseEntity<Result> resetPassword(@RequestParam(name = "email") String email) {
-        return accountService.resetPassword(email);
-    }
+
     //boolean
     @DeleteMapping("/deleteAccount")
     public ResponseEntity<Result> deleteAccount(@RequestParam(name = "email") String email) {
@@ -105,6 +121,29 @@ public class AccountRestController {
             @RequestBody Map<String, Object> requestBody) {
         String email = (String) requestBody.get("email");
         return accountService.resendVerifyEmail(email);
+    }
+    @PostMapping("/changePassword")
+    public ResponseEntity<Result> changePassword(
+            @RequestBody Map<String, Object> requestBody) {
+        String email = (String) requestBody.get("email");
+        String currentPassword = (String) requestBody.get("currentPassword");
+        String newPassword = (String) requestBody.get("newPassword");
+        return accountService.changePassword(email,currentPassword,newPassword);
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<Result> forgotPassword(
+            @RequestBody Map<String, Object> requestBody) {
+        String email = (String) requestBody.get("email");
+        return accountService.forgotPassword(email);
+    }
+
+    @PostMapping("/changePasswordWithToken")
+    public ResponseEntity<Result> changePasswordWithToken(
+            @RequestBody Map<String, Object> requestBody) {
+        String token = (String) requestBody.get("token");
+        String newPassword = (String) requestBody.get("newPassword");
+        return accountService.changePasswordWithToken(token,newPassword);
     }
 
 

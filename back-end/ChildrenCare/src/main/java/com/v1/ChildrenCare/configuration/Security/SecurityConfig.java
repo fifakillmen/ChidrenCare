@@ -92,24 +92,36 @@ public class SecurityConfig {
                         .requestMatchers("/user/addUser").hasAnyAuthority("USER","ADMIN")
                         .requestMatchers("/user/searchUser").hasAnyAuthority( "ADMIN")
                         .requestMatchers("/user/deleteUser").hasAnyAuthority( "ADMIN")
-                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","ADMIN")
+                        .requestMatchers("/user/addUserByAdmin").hasAnyAuthority( "ADMIN")
+                        .requestMatchers("/user/updateUser").hasAnyAuthority("USER","STAFF","ADMIN")
+                        .requestMatchers("/user/findUser").hasAnyAuthority("USER","ADMIN","STAFF")
                         // account
-                        .requestMatchers("/account/searchEmailNoConnected").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/searchAccount").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/account/addAccountByAdmin").hasAnyAuthority("ADMIN")
                         .requestMatchers("/account/addAccount").permitAll()
                         .requestMatchers("/account/updateAccount").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers("/account/deleteAccount").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/account/resetPassword").permitAll()
-<<<<<<< HEAD
+                        .requestMatchers("/account/changePassword").hasAnyAuthority("ADMIN","USER","STAFF")
+                        .requestMatchers("/account/changePasswordWithToken").permitAll()
+                        .requestMatchers("/account/forgotPassword").permitAll()
+                        //
+
+
                         .requestMatchers("/api/feedback/**","/api/children/**").permitAll()
-//                        .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
-=======
+//                       .requestMatchers( "/api/children/**").hasAnyAuthority("ADMIN","USER","STAFF")
+
+
+                        // post
+                        .requestMatchers("/manager/post/**").permitAll()
+                         // service
+                        .requestMatchers("/manager/service/**").permitAll()
+
                         .requestMatchers("/account/verifyEmail").permitAll()
                         .requestMatchers("/account/resendVerifyEmail").permitAll()
                         // feedback
 
->>>>>>> 759fd3ede80da7e426d6c77edcfd32dcd2948d46
                         .anyRequest().authenticated()
+
                 );
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
