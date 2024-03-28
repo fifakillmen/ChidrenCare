@@ -84,7 +84,7 @@ const Header = () => {
                                     {isLoggedIn ? ( // Nếu người dùng đã đăng nhập
                                         <UncontrolledDropdown nav inNavbar>
                                             <DropdownToggle nav caret>
-                                                {userInfo.fname} {userInfo.lname} {/* Hiển thị tên người dùng hoặc thông tin khác */}
+                                                {userInfo.fname} {userInfo.lname}
                                             </DropdownToggle>
                                             <DropdownMenu end>
                                                 <DropdownItem onClick={toggleProfileModal}>Edit Profile</DropdownItem>
