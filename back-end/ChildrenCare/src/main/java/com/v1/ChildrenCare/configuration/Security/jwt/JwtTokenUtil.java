@@ -3,6 +3,7 @@ package com.v1.ChildrenCare.configuration.Security.jwt;
 import com.v1.ChildrenCare.configuration.Security.CustomUserDetails;
 import com.v1.ChildrenCare.entity.Account;
 import com.v1.ChildrenCare.entity.Role;
+import com.v1.ChildrenCare.enumPack.enumActive;
 import com.v1.ChildrenCare.enumPack.enumRole;
 import com.v1.ChildrenCare.repository.AccountRepository;
 import io.jsonwebtoken.*;
@@ -63,10 +64,15 @@ public class JwtTokenUtil {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
            Account account= accountRepository.findAccountWithAccessToken(token);
-           if (account!=null) {
-               return true;
+           if (account!=null && account.getIsActive().equals(enumActive.ACTIVE)) {
+               return account.getAccessTokenActive();
            }
         } catch (ExpiredJwtException ex) {
+            Account account= accountRepository.findAccountWithAccessToken(token);
+            if (account!=null) {
+                account.setAccessTokenActive(false);
+                accountRepository.save(account);
+            }
             LOGGER.error("JWT expired", ex.getMessage());
         } catch (IllegalArgumentException ex) {
             LOGGER.error("Token is null, empty or only whitespace", ex.getMessage());

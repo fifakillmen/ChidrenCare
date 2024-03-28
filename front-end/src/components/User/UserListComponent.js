@@ -3,7 +3,7 @@ import { Table, Button, Modal, notification, Input, Form, Pagination, DatePicker
 import moment from 'moment';
 import { PlusOutlined } from '@ant-design/icons';
 import { searchUser, deleteUser, createUserByAdmin, updateUser } from '../../services/userService';
-import { searchAccount, updateAccount, createAccountByAdmin,forgotPassword } from '../../services/accountService';
+import { searchAccount, updateAccount, createAccountByAdmin, forgotPassword } from '../../services/accountService';
 import { getUserInfoFromCookie } from '../../services/cookeiService';
 
 const { Option } = Select;
@@ -203,7 +203,7 @@ const UserTable = () => {
                 notification.success(
                     {
                         message: "Message",
-                        description: "The password reset link has been sent in to "+accountData.email
+                        description: "The password reset link has been sent in to " + accountData.email
                     })
             } else if (data.status === 'NOT_FOUND') {
                 notification.error(
@@ -408,8 +408,8 @@ const UserTable = () => {
             </Form>
 
             <Table columns={columns} dataSource={userData} rowKey="id" pagination={false} />
-            
-            <div style={{ textAlign: "center",marginTop: "30px"}}>
+
+            <div style={{ textAlign: "center", marginTop: "30px" }}>
                 <Pagination
                     current={searchValues.targetPageNumber + 1}
                     total={totalPages * 10}
@@ -461,7 +461,7 @@ const UserTable = () => {
                             ]}
                             hasFeedback
                         >
-                            <Input placeholder="Type your first name" />
+                            <Input placeholder="Type your first name" onChange={(e) => setFName(e.target.value)} />
                         </Form.Item>
                         <Form.Item
                             name="lName"
@@ -478,7 +478,7 @@ const UserTable = () => {
                             ]}
                             hasFeedback
                         >
-                            <Input placeholder="Type your last name" />
+                            <Input placeholder="Type your last name" onChange={(e) => setLName(e.target.value)} />
                         </Form.Item>
 
                         <Form.Item
@@ -496,7 +496,7 @@ const UserTable = () => {
                             ]}
                             hasFeedback
                         >
-                            <Input placeholder="Type your address" />
+                            <Input placeholder="Type your address" onChange={(e) => setAddress(e.target.value)} />
                         </Form.Item>
 
                         <Form.Item
@@ -510,7 +510,7 @@ const UserTable = () => {
                             ]}
                             hasFeedback
                         >
-                            <Select placeholder="Select your gender">
+                            <Select placeholder="Select your gender" onChange={(value) => setGender(value)}>
                                 <Select.Option value="Male">Male</Select.Option>
                                 <Select.Option value="Female">Female</Select.Option>
                                 <Select.Option value="Other">Other</Select.Option>
@@ -544,9 +544,7 @@ const UserTable = () => {
                                 style={{ width: "100%" }}
                                 picker="date"
                                 placeholder="Chose date of birth"
-                                onChange={(date, dateString) => {
-                                    setDob(dateString)
-                                }}
+                                onChange={(date, dateString) => setDob(dateString)}
                             />
                         </Form.Item>
 
@@ -565,7 +563,7 @@ const UserTable = () => {
                             ]}
                             hasFeedback
                         >
-                            <Input placeholder="Type your phone number" />
+                            <Input placeholder="Type your phone number" onChange={(e) => setPhone(e.target.value)} />
                         </Form.Item>
                         <Form.Item label="Avatar" valuePropName="fileList" getValueFromEvent={avatarFile} hasFeedback>
                             <Upload listType="picture-card"
@@ -582,7 +580,8 @@ const UserTable = () => {
 
                         <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
                             <Button type="primary" htmlType="submit">Update</Button>
-                        </Form.Item>                    </Form>
+                        </Form.Item>
+                    </Form>
                 </div>
             </Modal>
 
@@ -878,7 +877,7 @@ const UserTable = () => {
                                 style={{ width: "100%" }}
                                 picker="date"
                                 placeholder="Chose date of birth"
-                                onChange={(date, dateString) => handleChange('dob', dateString)}
+                                onChange={(date, dateString) => setDob(moment(dateString, 'YYYY-MM-DD'))}
                             />
                         </Form.Item>
 
