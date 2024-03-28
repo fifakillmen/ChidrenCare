@@ -15,9 +15,11 @@ import {
 import UserProfileComponent from '../../../components/User/UserProfileComponent';
 
 
-import logo from '../../../assets/images/logos/green-logo.png';
+
+import logo from '../../../assets/images/Images/logo (1).png';
 import ChangePasswordComponent from '../../Authorization/ChangePasswordComponent';
 import { logout } from '../../../services/authService';
+import '../../../assets/scss/app.scss'
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -51,23 +53,21 @@ const Header = () => {
     /*--------------------------------------------------------------------------------*/
 
     return (
-        <div>
             <div id="section">
                 <div className="header1 po-relative">
                     <Container>
-                        <Navbar className="navbar-expand-lg h1-nav h4">
+                        <Navbar className="navbar-expand-lg h1-nav h5">
                             <NavbarBrand href="/"><img src={logo} alt="wrapkit" /></NavbarBrand>
                             <NavbarToggler onClick={toggle}><span className="ti-menu"></span></NavbarToggler>
                             <Collapse isOpen={isOpen} navbar id="header1">
                                 <Nav navbar className="ms-auto mt-2 mt-lg-0">
-                                    <NavItem className="active"><NavLink href="/">Home</NavLink></NavItem>
-                                    <NavItem><NavLink href="#">About Me</NavLink></NavItem>
+                                    <NavItem className="active"><NavLink href="/">Trang Chủ</NavLink></NavItem>
                                     {userInfo && userInfo.roles && userInfo.roles.some(role => role.name === "ADMIN") && 
-                                        <NavItem><NavLink href="/admin">Admin</NavLink></NavItem>
+                                        <NavItem><NavLink href="/admin/starter">Admin</NavLink></NavItem>
                                     }
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav>
-                                            Services <i className="fa fa-angle-down m-l-5"></i>
+                                            Dịch Vụ <i className="fa fa-angle-down m-l-5"></i>
                                         </DropdownToggle>
                                         <DropdownMenu className="b-none animated fadeInUp">
                                             <DropdownItem>Action</DropdownItem>
@@ -80,7 +80,7 @@ const Header = () => {
                                             <DropdownItem>One more separated link</DropdownItem>
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
-                                    <NavItem><NavLink href="/feedback">Feedback</NavLink></NavItem>
+                                    <NavItem><NavLink href="/feedback">Liên hệ</NavLink></NavItem>
                                     {isLoggedIn ? ( // Nếu người dùng đã đăng nhập
                                         <UncontrolledDropdown nav inNavbar>
                                             <DropdownToggle nav caret>
@@ -89,7 +89,7 @@ const Header = () => {
                                             <DropdownMenu end>
                                                 <DropdownItem onClick={toggleProfileModal}>Edit Profile</DropdownItem>
                                                 <DropdownItem onClick={toggleChangePassWordModal}>Change Password</DropdownItem>
-                                                <DropdownItem><Link to="/children">Children Manager</Link></DropdownItem>
+                                                <DropdownItem><Link to="/children" className="no-underline">Children Manager</Link></DropdownItem>
                                                 <DropdownItem onClick={handleLogout}>Logout</DropdownItem>
                                             </DropdownMenu>
                                         </UncontrolledDropdown>
@@ -101,16 +101,13 @@ const Header = () => {
                         </Navbar>
                     </Container>
                 </div>
+                {isProfileModalVisible && (
+                    <UserProfileComponent visible={isProfileModalVisible} onClose={toggleProfileModal} />
+                )}
+                {isToggleChangePassWordModal && (
+                    <ChangePasswordComponent visible={isToggleChangePassWordModal} onClose={toggleChangePassWordModal} />
+                )}
             </div>
-            {isProfileModalVisible && (
-                <UserProfileComponent visible={isProfileModalVisible} onClose={toggleProfileModal} />
-            )}
-            {isToggleChangePassWordModal && (
-                <ChangePasswordComponent visible={isToggleChangePassWordModal} onClose={toggleChangePassWordModal} />
-            )}
-
-        </div>
     );
-
 }
 export default Header;

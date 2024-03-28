@@ -1,19 +1,24 @@
-import {Rate, Modal, notification, Table} from "antd";
-import React, {useState, useEffect} from "react";
+import {Rate, Modal, notification, Table, Input, Space} from "antd";
+import React, {useState, useEffect, useRef} from "react";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
     DeleteOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined, SearchOutlined
 } from '@ant-design/icons';
 import axios from "axios";
 import {Button} from "antd";
-
+import  "../../assets/scss/app.scss";
+import Highlighter from "react-highlight-words";
+import moment from 'moment';
 const TableFeedback = () => {
     const [feedback, setFeedback] = useState([]);
     const [feedbackSelected, setFeedbackSelect] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
     const getFeedbackList = () => {
         axios.get('http://localhost:9999/api/feedback/list')
             .then(res => {
@@ -25,10 +30,14 @@ const TableFeedback = () => {
                         rating: record.rating,
                         email: record.email,
                         reviewText: record.reviewText,
+                        createdDate: record.createdDate,
+                        formattedDate: formatDate(record.createdDate),
                         isActive: record.isActive,
                     }
                 }));
-
+                function formatDate(datetimeString) {
+                    // Example using a library like Moment.js:
+                    return moment(datetimeString).format('YYYY-MM-DD HH:mm:ss');}
             })
             .catch(error => console.log(error));
     }
@@ -89,6 +98,67 @@ const TableFeedback = () => {
         setIsModalOpen(false);
         setIsDeleteModalOpen(false)
     };
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+            <div style={{padding: 8}}>
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{width: 188, marginBottom: 8, display: 'block'}}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{width: 90}}
+                    >
+                        Search
+                    </Button>
+                    <Button onClick={() => handleReset(clearFilters)} size="small" style={{width: 90}}>
+                        Reset
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+        onFilter: (value, record) =>
+            record[dataIndex] ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()) : '',
+        onFilterDropdownVisibleChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{backgroundColor: '#ffc069', padding: 0}}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+    const getColumnFilterStatus = (dataIndex, filters) => ({
+        filters: filters,
+        onFilter: (value, record) => record[dataIndex] === value,
+    });
     const columns = [
         {
             title: "#",
@@ -100,6 +170,15 @@ const TableFeedback = () => {
             title: "Rate",
             dataIndex: "rating",
             key: "rating",
+            width: 180,
+            filters: [
+                { text: <Rate disabled defaultValue={1} />, value: 1 },
+                { text: <Rate disabled defaultValue={2} />, value: 2 },
+                { text: <Rate disabled defaultValue={3} />, value: 3 },
+                { text: <Rate disabled defaultValue={4} />, value: 4 },
+                { text: <Rate disabled defaultValue={5} />, value: 5 },
+            ],
+            onFilter: (value, record) => record.rating === value,
             render: (rating) =>{
                 return (
                     <div>
@@ -112,17 +191,38 @@ const TableFeedback = () => {
             title: "Email",
             dataIndex: "email",
             key: "email",
+            ...getColumnSearchProps('email'),
         },
         {
             title: "Content",
             dataIndex: "reviewText",
             key: "reviewText",
+            render: (reviewText) => {
+                return (
+                    <div className="content-ellipsis">
+                        {reviewText}
+                    </div>
+                )
+            }
+        },
+        {
+            title: "Create Date",
+            dataIndex: "formattedDate",
+            key: "formattedDate",
+            sorter: (a, b) => {
+                const dateA = new Date(a.createdDate);
+                const dateB = new Date(b.createdDate);
+                return dateA - dateB;
+            },
         },
         {
             title: "Status",
             dataIndex: "isActive",
             key: "isActive",
             align: "center",
+            ...getColumnFilterStatus('isActive', [
+                {text: 'Active', value: 'ACTIVE'},
+                {text: 'Inactive', value: 'INACTIVE'},]),
             render: (text) => {
                 return (
                     <div>
@@ -189,6 +289,9 @@ const TableFeedback = () => {
                     <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
                         style={{fontWeight: 'bold', marginRight: '10px'}}>Content:</span><span
                         style={{flex: 1}}>{feedbackSelected?.reviewText}</span></div>
+                    <div style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}><span
+                        style={{fontWeight: 'bold', marginRight: '10px'}}>Created Date:</span><span
+                        style={{flex: 1}}>{feedbackSelected?.createdDate}</span></div>
                 </Modal>
                 <Modal title="Message" open={isDeleteModalOpen} onOk={handleDeleteOk}
                        onCancel={handleCancel}>

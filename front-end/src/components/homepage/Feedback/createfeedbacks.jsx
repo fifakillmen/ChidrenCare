@@ -40,8 +40,20 @@ const Createfeedbacks = () => {
                 <Container>
                     <Row className="justify-content-center">
                         <Col md="7" className="text-center">
-                            <br/><br/><br/>
-                            <h1 className="title font-bold">Feedback Form</h1>
+                            <h1 className="title font-bold">Liên Hệ</h1>
+                            <strong>Trân trọng cảm ơn quý khách đã ghé thăm website của bệnh viện Nhi Trung ương. Mọi
+                                thông tin chi tiết quý khách vui lòng liên hệ theo địa chỉ sau:</strong><br/><br/>
+                            <h2><strong className="text-success">BỆNH VIỆN NHI TRUNG ƯƠNG</strong></h2>
+                            <p><strong>Địa chỉ:</strong> 18/879 La Thành – Đống Đa – Hà Nội
+                            </p><p><strong>Điện thoại (bộ phận Văn thư):</strong> 024 6273
+                            8532 / Fax: O24.6273 8573 | Liên hệ trong giờ hành chính, 7h-16h30, thứ 2 =&gt; thứ 6</p>
+                            <p ><strong>Đường dây nóng Chăm sóc khách hàng:</strong> 0865
+                                879 879 | Từ 7h – 17h, Thứ 2 đến Chủ Nhật</p>
+                            <p><strong>Hotline đặt lịch khám (TTQT):</strong> 0862 33 55 66 /1900 986 803 | Liên hệ
+                                24/24h</p>
+                            <p><strong>Đường dây phản ánh/khiếu nại dịch vụ:</strong> 0967
+                                951 616</p>
+
                         </Col>
                     </Row>
                 </Container>

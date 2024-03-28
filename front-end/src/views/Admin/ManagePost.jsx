@@ -1,4 +1,3 @@
-// Import thêm useState để lưu trữ ID bài viết đang được chọn
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Pagination, Modal, Button } from "react-bootstrap";
 import { Link } from 'react-router-dom';
@@ -6,6 +5,7 @@ import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import UpdatePost from './Post/updatePost.jsx'; 
+import { getAccessToken, getDataFromCookies, saveToCookies, deleteCookies,getUserInfoFromCookie } from "../../services/cookeiService.js";
 
 const fakeData = [
   {
@@ -23,15 +23,22 @@ function PostManage() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [postId, setPostId] = useState(null); // Lưu trữ ID của bài viết đang được chọn
-  const itemsPerPage = 6;
+  const itemsPerPage = 4;
 
   const handleCloseModal = () => setShowModal(false);
-
+  const accessToken = getAccessToken();
   const fetchPosts = () => {
+    
+    const headers = {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+  };
+  
     axios
-      .get("http://localhost:9999/manager/post/getList")
+      .get("http://localhost:9999/manager/post/getList", { headers: headers})
       .then((response) => {
         setPosts(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching posts:", error);
@@ -89,24 +96,32 @@ function PostManage() {
         });
     }
   };
-
-  // Hàm xử lý khi click vào nút Edit
   const handleEdit = (postId) => {
-    setPostId(postId); // Thiết lập ID của bài viết đang được chọn
-    setShowModal(true); // Hiển thị modal
+    setPostId(postId); 
+    setShowModal(true); 
   };
-
+  const handleUpdateError = (error) => {
+    console.error("Error updating post:", error);
+  };
+  
+  const handleUpdateSuccess = () => {
+    fetchPosts();
+  };
   return (
     <>
       <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Post</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <UpdatePost postId={postId} handleCloseModal={handleCloseModal} />
-        </Modal.Body>
-      </Modal>
-
+  <Modal.Header closeButton>
+    <Modal.Title>Update Post</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <UpdatePost
+      postId={postId}
+      handleCloseModal={handleCloseModal}
+      handleUpdateSuccess={handleUpdateSuccess}
+      handleUpdateError={handleUpdateError} // Truyền hàm xử lý lỗi vào đây
+    />
+  </Modal.Body>
+</Modal>
       <Row md={5} className="title align-center">
         <Col md={4}>
           <h2>Mange Post</h2>
@@ -200,3 +215,4 @@ function PostManage() {
 }
 
 export default PostManage;
+

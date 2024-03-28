@@ -1,0 +1,52 @@
+.blog-post {
+  width: 100%;
+  overflow: hidden;
+}
+
+.blog-post .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.blog-post .card-body {
+  position: relative;
+  max-height: 120px; /* Đặt chiều cao tối đa cho phần nội dung */
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out; /* Thêm hiệu ứng di chuyển */
+}
+
+.blog-post .card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blog-post .card-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.blog-post .read-more {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.blog-post:hover .card-body {
+  max-height: 300px; /* Tăng chiều cao tối đa khi di chuột vào */
+}
+
+.blog-post:hover .read-more {
+  opacity: 1; /* Hiển thị nút "Read More" khi di chuột vào */
+}
