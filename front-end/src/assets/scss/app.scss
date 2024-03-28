@@ -60,7 +60,16 @@ a.white-link {
     height: auto;
     display: inline-block;
 }
-
+.no-underline {
+    text-decoration: none;
+    color: black;
+}
+.content-ellipsis {
+    width: 200px; /* Adjust width as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .img-rounded {
     border-radius: $radius;
 }

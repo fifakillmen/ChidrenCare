@@ -36,6 +36,7 @@ const TableChildren = () => {
                         age: record.age,
                         dob: record.dob,
                         gender: record.gender,
+                        note: record.note,
                         isActive: record.isActive,
                         createdDate: record.createdDate
                     }
@@ -83,6 +84,7 @@ const TableChildren = () => {
             lastName: values.lastName,
             dob: values.dob,
             gender: values.gender,
+            note: values.note,
             isActive: "ACTIVE", // Always set to ACTIVE
             createdBy: getUserInfoFromCookie().lname,
         };
@@ -292,6 +294,11 @@ const TableChildren = () => {
             title: "Create Date",
             dataIndex: "createdDate",
             key: "createdDate",
+            sorter: (a, b) => {
+                const dateA = new Date(a.createdDate);
+                const dateB = new Date(b.createdDate);
+                return dateA - dateB;
+            },
         },
         {
             title: "Status",
@@ -359,6 +366,10 @@ const TableChildren = () => {
                                 <Radio value="MALE">Male</Radio>
                                 <Radio value="FEMALE">Female</Radio>
                             </Radio.Group>
+                        </Form.Item>
+                        <Form.Item label="Note" name="note"
+                                   rules={[{required: false, message: 'More information'}]}>
+                            <Input/>
                         </Form.Item>
                         <Form.Item wrapperCol={{offset: 8, span: 16}}>
                             <Button type="primary" htmlType="submit">Add Children</Button>

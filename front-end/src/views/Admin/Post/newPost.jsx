@@ -30,7 +30,7 @@ const NewPost = () => {
         const formData = new FormData();
         formData.append('title', data.title);
         formData.append('content', data.content);
-        formData.append('content', data.imageLink);
+        formData.append('imageLink', data.imageLink);
         formData.append('createByUserId', 1);
         if (data.images) {
             for (const image of data.images) {
