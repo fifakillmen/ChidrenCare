@@ -116,8 +116,8 @@ public class SecurityConfig {
                                 .requestMatchers("/manager/post/**").permitAll()
                                 .requestMatchers("/user/post/**").permitAll()
                          // service
-//                        .requestMatchers("/manager/service/**").permitAll()
-                                .requestMatchers("/manager/service/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/manager/service/**").permitAll()
+//                                .requestMatchers("/manager/service/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user/service/**").permitAll()
 
 

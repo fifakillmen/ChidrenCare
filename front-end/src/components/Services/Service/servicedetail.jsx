@@ -5,7 +5,8 @@ import blog2Image from "../../../assets/images/Images/image.png";
 import Footer from "../../../components/homepage/footer/footer";
 import Header from "../../../components/homepage/header/header";
 import "./servicedetail.css";
-
+// import image from "../../../assets/images/Images/blog1.jpg";
+import image from "../../../assets/images/Images/blog2.jpg";
 const ServiceDetail = () => {
   const { id } = useParams();
   const [service, setService] = useState(null);
@@ -46,7 +47,8 @@ const ServiceDetail = () => {
       <Header />
       <div className="single-blog-card">
         <div className="card-thumb">
-          <img src={service.thumbnail} className="mt-150" alt="image" />
+          {/* <img src={service.thumbnail} className="mt-150" alt="image" /> */}
+          <img src={image} className="mt-150" alt="image" />
         </div>
         <div className="card-content text-start mt-4">
           <h3 className="serviceTitle">{service.serviceTitle}</h3>
