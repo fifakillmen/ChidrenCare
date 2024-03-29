@@ -99,7 +99,7 @@ const SignUpComponent = () => {
                 await login(email, password);
                 if (getDataFromCookies('accessToken')) {
                     setAfterLogin(true);
-                } 
+                }
             } else if (data.status === 'NOT_FOUND') {
                 notification.error(
                     {
@@ -121,6 +121,8 @@ const SignUpComponent = () => {
             if (response && response.data && response.data.status === 'OK') {
                 setIsCreated(true);
                 // chuyển đến trang home
+                await login(email, password);
+
                 window.location.href = "/";
             } else {
                 message.error('An error occurred 3. No valid user ID found in the response.');
