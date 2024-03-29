@@ -759,12 +759,7 @@ const UserTable = () => {
                         wrapperCol={{ span: 16 }}
                         onFinish={handleCreateUser}
                         initialValues={{
-                            fName: CreateUserData.fName,
-                            lName: CreateUserData.lName,
-                            address: CreateUserData.address,
-                            gender: CreateUserData.gender,
-                            dob: CreateUserData.dob,
-                            phone: CreateUserData.phone,
+                           
                         }}
                     >
                         <Form.Item
@@ -858,18 +853,7 @@ const UserTable = () => {
                                     required: true,
                                     message: "Please provide your date of birth",
                                 },
-                                ({ getFieldValue }) => ({
-                                    validator() {
-                                        const minimumAge = 18;
-                                        var diff = moment().diff(moment(CreateUserData.dob), 'milliseconds');
-                                        var duration = moment.duration(diff);
-                                        if (duration.years() > minimumAge) {
-                                            return Promise.resolve();
-                                        } else {
-                                            return Promise.reject(`You must be ${minimumAge} or older.`);
-                                        }
-                                    },
-                                }),
+                                
                             ]}
                             hasFeedback
                         >
