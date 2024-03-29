@@ -5,7 +5,7 @@ const REST_API_BASE_URL = 'http://localhost:9999/user/'
 // http://localhost:9999/user/deleteUser
 // http://localhost:9999/user/findUser
 export const createUser = async (firstName, lastName, dob, phone, email, address, gender, avatarFile) => {
-    const accessToken = await  getAccessToken();
+    const accessToken = await getAccessToken();
     const headers = {
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": 'multipart/form-data'
@@ -107,7 +107,7 @@ export const findUser = async (userId) => {
         "Authorization": `Bearer ${accessToken}`
     };
     const params = new URLSearchParams();
-    
+
     params.append('userId', userId);
 
     return await axios.post(REST_API_BASE_URL + 'findUser', params.toString(), {

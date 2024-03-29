@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+import Header from '../../homepage/header/header';
+import Footer  from '../../homepage/footer/footer';
 import "./Service.css";
-
+import imageService from "../../../assets/images/Images/blog2.jpg"
 const Service = () => {
   const [services, setServices] = useState([]);
 
@@ -25,6 +26,8 @@ const Service = () => {
 
   return (
     <>
+    <div>
+      <Header/>
       <div>
         <div className="menu-btn">
           <i className="fas fa-bars fa-2x"></i>
@@ -50,7 +53,8 @@ const Service = () => {
           <section className="home-cards">
             {services.map((service) => (
               <div key={service.id}>
-                <img src={service.thumbnail} alt="Error" />
+                {/* <img src={service.thumbnail} alt="Error" /> */}
+                <img src={imageService} alt="Error" />
                 <h3>{service.serviceTitle}</h3>
                 <p>{service.serviceDetail}</p>
                 <Link to={`/servicedetail/${service.id}`}>Learn More <i className="fas fa-chevron-right"></i></Link>
@@ -58,22 +62,15 @@ const Service = () => {
             ))}
           </section>
 
-          {/* Xbox 
-          <section className="xbox">
-            <div className="content">
-              <h2>Service 1</h2>
-              <p>Loren ipsun dolor sit anet, consectetur adipisci elit, sed eiusnod tenpor incidunt ut labore et dolore nagna aliqua. Ut enin ad ninin venian, quis nostrun exercitationen ullan corporis suscipit laboriosan, nisi ut aliquid ex ea connodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillun dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt nollit anin id est laborun.</p>
-              <a href="#" className="btn">
-                Join Now <i className="fas fa-chevron-right"></i>
-              </a>
-            </div>
-          </section>*/}
 
 
         </div>
 
 
       </div>
+      <Footer/>
+    </div>
+      
     </>
   );
 };

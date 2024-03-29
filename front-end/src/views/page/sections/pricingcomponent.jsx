@@ -34,7 +34,7 @@ const PricingComponent = () => {
             </Col>
           </Row>
           <Row className="m-t-40">
-            {services.map((service, index) => (
+            {services.slice(0,3).map((service, index) => (
               <Col
                 key={index}
                 md="4"

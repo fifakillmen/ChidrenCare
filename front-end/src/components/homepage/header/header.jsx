@@ -65,21 +65,7 @@ const Header = () => {
                                     {userInfo && userInfo.roles && userInfo.roles.some(role => role.name === "ADMIN") && 
                                         <NavItem><NavLink href="/admin/starter">Admin</NavLink></NavItem>
                                     }
-                                    <UncontrolledDropdown nav inNavbar>
-                                        <DropdownToggle nav>
-                                            Dịch Vụ <i className="fa fa-angle-down m-l-5"></i>
-                                        </DropdownToggle>
-                                        <DropdownMenu className="b-none animated fadeInUp">
-                                            <DropdownItem>Action</DropdownItem>
-                                            <DropdownItem>Another action</DropdownItem>
-                                            <DropdownItem>Something else here</DropdownItem>
-                                            <DropdownItem divider />
-                                            <DropdownItem>Something else here</DropdownItem>
-                                            <DropdownItem>Separated link</DropdownItem>
-                                            <DropdownItem divider />
-                                            <DropdownItem>One more separated link</DropdownItem>
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
+                                    <NavItem><NavLink href="/service">Dịch Vụ</NavLink></NavItem>
                                     <NavItem><NavLink href="/feedback">Liên hệ</NavLink></NavItem>
                                     {isLoggedIn ? ( // Nếu người dùng đã đăng nhập
                                         <UncontrolledDropdown nav inNavbar>

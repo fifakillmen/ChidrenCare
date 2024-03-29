@@ -48,7 +48,7 @@ const UserTable = () => {
         lName: '',
         address: '',
         gender: '',
-        dob: null,
+        dob: '',
         phone: '',
         avatarFile: null
     });
@@ -59,7 +59,9 @@ const UserTable = () => {
     };
 
     const handleUpdateInformation = () => {
-        updateUser(selectedUser.id, fName, lName, dob, phone, address, gender, avatarFile)
+        const formattedDob = moment(dob).format('YYYY-MM-DD');
+
+        updateUser(selectedUser.id, fName, lName, formattedDob, phone, address, gender, avatarFile)
             .then(response => {
                 if (response && response.data && response.data.status === 'OK') {
                     notification.success({
@@ -334,13 +336,13 @@ const UserTable = () => {
 
     const handleCreateUser = async () => {
         await createUserByAdmin(
-            CreateUserData.fName,
-            CreateUserData.lName,
-            CreateUserData.dob,
-            CreateUserData.phone,
+            fName,
+            lName,
+            dob,
+            phone,
             email,
-            CreateUserData.address,
-            CreateUserData.gender,
+            address,
+            gender,
             avatarByAdmin
         )
             .then(response => {
@@ -544,7 +546,9 @@ const UserTable = () => {
                                 style={{ width: "100%" }}
                                 picker="date"
                                 placeholder="Chose date of birth"
-                                onChange={(date, dateString) => setDob(dateString)}
+                                onChange={(date, dateString) => {
+                                    setDob(dateString)
+                                }}
                             />
                         </Form.Item>
 
@@ -755,11 +759,12 @@ const UserTable = () => {
                     <h4>User information</h4>
                     <Form
                         autoComplete="off"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 16 }}
-                        onFinish={handleCreateUser}
-                        initialValues={{
-                           
+                        labelCol={{ span: 10 }}
+                        wrapperCol={{ span: 14 }}
+                        onFinish={() => {
+                            handleCreateUser();
+                        }}
+                        onFinishFailed={(error) => {
                         }}
                     >
                         <Form.Item
@@ -768,19 +773,18 @@ const UserTable = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please enter your first name",
+                                    message: "Please enter your name",
                                 },
                                 {
                                     pattern: new RegExp(/^[a-zA-Z\s]{2,25}$/),
                                     message: "Please enter a valid first name"
                                 },
+
                             ]}
                             hasFeedback
                         >
-                            <Input
-                                placeholder="Type your first name"
-                                onChange={(e) => handleChange('fName', e.target.value)}
-                            />
+                            <Input onChange={(e) => setFName(e.target.value)}
+                                placeholder="Type your first name" />
                         </Form.Item>
                         <Form.Item
                             name="lName"
@@ -794,13 +798,13 @@ const UserTable = () => {
                                     pattern: new RegExp(/^[a-zA-Z\s]{2,25}$/),
                                     message: "Please enter a valid last name"
                                 },
+
                             ]}
                             hasFeedback
                         >
                             <Input
-                                placeholder="Type your last name"
-                                onChange={(e) => handleChange('lName', e.target.value)}
-                            />
+                                onChange={(e) => setLName(e.target.value)}
+                                placeholder="Type your last name" />
                         </Form.Item>
 
                         <Form.Item
@@ -818,30 +822,28 @@ const UserTable = () => {
                             ]}
                             hasFeedback
                         >
-                            <Input
-                                placeholder="Type your address"
-                                onChange={(e) => handleChange('address', e.target.value)}
-                            />
+                            <Input onChange={(e) => setAddress(e.target.value)}
+                                placeholder="Type your address" />
                         </Form.Item>
 
                         <Form.Item
                             name="gender"
                             label="Gender"
+                            requiredMark="optional"
+                            required
+                            hasFeedback
                             rules={[
                                 {
                                     required: true,
                                     message: "Please select your gender",
                                 },
-                            ]}
-                            hasFeedback
-                        >
-                            <Select
-                                placeholder="Select your gender"
-                                onChange={(value) => handleChange('gender', value)}
+                            ]}>
+                            <Select placeholder="Select your gender"
+                                onChange={(value) => setGender(value)}
                             >
-                                <Option value="Male">Male</Option>
-                                <Option value="Female">Female</Option>
-                                <Option value="Other">Other</Option>
+                                <Select.Option value="Male">Male</Select.Option>
+                                <Select.Option value="Female">Female</Select.Option>
+                                <Select.Option value="Other">Other</Select.Option>
                             </Select>
                         </Form.Item>
 
@@ -853,7 +855,18 @@ const UserTable = () => {
                                     required: true,
                                     message: "Please provide your date of birth",
                                 },
-                                
+                                ({ getFieldValue }) => ({
+                                    validator() {
+                                        const minimumAge = 18;
+                                        var diff = moment().diff(moment(dob), 'milliseconds');
+                                        var duration = moment.duration(diff);
+                                        if (duration.years() > minimumAge) {
+                                            return Promise.resolve();
+                                        } else {
+                                            return Promise.reject(`You must be ${minimumAge} or older.`);
+                                        }
+                                    },
+                                }),
                             ]}
                             hasFeedback
                         >
@@ -861,34 +874,22 @@ const UserTable = () => {
                                 style={{ width: "100%" }}
                                 picker="date"
                                 placeholder="Chose date of birth"
-                                onChange={(date, dateString) => setDob(moment(dateString, 'YYYY-MM-DD'))}
+                                onChange={(date, dateString) => {
+                                    setDob(dateString)
+                                }}
                             />
                         </Form.Item>
-
-
-
-
                         <Form.Item
                             name="phone"
                             label="Phone Number"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please provide your phone number",
-                                },
-                                {
-                                    pattern: new RegExp(/^\+?[0-9]{8,15}$/),
-                                    message: "Please provide a valid phone number"
-                                },
-                            ]}
+                            rules={[{ required: true }
+                                , { pattern: new RegExp(/^\+?[0-9]{8,15}$/), message: "Please provide a valid phone" }]}
                             hasFeedback
                         >
-                            <Input
-                                placeholder="Type your phone number"
-                                onChange={(e) => handleChange('phone', e.target.value)}
-                            />
+                            <Input onChange={(e) => setPhone(e.target.value)}
+                                placeholder="Type your phone number" />
                         </Form.Item>
-                        <Form.Item label="Avatar" valuePropName="fileList" getValueFromEvent={avatarByAdmin} hasFeedback>
+                        <Form.Item label="Avatar" valuePropName="fileList" getValueFromEvent={avatarFile} hasFeedback>
                             <Upload listType="picture-card"
                                 multiple={false}
                                 maxCount={1}
@@ -901,9 +902,14 @@ const UserTable = () => {
                             </Upload>
                         </Form.Item>
 
-                        <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-                            <Button type="primary" htmlType="submit">Create User</Button>
-                        </Form.Item>                    </Form>
+
+                        <Form.Item wrapperCol={{ span: 24 }}>
+                            <Button block type="primary" htmlType="submit" >
+                                Create User
+                            </Button>
+                        </Form.Item>
+
+                    </Form>
                 </div>
             </Modal>
         </>

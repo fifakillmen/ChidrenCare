@@ -32,8 +32,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public String uploadFile(MultipartFile multipartFile) {
         File fileObject= convertMultipartFiletoFile(multipartFile);
-       // String filename=System.currentTimeMillis()+"_"+multipartFile.getOriginalFilename();
-        String filename=multipartFile.getOriginalFilename();
+        String filename=System.currentTimeMillis()+"_"+multipartFile.getOriginalFilename();
         s3Client.putObject(new PutObjectRequest(bucketName,filename,fileObject).withCannedAcl(CannedAccessControlList.PublicRead));
         fileObject.delete();
         return filename;

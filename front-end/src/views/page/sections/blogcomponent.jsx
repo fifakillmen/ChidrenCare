@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col, Container, Card } from 'reactstrap';
 import axios from 'axios';
 import image from "../../../assets/images/Images/blog1.jpg";
+import './blogcomponent.css';
 
 const BlogComponent = () => {
   const [blogs, setBlogs] = useState([]);
@@ -33,11 +34,11 @@ const BlogComponent = () => {
             </Col>
           </Row>
           <Row className="m-t-40 justify-content-center">
-            {blogs.map(blog => (
+            {blogs.slice(0,3).map(blog => (
               <Col lg="4" md="6" key={blog.id}>
               <div className="blog-post">
                 <Card>
-                  <img className="card-img-top" src={blog.imageLink} alt="blog image" />
+                  {/* <img className="card-img-top" src={blog.imageLink} alt="blog image" /> */}
                   <img className="card-img-top" src={image} alt="blog image" />
                   <div className="card-body">
                     <h5 className="card-title">{blog.title}</h5>
